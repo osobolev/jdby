@@ -36,6 +36,11 @@ public final class Query implements QueryLike {
     }
 
     @Override
+    public Query toQuery() {
+        return this;
+    }
+
+    @Override
     public String toString() {
         return sql;
     }
