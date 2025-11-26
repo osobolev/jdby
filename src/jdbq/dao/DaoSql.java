@@ -66,7 +66,7 @@ public final class DaoSql {
         return Objects.requireNonNull(data, "Must call through the proxy");
     }
 
-    public static Query piece(String sql) {
+    public static Query sql(String sql) {
         CallData data = getCallData();
         return data.substituteArgs(sql);
     }
