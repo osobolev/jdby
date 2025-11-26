@@ -42,4 +42,8 @@ public interface SqlParameter {
     static SqlParameter pDateTime(OffsetDateTime x) {
         return new SimpleSqlParameter(x, JDBCType.TIMESTAMP_WITH_TIMEZONE);
     }
+
+    static SqlParameter jdbc(Object x, JDBCType type) {
+        return new SimpleSqlParameter(x, type);
+    }
 }

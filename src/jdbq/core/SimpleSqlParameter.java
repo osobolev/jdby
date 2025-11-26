@@ -4,12 +4,12 @@ import java.sql.JDBCType;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public final class SimpleSqlParameter implements SqlParameter {
+final class SimpleSqlParameter implements SqlParameter {
 
     private final Object value;
     private final JDBCType type;
 
-    public SimpleSqlParameter(Object value, JDBCType type) {
+    SimpleSqlParameter(Object value, JDBCType type) {
         this.value = value;
         this.type = type;
     }
