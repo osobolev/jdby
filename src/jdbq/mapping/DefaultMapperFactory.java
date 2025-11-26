@@ -5,7 +5,7 @@ import jdbq.core.RowMapper;
 import java.lang.reflect.Type;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class RecordMapperFactory implements MapperFactory {
+public class DefaultMapperFactory implements MapperFactory {
 
     private final ConcurrentHashMap<Class<?>, RowMapper<?>> rowMappers = new ConcurrentHashMap<>();
 

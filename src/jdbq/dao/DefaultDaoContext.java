@@ -1,7 +1,7 @@
 package jdbq.dao;
 
 import jdbq.core.SqlParameter;
-import jdbq.mapping.RecordMapperFactory;
+import jdbq.mapping.DefaultMapperFactory;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 
-public class DefaultDaoContext extends RecordMapperFactory implements DaoContext {
+public class DefaultDaoContext extends DefaultMapperFactory implements DaoContext {
 
     public static JDBCType jdbcType(Class<?> type) {
         if (type == int.class || type == Integer.class) {
