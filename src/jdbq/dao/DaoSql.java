@@ -36,7 +36,7 @@ public final class DaoSql {
         } else if ("hashCode".equals(name) && parameters.length == 0) {
             return proxy.hashCode();
         } else if ("equals".equals(name) && parameters.length == 1 && parameters[0].getType() == Object.class) {
-            return proxy == args[0];
+            return proxy.equals(args[0]);
         }
         Map<String, SqlParameter> argsMap = new HashMap<>();
         for (int i = 0; i < parameters.length; i++) {
