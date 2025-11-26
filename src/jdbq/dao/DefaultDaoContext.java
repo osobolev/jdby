@@ -62,9 +62,4 @@ public class DefaultDaoContext extends RecordMapperFactory implements DaoContext
             throw new IllegalArgumentException("Cannot create parameter of type " + type);
         }
     }
-
-    @Override
-    public <T extends BaseDao> T proxy(Class<T> cls, SqlTransactionRaw t) {
-        return ProxyQueries.create(this, cls, t);
-    }
 }
