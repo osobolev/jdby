@@ -1,9 +1,6 @@
 package jdbq.dao;
 
-import jdbq.core.GeneratedKeyMapper;
-import jdbq.core.Query;
-import jdbq.core.SqlParameter;
-import jdbq.core.SqlTransactionRaw;
+import jdbq.core.*;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -84,10 +81,22 @@ public final class DaoSql {
     }
 
     @SuppressWarnings("unchecked")
+    public static <T> List<T> listRows(QueryLike query) throws SQLException {
+        CallData data = getCallData();
+        return (List<T>) query.toQuery().listRows(data.t, data.mapper());
+    }
+
+    @SuppressWarnings("unchecked")
     public static <T> T exactlyOneRow(String sql) throws SQLException {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
         return (T) query.exactlyOneRow(data.t, data.mapper());
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T exactlyOneRow(QueryLike query) throws SQLException {
+        CallData data = getCallData();
+        return (T) query.toQuery().exactlyOneRow(data.t, data.mapper());
     }
 
     @SuppressWarnings("unchecked")
@@ -97,15 +106,31 @@ public final class DaoSql {
         return (T) query.maybeRow(data.t, data.mapper());
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T> T maybeRow(QueryLike query) throws SQLException {
+        CallData data = getCallData();
+        return (T) query.toQuery().maybeRow(data.t, data.mapper());
+    }
+
     public static int executeUpdate(String sql) throws SQLException {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
         return query.executeUpdate(data.t);
     }
 
+    public static int executeUpdate(QueryLike query) throws SQLException {
+        CallData data = getCallData();
+        return query.toQuery().executeUpdate(data.t);
+    }
+
     public static <T> T executeUpdate(String sql, GeneratedKeyMapper<T> mapper, String... generatedColumns) throws SQLException {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
         return query.executeUpdate(data.t, mapper, generatedColumns);
+    }
+
+    public static <T> T executeUpdate(QueryLike query, GeneratedKeyMapper<T> mapper, String... generatedColumns) throws SQLException {
+        CallData data = getCallData();
+        return query.toQuery().executeUpdate(data.t, mapper, generatedColumns);
     }
 }
