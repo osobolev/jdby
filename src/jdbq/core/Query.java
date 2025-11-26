@@ -21,7 +21,7 @@ public final class Query implements QueryLike {
         this(sql, Arrays.asList(parameters));
     }
 
-    public static Query sql(String sql, SqlParameter... parameters) {
+    public static Query jdbcSql(String sql, SqlParameter... parameters) {
         return new Query(sql, parameters);
     }
 
