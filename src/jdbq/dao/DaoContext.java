@@ -6,7 +6,7 @@ import jdbq.mapping.MapperFactory;
 
 import java.lang.reflect.Type;
 
-public interface ProxyContext extends MapperFactory {
+public interface DaoContext extends MapperFactory {
 
     SqlParameter parameter(Type type, Object value);
 

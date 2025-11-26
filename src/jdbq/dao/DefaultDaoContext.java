@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 
-public class DefaultProxyContext extends RecordMapperFactory implements ProxyContext {
+public class DefaultDaoContext extends RecordMapperFactory implements DaoContext {
 
     public static JDBCType jdbcType(Class<?> type) {
         if (type == int.class || type == Integer.class) {

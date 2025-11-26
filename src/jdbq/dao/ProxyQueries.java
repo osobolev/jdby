@@ -21,7 +21,7 @@ public final class ProxyQueries {
     private static ThreadLocal<SqlTransactionRaw> connectionCell = new ThreadLocal<>();
 
     @SuppressWarnings("unchecked")
-    public static <T extends BaseDao> T create(ProxyContext ctx, Class<T> cls, SqlTransactionRaw getConnection) {
+    public static <T extends BaseDao> T create(DaoContext ctx, Class<T> cls, SqlTransactionRaw getConnection) {
         return (T) Proxy.newProxyInstance(
             cls.getClassLoader(),
             new Class<?>[] {cls},
@@ -50,7 +50,7 @@ public final class ProxyQueries {
         }
     }
 
-    private static Object runProxyMethod(ProxyContext ctx, SqlTransactionRaw t,
+    private static Object runProxyMethod(DaoContext ctx, SqlTransactionRaw t,
                                          Class<?> cls, Object proxy, Method method, Object[] args) throws Throwable {
         // todo: better check for method signatures!!!
         if ("sqlPiece".equals(method.getName())) {
