@@ -1,6 +1,7 @@
 package jdbq.dao;
 
 import jdbq.core.Query;
+import jdbq.core.RowMapper;
 import jdbq.core.SqlParameter;
 import jdbq.core.SqlTransactionRaw;
 
@@ -28,7 +29,11 @@ final class CallData {
         return pq.toQuery(parameters::get);
     }
 
-    Class<?> getRowType() {
+    RowMapper<?> mapper() {
+        return ctx.mapper(getRowType());
+    }
+
+    private Class<?> getRowType() {
         Type returnType = method.getGenericReturnType();
         if (returnType instanceof Class<?> cls) {
             return cls;

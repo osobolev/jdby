@@ -20,7 +20,7 @@ public final class ProxyQueries {
     private static ThreadLocal<CallData> callData = new ThreadLocal<>();
 
     @SuppressWarnings("unchecked")
-    public static <T> T create(DaoContext ctx, Class<T> cls, SqlTransactionRaw getConnection) {
+    static <T> T create(DaoContext ctx, Class<T> cls, SqlTransactionRaw getConnection) {
         return (T) Proxy.newProxyInstance(
             cls.getClassLoader(),
             new Class<?>[] {cls},
@@ -80,9 +80,22 @@ public final class ProxyQueries {
     public static <T> List<T> listRows(String sql) throws SQLException {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
-        return (List<T>) query.listRows(data.t, data.ctx.mapper(data.getRowType()));
+        return (List<T>) query.listRows(data.t, data.mapper());
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T exactlyOneRow(String sql) throws SQLException {
+        CallData data = getCallData();
+        Query query = data.substituteArgs(sql);
+        return (T) query.exactlyOneRow(data.t, data.mapper());
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T maybeRow(String sql) throws SQLException {
+        CallData data = getCallData();
+        Query query = data.substituteArgs(sql);
+        return (T) query.maybeRow(data.t, data.mapper());
     }
 
     // todo: other Query methods too!!!
-    // todo: add method to add artificial parameter!!!
 }
