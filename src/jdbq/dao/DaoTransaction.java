@@ -7,7 +7,7 @@ public class DaoTransaction extends SqlTransaction {
 
     private final DaoContext ctx;
 
-    public DaoTransaction(SqlTransactionRaw t, DaoContext ctx) {
+    public DaoTransaction(DaoContext ctx, SqlTransactionRaw t) {
         super(ctx, t);
         this.ctx = ctx;
     }
