@@ -13,6 +13,7 @@ public class DaoTransaction extends SqlTransaction {
     }
 
     public <T> T dao(Class<T> cls) {
-        return ProxyQueries.create(ctx, cls, this);
+        // todo: cache proxies???
+        return DaoSql.createProxy(ctx, cls, this);
     }
 }

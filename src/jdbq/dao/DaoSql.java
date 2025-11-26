@@ -14,28 +14,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-// todo: rename???
-public final class ProxyQueries {
+public final class DaoSql {
 
     private static ThreadLocal<CallData> callData = new ThreadLocal<>();
 
     @SuppressWarnings("unchecked")
-    static <T> T create(DaoContext ctx, Class<T> cls, SqlTransactionRaw getConnection) {
+    static <T> T createProxy(DaoContext ctx, Class<T> iface, SqlTransactionRaw getConnection) {
         return (T) Proxy.newProxyInstance(
-            cls.getClassLoader(),
-            new Class<?>[] {cls},
+            iface.getClassLoader(),
+            new Class<?>[] {iface},
             (proxy, method, args) -> runProxyMethod(
-                ctx, getConnection, cls, proxy, method, args
+                ctx, getConnection, iface, proxy, method, args
             )
         );
     }
 
     private static Object runProxyMethod(DaoContext ctx, SqlTransactionRaw t,
-                                         Class<?> cls, Object proxy, Method method, Object[] args) throws Throwable {
+                                         Class<?> iface, Object proxy, Method method, Object[] args) throws Throwable {
         Parameter[] parameters = method.getParameters();
         String name = method.getName();
         if ("toString".equals(name) && parameters.length == 0) {
-            return "<proxy for " + cls.getName() + ">";
+            return "<proxy for " + iface.getName() + ">";
         } else if ("hashCode".equals(name) && parameters.length == 0) {
             return proxy.hashCode();
         } else if ("equals".equals(name) && parameters.length == 1 && parameters[0].getType() == Object.class) {
