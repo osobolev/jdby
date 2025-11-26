@@ -59,8 +59,7 @@ public final class ParsedQuery {
         for (String paramName : paramNames) {
             SqlParameter parameter = getParameters.apply(paramName);
             if (parameter == null) {
-                // todo: specify sql text???
-                throw new IllegalArgumentException("Parameter " + paramName + " not found");
+                throw new IllegalArgumentException("Parameter value for " + paramName + " not found");
             }
             parameters.add(parameter);
         }
