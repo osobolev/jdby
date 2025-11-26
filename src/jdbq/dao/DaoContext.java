@@ -1,7 +1,6 @@
 package jdbq.dao;
 
 import jdbq.core.SqlParameter;
-import jdbq.core.SqlTransactionRaw;
 import jdbq.mapping.MapperFactory;
 
 import java.lang.reflect.Type;
