@@ -17,7 +17,7 @@ public class DefaultMapperFactory implements MapperFactory {
     @SuppressWarnings("unchecked")
     protected RowMapper<?> newRowMapper(Class<?> rowType) {
         if (rowType.isRecord()) {
-            return RecordRowMapper.create((Class<Record>) rowType, this::columnMapper);
+            return PositionalRecordRowMapper.create((Class<Record>) rowType, this::columnMapper);
         } else {
             ColumnMapper columnMapper = columnMapper(rowType);
             return (RowMapper<Object>) rs -> columnMapper.getColumn(rs, 1);
