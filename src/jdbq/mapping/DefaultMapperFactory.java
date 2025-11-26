@@ -10,16 +10,21 @@ public class DefaultMapperFactory implements MapperFactory {
     private final ConcurrentHashMap<Class<?>, RowMapper<?>> rowMappers = new ConcurrentHashMap<>();
 
     @Override
-    public ColumnMapper columnMapper(Type type) {
-        return SimpleMappers.column(type);
+    public ColumnMapperPosition positionColumnMapper(Type type) {
+        return SimpleMappers.positionColumn(type);
+    }
+
+    @Override
+    public ColumnMapperName nameColumnMapper(Type type) {
+        return SimpleMappers.nameColumn(type);
     }
 
     @SuppressWarnings("unchecked")
     protected RowMapper<?> newRowMapper(Class<?> rowType) {
         if (rowType.isRecord()) {
-            return PositionalRecordRowMapper.create((Class<Record>) rowType, this::columnMapper);
+            return PositionalRecordRowMapper.create((Class<Record>) rowType, this::positionColumnMapper);
         } else {
-            ColumnMapper columnMapper = columnMapper(rowType);
+            ColumnMapperPosition columnMapper = positionColumnMapper(rowType);
             return (RowMapper<Object>) rs -> columnMapper.getColumn(rs, 1);
         }
     }

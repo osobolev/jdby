@@ -20,7 +20,7 @@ public final class SimpleMappers {
         LocalDate.class, OffsetDateTime.class, LocalDateTime.class
     );
 
-    public static ColumnMapper column(Type type) {
+    public static ColumnMapperPosition positionColumn(Type type) {
         if (type instanceof Class<?> cls) {
             if (type == byte.class) {
                 return ResultSet::getByte;
@@ -46,8 +46,34 @@ public final class SimpleMappers {
         }
     }
 
+    public static ColumnMapperName nameColumn(Type type) {
+        if (type instanceof Class<?> cls) {
+            if (type == byte.class) {
+                return ResultSet::getByte;
+            } else if (type == short.class) {
+                return ResultSet::getShort;
+            } else if (type == int.class) {
+                return ResultSet::getInt;
+            } else if (type == long.class) {
+                return ResultSet::getLong;
+            } else if (type == float.class) {
+                return ResultSet::getFloat;
+            } else if (type == double.class) {
+                return ResultSet::getDouble;
+            } else if (type == boolean.class) {
+                return ResultSet::getBoolean;
+            } else if (JDBC_TYPES.contains(cls)) {
+                return (rs, name) -> rs.getObject(name, cls);
+            } else {
+                throw new IllegalArgumentException("Unsupported class " + cls.getName() + " for columns");
+            }
+        } else {
+            throw new IllegalArgumentException("Unsupported type " + type + " for columns");
+        }
+    }
+
     @SuppressWarnings("unchecked")
-    public static <K> GeneratedKeyMapper<K> generated(ColumnMapper columnMapper) {
+    public static <K> GeneratedKeyMapper<K> generated(ColumnMapperPosition columnMapper) {
         return (rows, columns, rs) -> {
             if (rs.next()) {
                 return (K) columnMapper.getColumn(rs, 1);
@@ -58,6 +84,6 @@ public final class SimpleMappers {
     }
 
     public static <K> GeneratedKeyMapper<K> generated(Class<K> cls) {
-        return generated(column(cls));
+        return generated(positionColumn(cls));
     }
 }
