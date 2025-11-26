@@ -1,8 +1,6 @@
 package jdbq.dao;
 
-import jdbq.core.SimpleSqlParameter;
 import jdbq.core.SqlParameter;
-import jdbq.core.SqlTransactionRaw;
 import jdbq.mapping.RecordMapperFactory;
 
 import java.lang.reflect.Type;
@@ -57,7 +55,7 @@ public class DefaultDaoContext extends RecordMapperFactory implements DaoContext
             if (jdbcType == null) {
                 throw new IllegalArgumentException("Cannot create parameter of class " + cls.getName());
             }
-            return new SimpleSqlParameter(value, jdbcType);
+            return SqlParameter.jdbc(value, jdbcType);
         } else {
             throw new IllegalArgumentException("Cannot create parameter of type " + type);
         }
