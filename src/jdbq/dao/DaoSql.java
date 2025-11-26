@@ -16,7 +16,7 @@ import java.util.Objects;
 
 public final class DaoSql {
 
-    private static ThreadLocal<CallData> callData = new ThreadLocal<>();
+    private static final ThreadLocal<CallData> CALL_DATA = new ThreadLocal<>();
 
     @SuppressWarnings("unchecked")
     public static <T> T createProxy(DaoContext ctx, Class<T> iface, SqlTransactionRaw getConnection) {
@@ -52,16 +52,16 @@ public final class DaoSql {
         if (!method.isDefault()) {
             throw new IllegalArgumentException("Call to non-default method " + method);
         }
+        CALL_DATA.set(new CallData(ctx, method, argsMap, t));
         try {
-            callData.set(new CallData(ctx, method, argsMap, t));
             return InvocationHandler.invokeDefault(proxy, method, args);
         } finally {
-            callData.remove();
+            CALL_DATA.remove();
         }
     }
 
     private static CallData getCallData() {
-        CallData data = callData.get();
+        CallData data = CALL_DATA.get();
         return Objects.requireNonNull(data, "Must call through the proxy");
     }
 
