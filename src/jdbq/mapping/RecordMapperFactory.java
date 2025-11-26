@@ -11,7 +11,7 @@ public class RecordMapperFactory implements MapperFactory {
 
     @Override
     public ColumnMapper columnMapper(Type type) {
-        return ColumnMappers.simple(type);
+        return SimpleMappers.column(type);
     }
 
     @SuppressWarnings("unchecked")

@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.Set;
 
-public final class ColumnMappers {
+public final class SimpleMappers {
 
     private static final Set<Class<?>> JDBC_TYPES = Set.of(
         Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Boolean.class,
@@ -18,7 +18,7 @@ public final class ColumnMappers {
         LocalDate.class, OffsetDateTime.class, LocalDateTime.class
     );
 
-    public static ColumnMapper simple(Type type) {
+    public static ColumnMapper column(Type type) {
         if (type instanceof Class<?> cls) {
             if (type == byte.class) {
                 return ResultSet::getByte;
