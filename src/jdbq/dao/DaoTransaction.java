@@ -12,7 +12,7 @@ public class DaoTransaction extends SqlTransaction {
         this.ctx = ctx;
     }
 
-    public <T extends BaseDao> T dao(Class<T> cls) {
+    public <T> T dao(Class<T> cls) {
         return ProxyQueries.create(ctx, cls, this);
     }
 }
