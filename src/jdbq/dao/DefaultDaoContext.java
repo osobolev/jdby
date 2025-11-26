@@ -1,4 +1,4 @@
-package jdbq.proxy;
+package jdbq.dao;
 
 import jdbq.core.SimpleSqlParameter;
 import jdbq.core.SqlParameter;
