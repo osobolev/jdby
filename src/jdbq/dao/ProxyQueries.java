@@ -78,7 +78,7 @@ public final class ProxyQueries {
             argsMap.put(parameter.getName(), value);
         }
         if (!method.isDefault()) {
-            throw new IllegalStateException("Call to non-default method " + method);
+            throw new IllegalArgumentException("Call to non-default method " + method);
         }
         Class<?> rowType = getRowType(method);
         try {
