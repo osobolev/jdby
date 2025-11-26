@@ -1,17 +1,17 @@
 package jdbq.dao;
 
-public final class SqlParser {
+final class SqlParser {
 
     private final String text;
     private final Callback callback;
     private int i = 0;
 
-    public interface Callback {
+    interface Callback {
 
         void ident(int from, int to, String ident);
     }
 
-    public SqlParser(String text, Callback callback) {
+    SqlParser(String text, Callback callback) {
         this.text = text;
         this.callback = callback;
     }
@@ -54,7 +54,7 @@ public final class SqlParser {
         }
     }
 
-    public void parse() {
+    void parse() {
         while (!eof()) {
             char ch = ch();
             int from = i++;

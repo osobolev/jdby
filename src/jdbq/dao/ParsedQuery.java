@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public final class ParsedQuery {
+final class ParsedQuery {
 
-    public final String sql;
-    public final List<String> paramNames;
+    final String sql;
+    final List<String> paramNames;
 
-    public ParsedQuery(String sql, List<String> paramNames) {
+    ParsedQuery(String sql, List<String> paramNames) {
         this.sql = sql;
         this.paramNames = paramNames;
     }
@@ -46,7 +46,7 @@ public final class ParsedQuery {
         }
     }
 
-    public static ParsedQuery parse(String sql) {
+    static ParsedQuery parse(String sql) {
         ParserState state = new ParserState(sql);
         SqlParser parser = new SqlParser(sql, state);
         parser.parse();
@@ -54,7 +54,7 @@ public final class ParsedQuery {
         return new ParsedQuery(state.buf.toString(), state.paramNames);
     }
 
-    public Query toQuery(Function<String, SqlParameter> getParameters) {
+    Query toQuery(Function<String, SqlParameter> getParameters) {
         List<SqlParameter> parameters = new ArrayList<>(paramNames.size());
         for (String paramName : paramNames) {
             SqlParameter parameter = getParameters.apply(paramName);
