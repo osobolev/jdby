@@ -110,4 +110,13 @@ public final class Query implements QueryLike {
             return ps.executeUpdate();
         }
     }
+
+    public <T> T executeUpdate(SqlTransactionRaw t, GeneratedKeyMapper<T> mapper, String... generatedColumns) throws SQLException {
+        try (PreparedStatement ps = preparedStatement(t)) {
+            int rows = ps.executeUpdate();
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                return mapper.map(rows, generatedColumns, rs);
+            }
+        }
+    }
 }

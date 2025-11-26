@@ -1,5 +1,7 @@
 package jdbq.mapping;
 
+import jdbq.core.GeneratedKeyMapper;
+
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -42,5 +44,20 @@ public final class SimpleMappers {
         } else {
             throw new IllegalArgumentException("Unsupported type " + type + " for columns");
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <K> GeneratedKeyMapper<K> generated(ColumnMapper columnMapper) {
+        return (rows, columns, rs) -> {
+            if (rs.next()) {
+                return (K) columnMapper.getColumn(rs, 1);
+            } else {
+                return null;
+            }
+        };
+    }
+
+    public static <K> GeneratedKeyMapper<K> generated(Class<K> cls) {
+        return generated(column(cls));
     }
 }

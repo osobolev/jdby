@@ -1,5 +1,6 @@
 package jdbq.dao;
 
+import jdbq.core.GeneratedKeyMapper;
 import jdbq.core.Query;
 import jdbq.core.SqlParameter;
 import jdbq.core.SqlTransactionRaw;
@@ -96,5 +97,15 @@ public final class DaoSql {
         return (T) query.maybeRow(data.t, data.mapper());
     }
 
-    // todo: other Query methods too!!!
+    public static int executeUpdate(String sql) throws SQLException {
+        CallData data = getCallData();
+        Query query = data.substituteArgs(sql);
+        return query.executeUpdate(data.t);
+    }
+
+    public static <T> T executeUpdate(String sql, GeneratedKeyMapper<T> mapper, String... generatedColumns) throws SQLException {
+        CallData data = getCallData();
+        Query query = data.substituteArgs(sql);
+        return query.executeUpdate(data.t, mapper, generatedColumns);
+    }
 }
