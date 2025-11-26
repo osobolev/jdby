@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 // todo: make variant for name binding instead of positional binding??? use annotations for it???
-public final class RecordRowMapper<R extends Record> implements RowMapper<R> {
+final class RecordRowMapper<R extends Record> implements RowMapper<R> {
 
     private final Constructor<R> constructor;
     private final List<ColumnMapper> columnMappers;
@@ -24,8 +24,8 @@ public final class RecordRowMapper<R extends Record> implements RowMapper<R> {
         this.columnMappers = columnMappers;
     }
 
-    public static <R extends Record> RecordRowMapper<R> create(Class<R> cls,
-                                                               Function<Type, ColumnMapper> getColumnMapper) {
+    static <R extends Record> RecordRowMapper<R> create(Class<R> cls,
+                                                        Function<Type, ColumnMapper> getColumnMapper) {
         RecordComponent[] rcs = Objects.requireNonNull(cls.getRecordComponents(), "Must be a record");
         List<ColumnMapper> columnMappers = new ArrayList<>(rcs.length);
         Class<?>[] types = new Class[rcs.length];
@@ -43,10 +43,6 @@ public final class RecordRowMapper<R extends Record> implements RowMapper<R> {
             throw new IllegalStateException(ex);
         }
         return new RecordRowMapper<>(constructor, columnMappers);
-    }
-
-    public static <R extends Record> RecordRowMapper<R> create(Class<R> cls) {
-        return create(cls, ColumnMappers::simple);
     }
 
     @Override
