@@ -50,6 +50,10 @@ public class DefaultMapperFactory implements MapperFactory {
         columnMappers.put(type, columnMapper);
     }
 
+    public <T> void registerRow(Class<T> rowType, RowMapper<T> columnMapper) {
+        rowMappers.put(rowType, columnMapper);
+    }
+
     @Override
     public ColumnMapper columnMapper(Type type) {
         ColumnMapper columnMapper = columnMappers.get(type);
