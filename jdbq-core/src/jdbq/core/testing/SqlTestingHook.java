@@ -2,6 +2,7 @@ package jdbq.core.testing;
 
 import jdbq.mapping.ColumnMapper;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,5 +21,10 @@ public final class SqlTestingHook {
 
     public static boolean isTesting() {
         return hook != null;
+    }
+
+    public static <T> T mock(Class<T> cls) {
+        Object array = Array.newInstance(cls, 1);
+        return cls.cast(Array.get(array, 0));
     }
 }
