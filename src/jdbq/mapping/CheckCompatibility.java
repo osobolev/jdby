@@ -186,7 +186,7 @@ final class CheckCompatibility {
         );
     }
 
-    void checkPosition(Class<?> rowType, List<ColumnMapper> columnMappers) throws SQLException {
+    private void checkPosition(Class<?> rowType, List<ColumnMapper> columnMappers) throws SQLException {
         RecordComponent[] components = rowType.getRecordComponents();
         int columnCount = rsmd.getColumnCount();
         if (columnCount != components.length) {
@@ -202,8 +202,8 @@ final class CheckCompatibility {
         }
     }
 
-    void checkName(ResultSet rs, Class<?> rowType, List<NamedColumn> columnNames) throws SQLException {
-        int[] indexes = new int[columnNames.size()];
+    private void checkName(ResultSet rs, Class<?> rowType, List<ColumnMapper> columnMappers, List<String> sqlNames) throws SQLException {
+        int[] indexes = new int[columnMappers.size()];
         Set<Integer> usedSqlColumns = new HashSet<>();
         for (int i = 0; i < columnMappers.size(); i++) {
             String sqlName = sqlNames.get(i);
@@ -226,6 +226,14 @@ final class CheckCompatibility {
         for (int i = 0; i < components.length; i++) {
             ColumnMapper columnMapper = columnMappers.get(i);
             checkCompatibility(components[i], indexes[i], columnMapper.checkCompatibility());
+        }
+    }
+
+    void checkRecord(ResultSet rs, Class<?> rowType, List<ColumnMapper> columnMappers, List<String> sqlNames) throws SQLException {
+        if (sqlNames == null) {
+            checkPosition(rowType, columnMappers);
+        } else {
+            checkName(rs, rowType, columnMappers, sqlNames);
         }
     }
 }

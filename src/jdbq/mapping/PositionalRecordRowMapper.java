@@ -49,7 +49,7 @@ final class PositionalRecordRowMapper<R extends Record> implements RowMapper<R> 
     public R mapRow(ResultSet rs) throws SQLException {
         if (SqlTesting.testing) {
             CheckCompatibility checker = new CheckCompatibility(rs.getMetaData());
-            checker.checkPosition(constructor.getDeclaringClass(), columnMappers);
+            checker.checkRecord(rs, constructor.getDeclaringClass(), columnMappers, null);
             return null;
         }
         Object[] args = new Object[columnMappers.size()];
