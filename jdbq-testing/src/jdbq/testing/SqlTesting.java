@@ -5,6 +5,7 @@ import jdbq.core.RowContext;
 import jdbq.core.testing.SqlTestingHook;
 import jdbq.dao.DaoConnection;
 import jdbq.dao.DaoContext;
+import jdbq.dao.DaoSql;
 
 import java.io.BufferedReader;
 import java.io.IOException;
