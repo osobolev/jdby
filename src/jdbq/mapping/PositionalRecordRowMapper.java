@@ -16,23 +16,23 @@ import java.util.function.Function;
 final class PositionalRecordRowMapper<R extends Record> implements RowMapper<R> {
 
     private final Constructor<R> constructor;
-    private final List<ColumnMapperPosition> columnMappers;
+    private final List<ColumnMapper> columnMappers;
 
-    private PositionalRecordRowMapper(Constructor<R> constructor, List<ColumnMapperPosition> columnMappers) {
+    private PositionalRecordRowMapper(Constructor<R> constructor, List<ColumnMapper> columnMappers) {
         this.constructor = constructor;
         this.columnMappers = columnMappers;
     }
 
     static <R extends Record> PositionalRecordRowMapper<R> create(Class<R> cls,
-                                                                  Function<Type, ColumnMapperPosition> getColumnMapper) {
+                                                                  Function<Type, ColumnMapper> getColumnMapper) {
         RecordComponent[] rcs = Objects.requireNonNull(cls.getRecordComponents(), "Must be a record");
-        List<ColumnMapperPosition> columnMappers = new ArrayList<>(rcs.length);
+        List<ColumnMapper> columnMappers = new ArrayList<>(rcs.length);
         Class<?>[] types = new Class[rcs.length];
         for (int i = 0; i < rcs.length; i++) {
             RecordComponent rc = rcs[i];
             types[i] = rc.getType();
             Type genericType = rc.getGenericType();
-            ColumnMapperPosition columnMapper = getColumnMapper.apply(genericType);
+            ColumnMapper columnMapper = getColumnMapper.apply(genericType);
             columnMappers.add(columnMapper);
         }
         Constructor<R> constructor;

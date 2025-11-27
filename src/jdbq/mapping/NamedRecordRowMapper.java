@@ -24,7 +24,7 @@ final class NamedRecordRowMapper<R extends Record> implements RowMapper<R> {
     }
 
     static <R extends Record> NamedRecordRowMapper<R> create(Class<R> cls, ColumnNaming columnNaming,
-                                                             Function<Type, ColumnMapperName> getColumnMapper) {
+                                                             Function<Type, ColumnMapper> getColumnMapper) {
         RecordComponent[] rcs = Objects.requireNonNull(cls.getRecordComponents(), "Must be a record");
         List<NamedColumn> columns = new ArrayList<>(rcs.length);
         Class<?>[] types = new Class[rcs.length];
@@ -32,7 +32,7 @@ final class NamedRecordRowMapper<R extends Record> implements RowMapper<R> {
             RecordComponent rc = rcs[i];
             types[i] = rc.getType();
             Type genericType = rc.getGenericType();
-            ColumnMapperName columnMapper = getColumnMapper.apply(genericType);
+            ColumnMapper columnMapper = getColumnMapper.apply(genericType);
             String sqlName = columnNaming.sqlName(rc);
             columns.add(new NamedColumn(sqlName, columnMapper));
         }

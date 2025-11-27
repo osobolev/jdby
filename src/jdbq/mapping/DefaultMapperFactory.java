@@ -1,27 +1,58 @@
 package jdbq.mapping;
 
 import jdbq.core.RowMapper;
+import jdbq.core.SqlTesting;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultMapperFactory implements MapperFactory {
 
+    public static volatile CheckColumnCompatibility check = null;
+
     private final ColumnNaming columnNaming;
+    private final ConcurrentHashMap<Type, ColumnMapper> columnMappers = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Class<?>, RowMapper<?>> rowMappers = new ConcurrentHashMap<>();
 
     public DefaultMapperFactory(ColumnNaming columnNaming) {
         this.columnNaming = columnNaming;
+        register(SimpleColumnMapper.byteMapper());
+        register(SimpleColumnMapper.shortMapper());
+        register(SimpleColumnMapper.intMapper());
+        register(SimpleColumnMapper.longMapper());
+        register(SimpleColumnMapper.floatMapper());
+        register(SimpleColumnMapper.doubleMapper());
+        register(SimpleColumnMapper.booleanMapper());
+        List<Class<?>> jdbcTypes = List.of(
+            Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Boolean.class,
+            String.class, byte[].class,
+            BigDecimal.class, BigInteger.class,
+            LocalDate.class, LocalTime.class, OffsetDateTime.class, LocalDateTime.class
+        );
+        for (Class<?> jdbcType : jdbcTypes) {
+            register(SimpleColumnMapper.jdbcMapper(jdbcType));
+        }
+    }
+
+    private <T> void register(SimpleColumnMapper<T> columnMapper) {
+        columnMappers.put(columnMapper.cls, columnMapper);
     }
 
     @Override
-    public ColumnMapperPosition positionColumnMapper(Type type) {
-        return SimpleMappers.positionColumn(type);
-    }
-
-    @Override
-    public ColumnMapperName nameColumnMapper(Type type) {
-        return SimpleMappers.nameColumn(type);
+    public ColumnMapper columnMapper(Type type) {
+        ColumnMapper columnMapper = columnMappers.get(type);
+        if (columnMapper == null) {
+            throw new IllegalArgumentException("Unsupported type " + type + " for columns");
+        }
+        return columnMapper;
     }
 
     @SuppressWarnings("unchecked")
@@ -29,13 +60,15 @@ public class DefaultMapperFactory implements MapperFactory {
         if (rowType.isRecord()) {
             Class<Record> cls = (Class<Record>) rowType;
             if (columnNaming == null) {
-                return PositionalRecordRowMapper.create(cls, this::positionColumnMapper);
+                return PositionalRecordRowMapper.create(cls, this::columnMapper);
             } else {
-                return NamedRecordRowMapper.create(cls, columnNaming, this::nameColumnMapper);
+                return NamedRecordRowMapper.create(cls, columnNaming, this::columnMapper);
             }
         } else {
-            ColumnMapperPosition columnMapper = positionColumnMapper(rowType);
-            return (RowMapper<Object>) rs -> columnMapper.getColumn(rs, 1);
+            ColumnMapper columnMapper = columnMapper(rowType);
+            return (RowMapper<Object>) rs -> {
+                return columnMapper.getColumn(rs, 1);
+            };
         }
     }
 

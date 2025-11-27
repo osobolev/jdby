@@ -6,7 +6,7 @@ import java.lang.reflect.Type;
 
 public interface MapperFactory extends RowMapperFactory {
 
-    ColumnMapperPosition positionColumnMapper(Type type);
+    ColumnMapper columnMapper(Type type);
 
     ColumnMapperName nameColumnMapper(Type type);
 }
