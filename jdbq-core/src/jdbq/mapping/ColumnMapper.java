@@ -9,6 +9,7 @@ public interface ColumnMapper {
 
     Object getColumn(ResultSet rs, String name) throws SQLException;
 
+    // todo: move to extends???
     default CheckColumnCompatibility checkCompatibility() {
         return null;
     }
