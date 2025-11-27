@@ -5,6 +5,10 @@ import java.util.Objects;
 
 public interface ColumnNaming {
 
+    default boolean useNames() {
+        return true;
+    }
+
     default String sqlName(RecordComponent component) {
         SqlName sqlName = component.getDeclaredAnnotation(SqlName.class);
         if (sqlName != null) {
@@ -15,16 +19,31 @@ public interface ColumnNaming {
 
     String sqlName(String javaName);
 
-    static ColumnNaming byPosition() {
-        return null;
+    final class ByPosition implements ColumnNaming {
+
+        @Override
+        public boolean useNames() {
+            return false;
+        }
+
+        @Override
+        public String sqlName(String javaName) {
+            throw new IllegalStateException();
+        }
     }
 
-    static ColumnNaming raw() {
-        return javaName -> javaName;
+    final class Raw implements ColumnNaming {
+
+        @Override
+        public String sqlName(String javaName) {
+            return javaName;
+        }
     }
 
-    static ColumnNaming camelCase() {
-        return javaName -> {
+    final class CamelCase implements ColumnNaming {
+
+        @Override
+        public String sqlName(String javaName) {
             Boolean prevLowerCase = null;
             StringBuilder buf = new StringBuilder();
             for (int i = 0; i < javaName.length(); i++) {
@@ -44,6 +63,18 @@ public interface ColumnNaming {
                 prevLowerCase = lowerCase;
             }
             return buf.toString().toLowerCase();
-        };
+        }
+    }
+
+    static ColumnNaming byPosition() {
+        return new ByPosition();
+    }
+
+    static ColumnNaming raw() {
+        return new Raw();
+    }
+
+    static ColumnNaming camelCase() {
+        return new CamelCase();
     }
 }

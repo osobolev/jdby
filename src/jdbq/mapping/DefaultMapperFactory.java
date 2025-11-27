@@ -67,7 +67,19 @@ public class DefaultMapperFactory implements MapperFactory {
     protected RowMapper<?> newRowMapper(Class<?> rowType) {
         if (rowType.isRecord()) {
             Class<Record> cls = (Class<Record>) rowType;
-            if (columnNaming == null) {
+            SqlNameStrategy strategy = cls.getDeclaredAnnotation(SqlNameStrategy.class);
+            ColumnNaming naming;
+            if (strategy == null) {
+                naming = columnNaming;
+            } else {
+                Class<? extends ColumnNaming> strategyClass = strategy.value();
+                try {
+                    naming = strategyClass.getConstructor().newInstance();
+                } catch (Exception ex) {
+                    throw new IllegalStateException(ex);
+                }
+            }
+            if (!naming.useNames()) {
                 return PositionalRecordRowMapper.create(cls, this::columnMapper);
             } else {
                 return NamedRecordRowMapper.create(cls, columnNaming, this::columnMapper);
