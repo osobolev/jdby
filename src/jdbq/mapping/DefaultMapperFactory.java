@@ -7,7 +7,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultMapperFactory implements MapperFactory {
 
+    private final ColumnNaming columnNaming;
     private final ConcurrentHashMap<Class<?>, RowMapper<?>> rowMappers = new ConcurrentHashMap<>();
+
+    public DefaultMapperFactory(ColumnNaming columnNaming) {
+        this.columnNaming = columnNaming;
+    }
 
     @Override
     public ColumnMapperPosition positionColumnMapper(Type type) {
@@ -22,7 +27,12 @@ public class DefaultMapperFactory implements MapperFactory {
     @SuppressWarnings("unchecked")
     protected RowMapper<?> newRowMapper(Class<?> rowType) {
         if (rowType.isRecord()) {
-            return PositionalRecordRowMapper.create((Class<Record>) rowType, this::positionColumnMapper);
+            Class<Record> cls = (Class<Record>) rowType;
+            if (columnNaming == null) {
+                return PositionalRecordRowMapper.create(cls, this::positionColumnMapper);
+            } else {
+                return NamedRecordRowMapper.create(cls, columnNaming, this::nameColumnMapper);
+            }
         } else {
             ColumnMapperPosition columnMapper = positionColumnMapper(rowType);
             return (RowMapper<Object>) rs -> columnMapper.getColumn(rs, 1);

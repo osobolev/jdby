@@ -1,6 +1,7 @@
 package jdbq.dao;
 
 import jdbq.core.SqlParameter;
+import jdbq.mapping.ColumnNaming;
 import jdbq.mapping.DefaultMapperFactory;
 
 import java.lang.reflect.Type;
@@ -13,6 +14,10 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 
 public class DefaultDaoContext extends DefaultMapperFactory implements DaoContext {
+
+    public DefaultDaoContext(ColumnNaming columnNaming) {
+        super(columnNaming);
+    }
 
     public static JDBCType jdbcType(Class<?> type) {
         if (type == int.class || type == Integer.class) {
