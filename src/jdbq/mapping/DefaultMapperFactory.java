@@ -43,10 +43,10 @@ public class DefaultMapperFactory implements MapperFactory {
     }
 
     private <T> void registerSimple(SimpleColumnMapper<T> columnMapper) {
-        register(columnMapper.cls, columnMapper);
+        registerColumn(columnMapper.cls, columnMapper);
     }
 
-    public void register(Type type, ColumnMapper columnMapper) {
+    public void registerColumn(Type type, ColumnMapper columnMapper) {
         columnMappers.put(type, columnMapper);
     }
 
