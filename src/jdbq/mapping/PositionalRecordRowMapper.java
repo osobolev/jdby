@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
-// todo: make variant for name binding instead of positional binding??? use annotations for it???
 final class PositionalRecordRowMapper<R extends Record> implements RowMapper<R> {
 
     private final Constructor<R> constructor;

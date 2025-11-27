@@ -52,13 +52,13 @@ public final class Query implements QueryLike {
         }
     }
 
-    private PreparedStatement preparedStatement(SqlTransactionRaw t) throws SQLException {
+    private PreparedStatement preparedStatement(SqlTransaction t) throws SQLException {
         PreparedStatement ps = t.getConnection().prepareStatement(sql);
         setParameters(ps);
         return ps;
     }
 
-    public <T> List<T> listRows(SqlTransactionRaw t, RowMapper<T> mapper) throws SQLException {
+    public <T> List<T> listRows(SqlTransaction t, RowMapper<T> mapper) throws SQLException {
         try (PreparedStatement ps = preparedStatement(t)) {
             try (ResultSet rs = ps.executeQuery()) {
                 List<T> list = new ArrayList<>();
@@ -71,11 +71,11 @@ public final class Query implements QueryLike {
         }
     }
 
-    public <T> List<T> listRows(SqlTransaction t, Class<T> cls) throws SQLException {
+    public <T> List<T> listRows(RowTransaction t, Class<T> cls) throws SQLException {
         return listRows(t, t.mapper(cls));
     }
 
-    public <T> T exactlyOneRow(SqlTransactionRaw t, RowMapper<T> mapper) throws SQLException {
+    public <T> T exactlyOneRow(SqlTransaction t, RowMapper<T> mapper) throws SQLException {
         try (PreparedStatement ps = preparedStatement(t)) {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -90,11 +90,11 @@ public final class Query implements QueryLike {
         }
     }
 
-    public <T> T exactlyOneRow(SqlTransaction t, Class<T> cls) throws SQLException {
+    public <T> T exactlyOneRow(RowTransaction t, Class<T> cls) throws SQLException {
         return exactlyOneRow(t, t.mapper(cls));
     }
 
-    public <T> T maybeRow(SqlTransactionRaw t, RowMapper<T> mapper) throws SQLException {
+    public <T> T maybeRow(SqlTransaction t, RowMapper<T> mapper) throws SQLException {
         try (PreparedStatement ps = preparedStatement(t)) {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -106,17 +106,17 @@ public final class Query implements QueryLike {
         }
     }
 
-    public <T> T maybeRow(SqlTransaction t, Class<T> cls) throws SQLException {
+    public <T> T maybeRow(RowTransaction t, Class<T> cls) throws SQLException {
         return maybeRow(t, t.mapper(cls));
     }
 
-    public int executeUpdate(SqlTransactionRaw t) throws SQLException {
+    public int executeUpdate(SqlTransaction t) throws SQLException {
         try (PreparedStatement ps = preparedStatement(t)) {
             return ps.executeUpdate();
         }
     }
 
-    public <T> T executeUpdate(SqlTransactionRaw t, GeneratedKeyMapper<T> mapper, String... generatedColumns) throws SQLException {
+    public <T> T executeUpdate(SqlTransaction t, GeneratedKeyMapper<T> mapper, String... generatedColumns) throws SQLException {
         try (PreparedStatement ps = preparedStatement(t)) {
             int rows = ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {

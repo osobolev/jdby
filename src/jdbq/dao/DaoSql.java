@@ -17,7 +17,7 @@ public final class DaoSql {
     private static final ThreadLocal<CallData> CALL_DATA = new ThreadLocal<>();
 
     @SuppressWarnings("unchecked")
-    public static <T> T createProxy(DaoContext ctx, Class<T> iface, SqlTransactionRaw getConnection) {
+    public static <T> T createProxy(DaoContext ctx, Class<T> iface, SqlTransaction getConnection) {
         return (T) Proxy.newProxyInstance(
             iface.getClassLoader(),
             new Class<?>[] {iface},
@@ -27,7 +27,7 @@ public final class DaoSql {
         );
     }
 
-    private static Object runProxyMethod(DaoContext ctx, SqlTransactionRaw t,
+    private static Object runProxyMethod(DaoContext ctx, SqlTransaction t,
                                          Class<?> iface, Object proxy, Method method, Object[] args) throws Throwable {
         Parameter[] parameters = method.getParameters();
         String name = method.getName();

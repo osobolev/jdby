@@ -1,13 +1,13 @@
 package jdbq.dao;
 
+import jdbq.core.RowTransaction;
 import jdbq.core.SqlTransaction;
-import jdbq.core.SqlTransactionRaw;
 
-public class DaoTransaction extends SqlTransaction {
+public class DaoTransaction extends RowTransaction {
 
     private final DaoContext ctx;
 
-    public DaoTransaction(DaoContext ctx, SqlTransactionRaw t) {
+    public DaoTransaction(DaoContext ctx, SqlTransaction t) {
         super(ctx, t);
         this.ctx = ctx;
     }

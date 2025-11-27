@@ -2,7 +2,7 @@ package jdbq.core;
 
 import java.sql.Connection;
 
-public class SimpleSqlTransaction implements SqlTransactionRaw {
+public class SimpleSqlTransaction implements SqlTransaction {
 
     private final Connection connection;
 

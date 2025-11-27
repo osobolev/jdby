@@ -3,7 +3,7 @@ package jdbq.dao;
 import jdbq.core.Query;
 import jdbq.core.RowMapper;
 import jdbq.core.SqlParameter;
-import jdbq.core.SqlTransactionRaw;
+import jdbq.core.SqlTransaction;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -15,9 +15,9 @@ final class CallData {
     final DaoContext ctx;
     final Method method;
     final Map<String, SqlParameter> parameters;
-    final SqlTransactionRaw t;
+    final SqlTransaction t;
 
-    CallData(DaoContext ctx, Method method, Map<String, SqlParameter> parameters, SqlTransactionRaw t) {
+    CallData(DaoContext ctx, Method method, Map<String, SqlParameter> parameters, SqlTransaction t) {
         this.ctx = ctx;
         this.method = method;
         this.parameters = parameters;
