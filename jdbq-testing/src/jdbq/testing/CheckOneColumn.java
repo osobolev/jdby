@@ -16,6 +16,7 @@ import java.util.List;
 
 final class CheckOneColumn {
 
+    private final TestingOptions options;
     private final ResultSetMetaData rsmd;
     private final int index;
     private final JDBCType dbType;
@@ -23,7 +24,8 @@ final class CheckOneColumn {
     private final String javaName;
     private final List<CheckColumnCompatibility> checks;
 
-    CheckOneColumn(ResultSetMetaData rsmd, int index, JDBCType dbType, Type javaType, String javaName, List<CheckColumnCompatibility> checks) {
+    CheckOneColumn(TestingOptions options, ResultSetMetaData rsmd, int index, JDBCType dbType, Type javaType, String javaName, List<CheckColumnCompatibility> checks) {
+        this.options = options;
         this.rsmd = rsmd;
         this.index = index;
         this.dbType = dbType;

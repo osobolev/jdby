@@ -32,7 +32,7 @@ final class CheckCompatibility {
     void checkColumn(Type javaType, String javaName, int index, ColumnMapper columnMapper) throws SQLException {
         JDBCType dbType = JDBCType.valueOf(rsmd.getColumnType(index));
         List<CheckColumnCompatibility> checks = Arrays.asList(options.check, columnMapper.checkCompatibility());
-        new CheckOneColumn(rsmd, index, dbType, javaType, javaName, checks).checkCompatibility();
+        new CheckOneColumn(options, rsmd, index, dbType, javaType, javaName, checks).checkCompatibility();
     }
 
     private void checkColumn(RecordComponent component, int index, ColumnMapper columnMapper) throws SQLException {
