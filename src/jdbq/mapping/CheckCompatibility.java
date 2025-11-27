@@ -21,7 +21,7 @@ import java.util.stream.IntStream;
 final class CheckCompatibility {
 
     private final ResultSetMetaData rsmd;
-    private final CheckColumnCompatibility check = DefaultMapperFactory.check;
+    private final CheckColumnCompatibility check = DefaultMapperContext.check;
 
     CheckCompatibility(ResultSetMetaData rsmd) {
         this.rsmd = rsmd;
