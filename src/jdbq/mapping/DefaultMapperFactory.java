@@ -24,13 +24,13 @@ public class DefaultMapperFactory implements MapperFactory {
 
     public DefaultMapperFactory(ColumnNaming columnNaming) {
         this.columnNaming = columnNaming;
-        register(SimpleColumnMapper.byteMapper());
-        register(SimpleColumnMapper.shortMapper());
-        register(SimpleColumnMapper.intMapper());
-        register(SimpleColumnMapper.longMapper());
-        register(SimpleColumnMapper.floatMapper());
-        register(SimpleColumnMapper.doubleMapper());
-        register(SimpleColumnMapper.booleanMapper());
+        registerSimple(SimpleColumnMapper.byteMapper());
+        registerSimple(SimpleColumnMapper.shortMapper());
+        registerSimple(SimpleColumnMapper.intMapper());
+        registerSimple(SimpleColumnMapper.longMapper());
+        registerSimple(SimpleColumnMapper.floatMapper());
+        registerSimple(SimpleColumnMapper.doubleMapper());
+        registerSimple(SimpleColumnMapper.booleanMapper());
         List<Class<?>> jdbcTypes = List.of(
             Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Boolean.class,
             String.class, byte[].class,
@@ -38,12 +38,16 @@ public class DefaultMapperFactory implements MapperFactory {
             LocalDate.class, LocalTime.class, OffsetDateTime.class, LocalDateTime.class
         );
         for (Class<?> jdbcType : jdbcTypes) {
-            register(SimpleColumnMapper.jdbcMapper(jdbcType));
+            registerSimple(SimpleColumnMapper.jdbcMapper(jdbcType));
         }
     }
 
-    private <T> void register(SimpleColumnMapper<T> columnMapper) {
-        columnMappers.put(columnMapper.cls, columnMapper);
+    private <T> void registerSimple(SimpleColumnMapper<T> columnMapper) {
+        register(columnMapper.cls, columnMapper);
+    }
+
+    public void register(Type type, ColumnMapper columnMapper) {
+        columnMappers.put(type, columnMapper);
     }
 
     @Override
