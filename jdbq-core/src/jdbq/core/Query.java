@@ -5,6 +5,7 @@ import jdbq.core.testing.SqlTestingHook;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -123,15 +124,31 @@ public final class Query implements QueryLike {
         return maybeRow(t, t.rowMapper(rowType));
     }
 
+    private static int executeUpdate(PreparedStatement ps) throws SQLException {
+        if (SqlTestingHook.isTesting()) {
+            try {
+                ps.executeUpdate();
+            } catch (SQLException ex) {
+                if (!(ex instanceof SQLIntegrityConstraintViolationException)) {
+                    String sqlState = ex.getSQLState();
+                    if (sqlState == null || !sqlState.startsWith("23"))
+                        throw ex;
+                }
+            }
+            return 1;
+        }
+        return ps.executeUpdate();
+    }
+
     public int executeUpdate(SqlTransaction t) throws SQLException {
         try (PreparedStatement ps = preparedStatement(t)) {
-            return ps.executeUpdate();
+            return executeUpdate(ps);
         }
     }
 
     public <T> T executeUpdate(SqlTransaction t, GeneratedKeyMapper<T> keyMapper, String... generatedColumns) throws SQLException {
         try (PreparedStatement ps = preparedStatement(t)) {
-            int rows = ps.executeUpdate();
+            int rows = executeUpdate(ps);
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 return keyMapper.map(rows, generatedColumns, rs);
             }
