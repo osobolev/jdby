@@ -2,11 +2,11 @@ package jdbq.dao;
 
 import jdbq.core.SqlParameter;
 import jdbq.core.SqlTransaction;
-import jdbq.mapping.MapperFactory;
+import jdbq.mapping.MapperContext;
 
 import java.lang.reflect.Type;
 
-public interface DaoContext extends MapperFactory {
+public interface DaoContext extends MapperContext {
 
     SqlParameter parameter(Type type, Object value);
 

@@ -1,6 +1,6 @@
 package jdbq.core;
 
-public interface RowMapperFactory {
+public interface RowContext {
 
     <T> RowMapper<T> rowMapper(Class<T> rowType);
 

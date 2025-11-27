@@ -14,7 +14,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class DefaultMapperFactory implements MapperFactory {
+public class DefaultMapperContext implements MapperContext {
 
     public static volatile CheckColumnCompatibility check = null;
 
@@ -22,7 +22,7 @@ public class DefaultMapperFactory implements MapperFactory {
     private final ConcurrentHashMap<Type, ColumnMapper> columnMappers = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Class<?>, RowMapper<?>> rowMappers = new ConcurrentHashMap<>();
 
-    public DefaultMapperFactory(ColumnNaming columnNaming) {
+    public DefaultMapperContext(ColumnNaming columnNaming) {
         this.columnNaming = columnNaming;
         registerSimple(SimpleColumnMapper.byteMapper());
         registerSimple(SimpleColumnMapper.shortMapper());

@@ -1,11 +1,11 @@
 package jdbq.mapping;
 
 import jdbq.core.GeneratedKeyMapper;
-import jdbq.core.RowMapperFactory;
+import jdbq.core.RowContext;
 
 import java.lang.reflect.Type;
 
-public interface MapperFactory extends RowMapperFactory {
+public interface MapperContext extends RowContext {
 
     ColumnMapper columnMapper(Type type);
 

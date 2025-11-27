@@ -2,7 +2,7 @@ package jdbq.dao;
 
 import jdbq.core.SqlParameter;
 import jdbq.mapping.ColumnNaming;
-import jdbq.mapping.DefaultMapperFactory;
+import jdbq.mapping.DefaultMapperContext;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 
-public class DefaultDaoContext extends DefaultMapperFactory implements DaoContext {
+public class DefaultDaoContext extends DefaultMapperContext implements DaoContext {
 
     public DefaultDaoContext(ColumnNaming columnNaming) {
         super(columnNaming);
