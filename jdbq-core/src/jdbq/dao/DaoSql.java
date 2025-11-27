@@ -19,15 +19,15 @@ public final class DaoSql {
 
     private static final ThreadLocal<CallData> CALL_DATA = new ThreadLocal<>();
 
-    @SuppressWarnings("unchecked")
     public static <T> T createProxy(DaoContext ctx, Class<T> iface, SqlTransaction getConnection) {
-        return (T) Proxy.newProxyInstance(
+        Object created = Proxy.newProxyInstance(
             iface.getClassLoader(),
             new Class<?>[] {iface},
             (proxy, method, args) -> runProxyMethod(
                 ctx, getConnection, iface, proxy, method, args
             )
         );
+        return iface.cast(created);
     }
 
     private static Object runProxyMethod(DaoContext ctx, SqlTransaction t,

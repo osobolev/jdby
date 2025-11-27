@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
-final class NamedRecordRowMapper<R extends Record> implements RowMapper<R> {
+final class NamedRecordRowMapper<R> implements RowMapper<R> {
 
     private final Constructor<R> constructor;
     private final List<ColumnMapper> columnMappers;
@@ -26,8 +26,8 @@ final class NamedRecordRowMapper<R extends Record> implements RowMapper<R> {
         this.sqlNames = sqlNames;
     }
 
-    static <R extends Record> NamedRecordRowMapper<R> create(Class<R> cls, ColumnNaming columnNaming,
-                                                             Function<Type, ColumnMapper> getColumnMapper) {
+    static <R> NamedRecordRowMapper<R> create(Class<R> cls, ColumnNaming columnNaming,
+                                              Function<Type, ColumnMapper> getColumnMapper) {
         RecordComponent[] rcs = Objects.requireNonNull(cls.getRecordComponents(), "Must be a record");
         List<ColumnMapper> columnMappers = new ArrayList<>(rcs.length);
         List<String> sqlNames = new ArrayList<>(rcs.length);

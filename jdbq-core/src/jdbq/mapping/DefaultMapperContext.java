@@ -1,9 +1,7 @@
 package jdbq.mapping;
 
 import jdbq.core.RowMapper;
-import jdbq.core.testing.SqlTestingHook;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -61,11 +59,9 @@ public class DefaultMapperContext implements MapperContext {
         return columnMapper;
     }
 
-    @SuppressWarnings("unchecked")
-    protected RowMapper<?> newRowMapper(Class<?> rowType) {
+    protected <T> RowMapper<T> newRowMapper(Class<T> rowType) {
         if (rowType.isRecord()) {
-            Class<Record> cls = (Class<Record>) rowType;
-            SqlNameStrategy strategy = cls.getDeclaredAnnotation(SqlNameStrategy.class);
+            SqlNameStrategy strategy = rowType.getDeclaredAnnotation(SqlNameStrategy.class);
             ColumnNaming naming;
             if (strategy == null) {
                 naming = columnNaming;
@@ -78,20 +74,13 @@ public class DefaultMapperContext implements MapperContext {
                 }
             }
             if (!naming.useNames()) {
-                return PositionalRecordRowMapper.create(cls, this::columnMapper);
+                return PositionalRecordRowMapper.create(rowType, this::columnMapper);
             } else {
-                return NamedRecordRowMapper.create(cls, columnNaming, this::columnMapper);
+                return NamedRecordRowMapper.create(rowType, columnNaming, this::columnMapper);
             }
         } else {
             ColumnMapper columnMapper = columnMapper(rowType);
-            return (RowMapper<Object>) rs -> {
-                if (SqlTestingHook.hook != null) {
-                    SqlTestingHook.hook.checkColumn(rs, rowType, columnMapper);
-                    Object array = Array.newInstance(rowType, 1);
-                    return Array.get(array, 0);
-                }
-                return columnMapper.getColumn(rs, 1);
-            };
+            return new SingleColumnMapper<>(rowType, columnMapper);
         }
     }
 

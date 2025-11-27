@@ -10,14 +10,13 @@ public interface MapperContext extends RowContext {
     ColumnMapper columnMapper(Type type);
 
     default <K> GeneratedKeyMapper<K> keyMapper(Class<K> cls) {
-        return generatedKey(columnMapper(cls));
+        return generatedKey(cls, columnMapper(cls));
     }
 
-    @SuppressWarnings("unchecked")
-    static <K> GeneratedKeyMapper<K> generatedKey(ColumnMapper columnMapper) {
+    static <K> GeneratedKeyMapper<K> generatedKey(Class<K> cls, ColumnMapper columnMapper) {
         return (rows, columns, rs) -> {
             if (rs.next()) {
-                return (K) columnMapper.getColumn(rs, 1);
+                return cls.cast(columnMapper.getColumn(rs, 1));
             } else {
                 return null;
             }

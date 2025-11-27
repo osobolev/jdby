@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
-final class PositionalRecordRowMapper<R extends Record> implements RowMapper<R> {
+final class PositionalRecordRowMapper<R> implements RowMapper<R> {
 
     private final Constructor<R> constructor;
     private final List<ColumnMapper> columnMappers;
@@ -24,8 +24,8 @@ final class PositionalRecordRowMapper<R extends Record> implements RowMapper<R> 
         this.columnMappers = columnMappers;
     }
 
-    static <R extends Record> PositionalRecordRowMapper<R> create(Class<R> cls,
-                                                                  Function<Type, ColumnMapper> getColumnMapper) {
+    static <R> PositionalRecordRowMapper<R> create(Class<R> cls,
+                                                   Function<Type, ColumnMapper> getColumnMapper) {
         RecordComponent[] rcs = Objects.requireNonNull(cls.getRecordComponents(), "Must be a record");
         List<ColumnMapper> columnMappers = new ArrayList<>(rcs.length);
         Class<?>[] types = new Class[rcs.length];
