@@ -45,13 +45,13 @@ public final class DaoSql {
         for (int i = 0; i < parameters.length; i++) {
             Parameter parameter = parameters[i];
             if (!parameter.isNamePresent()) {
-                throw new IllegalArgumentException("Parameter name is not present for " + method);
+                throw new IllegalArgumentException("Parameter name is not present for method '" + method + "'");
             }
             SqlParameter value = ctx.parameter(parameter.getType(), args[i]);
             argsMap.put(parameter.getName(), value);
         }
         if (!method.isDefault()) {
-            throw new IllegalArgumentException("Call to non-default method " + method);
+            throw new IllegalArgumentException("Call to non-default method '" + method + "'");
         }
         CALL_DATA.set(new CallData(ctx, method, argsMap, t));
         try {

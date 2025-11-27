@@ -41,15 +41,15 @@ final class CallData {
         } else if (returnType instanceof ParameterizedType pt) {
             Type[] typeArguments = pt.getActualTypeArguments();
             if (typeArguments.length != 1) {
-                throw new IllegalArgumentException("Method " + method + " return type must have only 1 generic parameter");
+                throw new IllegalArgumentException("Method '" + method + "' return type must have only 1 generic parameter");
             }
             if (typeArguments[0] instanceof Class<?> cls) {
                 return cls;
             } else {
-                throw new IllegalArgumentException("Method " + method + " return type generic parameter must be a class");
+                throw new IllegalArgumentException("Method '" + method + "' return type generic parameter must be a class");
             }
         } else {
-            throw new IllegalArgumentException("Method " + method + " return type must be a class or a simple generic");
+            throw new IllegalArgumentException("Method '" + method + "' return type must be a class or a simple generic");
         }
     }
 }
