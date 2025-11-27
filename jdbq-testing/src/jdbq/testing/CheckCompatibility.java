@@ -1,4 +1,4 @@
-package jdbq.testing.harness;
+package jdbq.testing;
 
 import jdbq.mapping.CheckColumnCompatibility;
 import jdbq.mapping.ColumnMapper;
@@ -21,17 +21,17 @@ import java.util.stream.IntStream;
 // todo: treat errors as warnings/warnings as errors
 final class CheckCompatibility {
 
-    private final CheckColumnCompatibility check;
+    private final TestingOptions options;
     private final ResultSetMetaData rsmd;
 
-    CheckCompatibility(CheckColumnCompatibility check, ResultSetMetaData rsmd) {
-        this.check = check;
+    CheckCompatibility(TestingOptions options, ResultSetMetaData rsmd) {
+        this.options = options;
         this.rsmd = rsmd;
     }
 
     void checkColumn(Type javaType, String javaName, int index, ColumnMapper columnMapper) throws SQLException {
         JDBCType dbType = JDBCType.valueOf(rsmd.getColumnType(index));
-        List<CheckColumnCompatibility> checks = Arrays.asList(check, columnMapper.checkCompatibility());
+        List<CheckColumnCompatibility> checks = Arrays.asList(options.check, columnMapper.checkCompatibility());
         new CheckOneColumn(rsmd, index, dbType, javaType, javaName, checks).checkCompatibility();
     }
 

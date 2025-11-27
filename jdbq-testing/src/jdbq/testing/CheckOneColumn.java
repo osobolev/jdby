@@ -1,4 +1,4 @@
-package jdbq.testing.harness;
+package jdbq.testing;
 
 import jdbq.mapping.CheckColumnCompatibility;
 
