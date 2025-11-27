@@ -1,6 +1,9 @@
 package jdbq.dao;
 
-import jdbq.core.*;
+import jdbq.core.Query;
+import jdbq.core.QueryLike;
+import jdbq.core.SqlParameter;
+import jdbq.core.SqlTransaction;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -123,14 +126,16 @@ public final class DaoSql {
         return query.toQuery().executeUpdate(data.t);
     }
 
-    public static <T> T executeUpdate(String sql, GeneratedKeyMapper<T> mapper, String... generatedColumns) throws SQLException {
+    @SuppressWarnings("unchecked")
+    public static <T> T executeUpdate(String sql, String... generatedColumns) throws SQLException {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
-        return query.executeUpdate(data.t, mapper, generatedColumns);
+        return (T) query.executeUpdate(data.t, data.keyMapper(), generatedColumns);
     }
 
-    public static <T> T executeUpdate(QueryLike query, GeneratedKeyMapper<T> mapper, String... generatedColumns) throws SQLException {
+    @SuppressWarnings("unchecked")
+    public static <T> T executeUpdate(QueryLike query, String... generatedColumns) throws SQLException {
         CallData data = getCallData();
-        return query.toQuery().executeUpdate(data.t, mapper, generatedColumns);
+        return (T) query.toQuery().executeUpdate(data.t, data.keyMapper(), generatedColumns);
     }
 }

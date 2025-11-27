@@ -17,6 +17,10 @@ public class RowTransaction implements SqlTransaction {
         return rowMapperFactory.mapper(rowType);
     }
 
+    public <T> GeneratedKeyMapper<T> keyMapper(Class<T> keyType) {
+        return rowMapperFactory.keyMapper(keyType);
+    }
+
     @Override
     public Connection getConnection() throws SQLException {
         return t.getConnection();

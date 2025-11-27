@@ -135,4 +135,8 @@ public final class Query implements QueryLike {
             }
         }
     }
+
+    public <T> T executeUpdate(RowTransaction t, Class<T> keyType, String... generatedColumns) throws SQLException {
+        return executeUpdate(t, t.keyMapper(keyType), generatedColumns);
+    }
 }

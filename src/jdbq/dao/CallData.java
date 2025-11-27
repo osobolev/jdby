@@ -1,9 +1,6 @@
 package jdbq.dao;
 
-import jdbq.core.Query;
-import jdbq.core.RowMapper;
-import jdbq.core.SqlParameter;
-import jdbq.core.SqlTransaction;
+import jdbq.core.*;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -31,6 +28,10 @@ final class CallData {
 
     RowMapper<?> mapper() {
         return ctx.mapper(getRowType());
+    }
+
+    GeneratedKeyMapper<?> keyMapper() {
+        return ctx.keyMapper(getRowType());
     }
 
     private Class<?> getRowType() {
