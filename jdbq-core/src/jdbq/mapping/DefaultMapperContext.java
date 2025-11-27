@@ -1,7 +1,7 @@
 package jdbq.mapping;
 
 import jdbq.core.RowMapper;
-import jdbq.testing.SqlTestingHook;
+import jdbq.core.testing.SqlTestingHook;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;

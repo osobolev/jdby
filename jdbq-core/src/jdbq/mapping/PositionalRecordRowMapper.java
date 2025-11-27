@@ -1,7 +1,7 @@
 package jdbq.mapping;
 
 import jdbq.core.RowMapper;
-import jdbq.testing.SqlTestingHook;
+import jdbq.core.testing.SqlTestingHook;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

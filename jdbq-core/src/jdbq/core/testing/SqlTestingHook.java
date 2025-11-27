@@ -1,4 +1,4 @@
-package jdbq.testing;
+package jdbq.core.testing;
 
 import jdbq.mapping.ColumnMapper;
 

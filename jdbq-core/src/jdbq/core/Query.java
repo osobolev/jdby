@@ -1,6 +1,6 @@
 package jdbq.core;
 
-import jdbq.testing.SqlTestingHook;
+import jdbq.core.testing.SqlTestingHook;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
