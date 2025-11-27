@@ -3,3 +3,11 @@ plugins {
 }
 
 rootProject.name = "jdbq"
+
+fun add(name: String, path: String) {
+    val dir = file(path)
+    include(name)
+    project(":${name}").projectDir = dir
+}
+
+add("jdbq", "jdbq-core")
