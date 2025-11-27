@@ -26,10 +26,10 @@ public class DefaultDaoContext extends DefaultMapperContext implements DaoContex
             return JDBCType.BIGINT;
         } else if (type == double.class || type == Double.class) {
             return JDBCType.DOUBLE;
-        } else if (type == short.class || type == Short.class) {
-            return JDBCType.SMALLINT;
         } else if (type == byte.class || type == Byte.class) {
             return JDBCType.TINYINT;
+        } else if (type == short.class || type == Short.class) {
+            return JDBCType.SMALLINT;
         } else if (type == float.class || type == Float.class) {
             return JDBCType.FLOAT;
         } else if (type == BigDecimal.class) {
