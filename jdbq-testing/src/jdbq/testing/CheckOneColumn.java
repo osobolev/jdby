@@ -166,8 +166,8 @@ final class CheckOneColumn {
 
     void checkCompatibility() throws SQLException {
         if (!isCompatible()) {
-            throw new IllegalArgumentException(String.format(
-                "Column %s of type %s is not compatible with field (%s) of type %s",
+            options.error(String.format(
+                "Column %s of type %s is not compatible with field (%s) of %s",
                 dbColumnName(rsmd, index), sqlTypeName(),
                 javaName, javaType
             ));

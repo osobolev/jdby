@@ -9,16 +9,13 @@ import java.sql.JDBCType;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static jdbq.testing.CheckOneColumn.dbColumnName;
+
 // todo: modes: check only column correspondence, basic typecheck, strict typecheck (int withds)
-// todo: optional warning output
-// todo: treat errors as warnings/warnings as errors
 final class CheckCompatibility {
 
     private final TestingOptions options;
@@ -42,18 +39,40 @@ final class CheckCompatibility {
         );
     }
 
+    private static String canonicalize(String name) {
+        return name.replace("_", "").toLowerCase();
+    }
+
+    private void checkNamesAreSimilar(Class<?> rowType, int index, RecordComponent component) throws SQLException {
+        String dbName = rsmd.getColumnName(index);
+        if (dbName == null || dbName.isEmpty())
+            return;
+        String javaName = component.getName();
+        if (!Objects.equals(canonicalize(dbName), canonicalize(javaName))) {
+            options.warn(String.format(
+                "Java field '%s' and DB column '%s' have different names for row type %s",
+                javaName, dbName, rowType.getName()
+            ));
+        }
+    }
+
     private void checkPosition(Class<?> rowType, List<ColumnMapper> columnMappers) throws SQLException {
         RecordComponent[] components = rowType.getRecordComponents();
         int columnCount = rsmd.getColumnCount();
         if (columnCount != components.length) {
-            throw new IllegalArgumentException(String.format(
+            options.error(String.format(
                 "Row type %s has %s columns (%s) than select (%s)",
                 rowType.getName(), components.length > columnCount ? "more" : "less", components.length, columnCount
             ));
+            return;
         }
         for (int i = 0; i < components.length; i++) {
-            checkColumn(components[i], i, columnMappers.get(i));
-            // todo: check that names are similar (warn)???
+            int index = i + 1;
+            RecordComponent component = components[i];
+            checkColumn(component, index, columnMappers.get(i));
+            if (options.checkNamesForPositions) {
+                checkNamesAreSimilar(rowType, index, component);
+            }
         }
     }
 
@@ -64,7 +83,10 @@ final class CheckCompatibility {
             String sqlName = sqlNames.get(i);
             int index = rs.findColumn(sqlName);
             if (!usedSqlColumns.add(index)) {
-                // todo: warn about duplicate???
+                options.warn(String.format(
+                    "Column %s is used more than once when mapping row type %s",
+                    dbColumnName(rsmd, index), rowType.getName()
+                ));
             }
             indexes[i] = index;
         }
@@ -73,9 +95,12 @@ final class CheckCompatibility {
             String unused = IntStream
                 .rangeClosed(1, columnCount)
                 .filter(i -> !usedSqlColumns.contains(i))
-                .mapToObj(i -> CheckOneColumn.dbColumnName(rsmd, i))
+                .mapToObj(i -> dbColumnName(rsmd, i))
                 .collect(Collectors.joining(", "));
-            throw new IllegalArgumentException(String.format("Columns %s are not used", unused));
+            options.error(String.format(
+                "Columns %s are not used when mapping to row type %s",
+                unused, rowType.getName()
+            ));
         }
         RecordComponent[] components = rowType.getRecordComponents();
         for (int i = 0; i < components.length; i++) {
