@@ -76,8 +76,8 @@ public final class Query implements QueryLike {
         }
     }
 
-    public <T> List<T> listRows(RowTransaction t, Class<T> cls) throws SQLException {
-        return listRows(t, t.mapper(cls));
+    public <T> List<T> listRows(RowTransaction t, Class<T> rowType) throws SQLException {
+        return listRows(t, t.mapper(rowType));
     }
 
     public <T> T exactlyOneRow(SqlTransaction t, RowMapper<T> mapper) throws SQLException {
@@ -98,8 +98,8 @@ public final class Query implements QueryLike {
         }
     }
 
-    public <T> T exactlyOneRow(RowTransaction t, Class<T> cls) throws SQLException {
-        return exactlyOneRow(t, t.mapper(cls));
+    public <T> T exactlyOneRow(RowTransaction t, Class<T> rowType) throws SQLException {
+        return exactlyOneRow(t, t.mapper(rowType));
     }
 
     public <T> T maybeRow(SqlTransaction t, RowMapper<T> mapper) throws SQLException {
@@ -117,8 +117,8 @@ public final class Query implements QueryLike {
         }
     }
 
-    public <T> T maybeRow(RowTransaction t, Class<T> cls) throws SQLException {
-        return maybeRow(t, t.mapper(cls));
+    public <T> T maybeRow(RowTransaction t, Class<T> rowType) throws SQLException {
+        return maybeRow(t, t.mapper(rowType));
     }
 
     public int executeUpdate(SqlTransaction t) throws SQLException {
