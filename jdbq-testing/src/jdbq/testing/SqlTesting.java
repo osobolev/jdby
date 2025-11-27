@@ -144,6 +144,13 @@ public final class SqlTesting {
     }
 
     private static Object createTestDao(RowContext ctx, Class<?> cls, Connection connection) throws Exception {
+        if (cls.isInterface()) {
+            if (ctx instanceof DaoContext dctx) {
+                return DaoSql.createProxy(dctx, cls, connection);
+            } else {
+                throw new IllegalStateException("Interfaces are supported only for DaoContext");
+            }
+        }
         Constructor<?>[] constructors = cls.getConstructors();
         List<Constructor<?>> candidates0 = new ArrayList<>();
         List<Constructor<?>> candidates1 = new ArrayList<>();
