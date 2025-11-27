@@ -3,12 +3,12 @@ package jdbq.dao;
 import jdbq.core.Query;
 import jdbq.core.QueryLike;
 import jdbq.core.SqlParameter;
-import jdbq.core.SqlTransaction;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Proxy;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -19,18 +19,18 @@ public final class DaoSql {
 
     private static final ThreadLocal<CallData> CALL_DATA = new ThreadLocal<>();
 
-    public static <T> T createProxy(DaoContext ctx, Class<T> iface, SqlTransaction getConnection) {
+    public static <T> T createProxy(DaoContext ctx, Class<T> iface, Connection connection) {
         Object created = Proxy.newProxyInstance(
             iface.getClassLoader(),
             new Class<?>[] {iface},
             (proxy, method, args) -> runProxyMethod(
-                ctx, getConnection, iface, proxy, method, args
+                ctx, connection, iface, proxy, method, args
             )
         );
         return iface.cast(created);
     }
 
-    private static Object runProxyMethod(DaoContext ctx, SqlTransaction t,
+    private static Object runProxyMethod(DaoContext ctx, Connection connection,
                                          Class<?> iface, Object proxy, Method method, Object[] args) throws Throwable {
         Parameter[] parameters = method.getParameters();
         String name = method.getName();
@@ -53,7 +53,7 @@ public final class DaoSql {
         if (!method.isDefault()) {
             throw new IllegalArgumentException("Call to non-default method '" + method + "'");
         }
-        CALL_DATA.set(new CallData(ctx, method, argsMap, t));
+        CALL_DATA.set(new CallData(ctx, method, argsMap, connection));
         try {
             return InvocationHandler.invokeDefault(proxy, method, args);
         } finally {
@@ -80,62 +80,62 @@ public final class DaoSql {
     public static <T> List<T> listRows(String sql) throws SQLException {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
-        return (List<T>) query.listRows(data.t, data.rowMapper());
+        return (List<T>) query.listRows(data.connection, data.rowMapper());
     }
 
     @SuppressWarnings("unchecked")
     public static <T> List<T> listRows(QueryLike query) throws SQLException {
         CallData data = getCallData();
-        return (List<T>) query.toQuery().listRows(data.t, data.rowMapper());
+        return (List<T>) query.toQuery().listRows(data.connection, data.rowMapper());
     }
 
     @SuppressWarnings("unchecked")
     public static <T> T exactlyOneRow(String sql) throws SQLException {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
-        return (T) query.exactlyOneRow(data.t, data.rowMapper());
+        return (T) query.exactlyOneRow(data.connection, data.rowMapper());
     }
 
     @SuppressWarnings("unchecked")
     public static <T> T exactlyOneRow(QueryLike query) throws SQLException {
         CallData data = getCallData();
-        return (T) query.toQuery().exactlyOneRow(data.t, data.rowMapper());
+        return (T) query.toQuery().exactlyOneRow(data.connection, data.rowMapper());
     }
 
     @SuppressWarnings("unchecked")
     public static <T> T maybeRow(String sql) throws SQLException {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
-        return (T) query.maybeRow(data.t, data.rowMapper());
+        return (T) query.maybeRow(data.connection, data.rowMapper());
     }
 
     @SuppressWarnings("unchecked")
     public static <T> T maybeRow(QueryLike query) throws SQLException {
         CallData data = getCallData();
-        return (T) query.toQuery().maybeRow(data.t, data.rowMapper());
+        return (T) query.toQuery().maybeRow(data.connection, data.rowMapper());
     }
 
     public static int executeUpdate(String sql) throws SQLException {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
-        return query.executeUpdate(data.t);
+        return query.executeUpdate(data.connection);
     }
 
     public static int executeUpdate(QueryLike query) throws SQLException {
         CallData data = getCallData();
-        return query.toQuery().executeUpdate(data.t);
+        return query.toQuery().executeUpdate(data.connection);
     }
 
     @SuppressWarnings("unchecked")
     public static <T> T executeUpdate(String sql, String... generatedColumns) throws SQLException {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
-        return (T) query.executeUpdate(data.t, data.keyMapper(), generatedColumns);
+        return (T) query.executeUpdate(data.connection, data.keyMapper(), generatedColumns);
     }
 
     @SuppressWarnings("unchecked")
     public static <T> T executeUpdate(QueryLike query, String... generatedColumns) throws SQLException {
         CallData data = getCallData();
-        return (T) query.toQuery().executeUpdate(data.t, data.keyMapper(), generatedColumns);
+        return (T) query.toQuery().executeUpdate(data.connection, data.keyMapper(), generatedColumns);
     }
 }

@@ -2,10 +2,7 @@ package jdbq.core;
 
 import jdbq.core.testing.SqlTestingHook;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -56,14 +53,14 @@ public final class Query implements QueryLike {
         }
     }
 
-    private PreparedStatement preparedStatement(SqlTransaction t) throws SQLException {
-        PreparedStatement ps = t.getConnection().prepareStatement(sql);
+    private PreparedStatement preparedStatement(Connection connection) throws SQLException {
+        PreparedStatement ps = connection.prepareStatement(sql);
         setParameters(ps);
         return ps;
     }
 
-    public <T> List<T> listRows(SqlTransaction t, RowMapper<T> rowMapper) throws SQLException {
-        try (PreparedStatement ps = preparedStatement(t)) {
+    public <T> List<T> listRows(Connection connection, RowMapper<T> rowMapper) throws SQLException {
+        try (PreparedStatement ps = preparedStatement(connection)) {
             try (ResultSet rs = ps.executeQuery()) {
                 if (SqlTestingHook.isTesting()) {
                     rowMapper.mapRow(rs);
@@ -79,12 +76,12 @@ public final class Query implements QueryLike {
         }
     }
 
-    public <T> List<T> listRows(RowTransaction t, Class<T> rowType) throws SQLException {
-        return listRows(t, t.rowMapper(rowType));
+    public <T> List<T> listRows(RowConnection connection, Class<T> rowType) throws SQLException {
+        return listRows(connection.getConnection(), connection.rowMapper(rowType));
     }
 
-    public <T> T exactlyOneRow(SqlTransaction t, RowMapper<T> rowMapper) throws SQLException {
-        try (PreparedStatement ps = preparedStatement(t)) {
+    public <T> T exactlyOneRow(Connection connection, RowMapper<T> rowMapper) throws SQLException {
+        try (PreparedStatement ps = preparedStatement(connection)) {
             try (ResultSet rs = ps.executeQuery()) {
                 if (SqlTestingHook.isTesting()) {
                     return rowMapper.mapRow(rs);
@@ -101,12 +98,12 @@ public final class Query implements QueryLike {
         }
     }
 
-    public <T> T exactlyOneRow(RowTransaction t, Class<T> rowType) throws SQLException {
-        return exactlyOneRow(t, t.rowMapper(rowType));
+    public <T> T exactlyOneRow(RowConnection connection, Class<T> rowType) throws SQLException {
+        return exactlyOneRow(connection.getConnection(), connection.rowMapper(rowType));
     }
 
-    public <T> T maybeRow(SqlTransaction t, RowMapper<T> rowMapper) throws SQLException {
-        try (PreparedStatement ps = preparedStatement(t)) {
+    public <T> T maybeRow(Connection connection, RowMapper<T> rowMapper) throws SQLException {
+        try (PreparedStatement ps = preparedStatement(connection)) {
             try (ResultSet rs = ps.executeQuery()) {
                 if (SqlTestingHook.isTesting()) {
                     return rowMapper.mapRow(rs);
@@ -120,8 +117,8 @@ public final class Query implements QueryLike {
         }
     }
 
-    public <T> T maybeRow(RowTransaction t, Class<T> rowType) throws SQLException {
-        return maybeRow(t, t.rowMapper(rowType));
+    public <T> T maybeRow(RowConnection connection, Class<T> rowType) throws SQLException {
+        return maybeRow(connection.getConnection(), connection.rowMapper(rowType));
     }
 
     private static int executeUpdate(PreparedStatement ps) throws SQLException {
@@ -140,14 +137,14 @@ public final class Query implements QueryLike {
         return ps.executeUpdate();
     }
 
-    public int executeUpdate(SqlTransaction t) throws SQLException {
-        try (PreparedStatement ps = preparedStatement(t)) {
+    public int executeUpdate(Connection connection) throws SQLException {
+        try (PreparedStatement ps = preparedStatement(connection)) {
             return executeUpdate(ps);
         }
     }
 
-    public <T> T executeUpdate(SqlTransaction t, GeneratedKeyMapper<T> keyMapper, String... generatedColumns) throws SQLException {
-        try (PreparedStatement ps = preparedStatement(t)) {
+    public <T> T executeUpdate(Connection connection, GeneratedKeyMapper<T> keyMapper, String... generatedColumns) throws SQLException {
+        try (PreparedStatement ps = preparedStatement(connection)) {
             int rows = executeUpdate(ps);
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 return keyMapper.map(rows, generatedColumns, rs);
@@ -155,7 +152,7 @@ public final class Query implements QueryLike {
         }
     }
 
-    public <T> T executeUpdate(RowTransaction t, Class<T> keyType, String... generatedColumns) throws SQLException {
-        return executeUpdate(t, t.keyMapper(keyType), generatedColumns);
+    public <T> T executeUpdate(RowConnection connection, Class<T> keyType, String... generatedColumns) throws SQLException {
+        return executeUpdate(connection.getConnection(), connection.keyMapper(keyType), generatedColumns);
     }
 }

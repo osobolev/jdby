@@ -1,17 +1,17 @@
 package jdbq.dao;
 
 import jdbq.core.SqlParameter;
-import jdbq.core.SqlTransaction;
 import jdbq.mapping.MapperContext;
 
 import java.lang.reflect.Type;
+import java.sql.Connection;
 
 public interface DaoContext extends MapperContext {
 
     SqlParameter parameter(Type type, Object value);
 
     @Override
-    default DaoTransaction withTransaction(SqlTransaction t) {
-        return new DaoTransaction(this, t);
+    default DaoConnection withConnection(Connection connection) {
+        return new DaoConnection(this, connection);
     }
 }

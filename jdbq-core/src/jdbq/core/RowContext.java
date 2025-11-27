@@ -1,12 +1,14 @@
 package jdbq.core;
 
+import java.sql.Connection;
+
 public interface RowContext {
 
     <T> RowMapper<T> rowMapper(Class<T> rowType);
 
     <T> GeneratedKeyMapper<T> keyMapper(Class<T> keyType);
 
-    default RowTransaction withTransaction(SqlTransaction t) {
-        return new RowTransaction(this, t);
+    default RowConnection withConnection(Connection connection) {
+        return new RowConnection(this, connection);
     }
 }

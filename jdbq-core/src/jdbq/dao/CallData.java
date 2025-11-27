@@ -5,6 +5,7 @@ import jdbq.core.*;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.sql.Connection;
 import java.util.Map;
 
 final class CallData {
@@ -12,13 +13,13 @@ final class CallData {
     final DaoContext ctx;
     final Method method;
     final Map<String, SqlParameter> parameters;
-    final SqlTransaction t;
+    final Connection connection;
 
-    CallData(DaoContext ctx, Method method, Map<String, SqlParameter> parameters, SqlTransaction t) {
+    CallData(DaoContext ctx, Method method, Map<String, SqlParameter> parameters, Connection connection) {
         this.ctx = ctx;
         this.method = method;
         this.parameters = parameters;
-        this.t = t;
+        this.connection = connection;
     }
 
     Query substituteArgs(String sql) {

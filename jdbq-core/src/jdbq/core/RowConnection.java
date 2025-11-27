@@ -1,16 +1,15 @@
 package jdbq.core;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
-public class RowTransaction implements SqlTransaction {
+public class RowConnection {
 
     private final RowContext ctx;
-    private final SqlTransaction t;
+    private final Connection connection;
 
-    public RowTransaction(RowContext ctx, SqlTransaction t) {
+    public RowConnection(RowContext ctx, Connection connection) {
         this.ctx = ctx;
-        this.t = t;
+        this.connection = connection;
     }
 
     public <T> RowMapper<T> rowMapper(Class<T> rowType) {
@@ -21,8 +20,7 @@ public class RowTransaction implements SqlTransaction {
         return ctx.keyMapper(keyType);
     }
 
-    @Override
-    public Connection getConnection() throws SQLException {
-        return t.getConnection();
+    public Connection getConnection() {
+        return connection;
     }
 }
