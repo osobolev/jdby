@@ -50,7 +50,7 @@ final class NamedRecordRowMapper<R extends Record> implements RowMapper<R> {
     public R mapRow(ResultSet rs) throws SQLException {
         if (SqlTesting.testing) {
             CheckCompatibility checker = new CheckCompatibility(rs.getMetaData());
-            checker.checkName(rs, constructor.getDeclaringClass().getRecordComponents(), columns);
+            checker.checkName(rs, constructor.getDeclaringClass(), columns);
             return null;
         }
         Object[] args = new Object[columns.size()];

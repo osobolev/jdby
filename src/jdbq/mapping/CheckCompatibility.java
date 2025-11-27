@@ -186,12 +186,13 @@ final class CheckCompatibility {
         );
     }
 
-    void checkPosition(RecordComponent[] components, List<ColumnMapper> columnMappers) throws SQLException {
+    void checkPosition(Class<?> rowType, List<ColumnMapper> columnMappers) throws SQLException {
+        RecordComponent[] components = rowType.getRecordComponents();
         int columnCount = rsmd.getColumnCount();
         if (columnCount != components.length) {
             throw new IllegalArgumentException(String.format(
-                "Column count mismatch: %s in SQL and %s in Java",
-                columnCount, components.length
+                "Row type %s has %s columns (%s) than select (%s)",
+                rowType.getName(), components.length > columnCount ? "more" : "less", components.length, columnCount
             ));
         }
         for (int i = 0; i < columnCount; i++) {
@@ -201,7 +202,7 @@ final class CheckCompatibility {
         }
     }
 
-    void checkName(ResultSet rs, RecordComponent[] components, List<NamedColumn> columnNames) throws SQLException {
+    void checkName(ResultSet rs, Class<?> rowType, List<NamedColumn> columnNames) throws SQLException {
         int[] indexes = new int[columnNames.size()];
         Set<Integer> usedSqlColumns = new HashSet<>();
         for (int i = 0; i < columnNames.size(); i++) {
@@ -221,6 +222,7 @@ final class CheckCompatibility {
                 .collect(Collectors.joining(", "));
             throw new IllegalArgumentException(String.format("Columns %s are not used", unused));
         }
+        RecordComponent[] components = rowType.getRecordComponents();
         for (int i = 0; i < components.length; i++) {
             ColumnMapper columnMapper = columnNames.get(i).mapper();
             checkCompatibility(components[i], indexes[i], columnMapper.checkCompatibility());
