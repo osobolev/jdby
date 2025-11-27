@@ -17,17 +17,20 @@ import java.util.function.Function;
 final class NamedRecordRowMapper<R extends Record> implements RowMapper<R> {
 
     private final Constructor<R> constructor;
-    private final List<NamedColumn> columns;
+    private final List<ColumnMapper> columnMappers;
+    private final List<String> sqlNames;
 
-    private NamedRecordRowMapper(Constructor<R> constructor, List<NamedColumn> columns) {
+    private NamedRecordRowMapper(Constructor<R> constructor, List<ColumnMapper> columnMappers, List<String> sqlNames) {
         this.constructor = constructor;
-        this.columns = columns;
+        this.columnMappers = columnMappers;
+        this.sqlNames = sqlNames;
     }
 
     static <R extends Record> NamedRecordRowMapper<R> create(Class<R> cls, ColumnNaming columnNaming,
                                                              Function<Type, ColumnMapper> getColumnMapper) {
         RecordComponent[] rcs = Objects.requireNonNull(cls.getRecordComponents(), "Must be a record");
-        List<NamedColumn> columns = new ArrayList<>(rcs.length);
+        List<ColumnMapper> columnMappers = new ArrayList<>(rcs.length);
+        List<String> sqlNames = new ArrayList<>(rcs.length);
         Class<?>[] types = new Class[rcs.length];
         for (int i = 0; i < rcs.length; i++) {
             RecordComponent rc = rcs[i];
@@ -35,7 +38,8 @@ final class NamedRecordRowMapper<R extends Record> implements RowMapper<R> {
             Type genericType = rc.getGenericType();
             ColumnMapper columnMapper = getColumnMapper.apply(genericType);
             String sqlName = columnNaming.sqlName(rc);
-            columns.add(new NamedColumn(sqlName, columnMapper));
+            columnMappers.add(columnMapper);
+            sqlNames.add(sqlName);
         }
         Constructor<R> constructor;
         try {
@@ -43,20 +47,19 @@ final class NamedRecordRowMapper<R extends Record> implements RowMapper<R> {
         } catch (NoSuchMethodException ex) {
             throw new IllegalStateException(ex);
         }
-        return new NamedRecordRowMapper<>(constructor, columns);
+        return new NamedRecordRowMapper<>(constructor, columnMappers, sqlNames);
     }
 
     @Override
     public R mapRow(ResultSet rs) throws SQLException {
         if (SqlTesting.testing) {
             CheckCompatibility checker = new CheckCompatibility(rs.getMetaData());
-            checker.checkName(rs, constructor.getDeclaringClass(), columns);
+            checker.checkName(rs, constructor.getDeclaringClass(), columnMappers, sqlNames);
             return null;
         }
-        Object[] args = new Object[columns.size()];
-        for (int i = 0; i < columns.size(); i++) {
-            NamedColumn column = columns.get(i);
-            args[i] = column.mapper().getColumn(rs, column.sqlName());
+        Object[] args = new Object[columnMappers.size()];
+        for (int i = 0; i < columnMappers.size(); i++) {
+            args[i] = columnMappers.get(i).getColumn(rs, sqlNames.get(i));
         }
         try {
             return constructor.newInstance(args);
