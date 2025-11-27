@@ -50,8 +50,8 @@ public class DefaultMapperFactory implements MapperFactory {
         columnMappers.put(type, columnMapper);
     }
 
-    public <T> void registerRow(Class<T> rowType, RowMapper<T> columnMapper) {
-        rowMappers.put(rowType, columnMapper);
+    public <T> void registerRow(Class<T> rowType, RowMapper<T> rowMapper) {
+        rowMappers.put(rowType, rowMapper);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class DefaultMapperFactory implements MapperFactory {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> RowMapper<T> mapper(Class<T> rowType) {
+    public <T> RowMapper<T> rowMapper(Class<T> rowType) {
         return (RowMapper<T>) rowMappers.computeIfAbsent(rowType, this::newRowMapper);
     }
 }

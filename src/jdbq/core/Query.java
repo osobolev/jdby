@@ -59,16 +59,16 @@ public final class Query implements QueryLike {
         return ps;
     }
 
-    public <T> List<T> listRows(SqlTransaction t, RowMapper<T> mapper) throws SQLException {
+    public <T> List<T> listRows(SqlTransaction t, RowMapper<T> rowMapper) throws SQLException {
         try (PreparedStatement ps = preparedStatement(t)) {
             try (ResultSet rs = ps.executeQuery()) {
                 if (SqlTesting.testing) {
-                    mapper.mapRow(rs);
+                    rowMapper.mapRow(rs);
                     return Collections.emptyList();
                 }
                 List<T> list = new ArrayList<>();
                 while (rs.next()) {
-                    T row = mapper.mapRow(rs);
+                    T row = rowMapper.mapRow(rs);
                     list.add(row);
                 }
                 return list;
@@ -77,17 +77,17 @@ public final class Query implements QueryLike {
     }
 
     public <T> List<T> listRows(RowTransaction t, Class<T> rowType) throws SQLException {
-        return listRows(t, t.mapper(rowType));
+        return listRows(t, t.rowMapper(rowType));
     }
 
-    public <T> T exactlyOneRow(SqlTransaction t, RowMapper<T> mapper) throws SQLException {
+    public <T> T exactlyOneRow(SqlTransaction t, RowMapper<T> rowMapper) throws SQLException {
         try (PreparedStatement ps = preparedStatement(t)) {
             try (ResultSet rs = ps.executeQuery()) {
                 if (SqlTesting.testing) {
-                    return mapper.mapRow(rs);
+                    return rowMapper.mapRow(rs);
                 }
                 if (rs.next()) {
-                    T row = mapper.mapRow(rs);
+                    T row = rowMapper.mapRow(rs);
                     if (rs.next())
                         throw new SQLException("More than one rows found");
                     return row;
@@ -99,17 +99,17 @@ public final class Query implements QueryLike {
     }
 
     public <T> T exactlyOneRow(RowTransaction t, Class<T> rowType) throws SQLException {
-        return exactlyOneRow(t, t.mapper(rowType));
+        return exactlyOneRow(t, t.rowMapper(rowType));
     }
 
-    public <T> T maybeRow(SqlTransaction t, RowMapper<T> mapper) throws SQLException {
+    public <T> T maybeRow(SqlTransaction t, RowMapper<T> rowMapper) throws SQLException {
         try (PreparedStatement ps = preparedStatement(t)) {
             try (ResultSet rs = ps.executeQuery()) {
                 if (SqlTesting.testing) {
-                    return mapper.mapRow(rs);
+                    return rowMapper.mapRow(rs);
                 }
                 if (rs.next()) {
-                    return mapper.mapRow(rs);
+                    return rowMapper.mapRow(rs);
                 } else {
                     return null;
                 }
@@ -118,7 +118,7 @@ public final class Query implements QueryLike {
     }
 
     public <T> T maybeRow(RowTransaction t, Class<T> rowType) throws SQLException {
-        return maybeRow(t, t.mapper(rowType));
+        return maybeRow(t, t.rowMapper(rowType));
     }
 
     public int executeUpdate(SqlTransaction t) throws SQLException {

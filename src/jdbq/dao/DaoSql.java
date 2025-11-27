@@ -80,39 +80,39 @@ public final class DaoSql {
     public static <T> List<T> listRows(String sql) throws SQLException {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
-        return (List<T>) query.listRows(data.t, data.mapper());
+        return (List<T>) query.listRows(data.t, data.rowMapper());
     }
 
     @SuppressWarnings("unchecked")
     public static <T> List<T> listRows(QueryLike query) throws SQLException {
         CallData data = getCallData();
-        return (List<T>) query.toQuery().listRows(data.t, data.mapper());
+        return (List<T>) query.toQuery().listRows(data.t, data.rowMapper());
     }
 
     @SuppressWarnings("unchecked")
     public static <T> T exactlyOneRow(String sql) throws SQLException {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
-        return (T) query.exactlyOneRow(data.t, data.mapper());
+        return (T) query.exactlyOneRow(data.t, data.rowMapper());
     }
 
     @SuppressWarnings("unchecked")
     public static <T> T exactlyOneRow(QueryLike query) throws SQLException {
         CallData data = getCallData();
-        return (T) query.toQuery().exactlyOneRow(data.t, data.mapper());
+        return (T) query.toQuery().exactlyOneRow(data.t, data.rowMapper());
     }
 
     @SuppressWarnings("unchecked")
     public static <T> T maybeRow(String sql) throws SQLException {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
-        return (T) query.maybeRow(data.t, data.mapper());
+        return (T) query.maybeRow(data.t, data.rowMapper());
     }
 
     @SuppressWarnings("unchecked")
     public static <T> T maybeRow(QueryLike query) throws SQLException {
         CallData data = getCallData();
-        return (T) query.toQuery().maybeRow(data.t, data.mapper());
+        return (T) query.toQuery().maybeRow(data.t, data.rowMapper());
     }
 
     public static int executeUpdate(String sql) throws SQLException {

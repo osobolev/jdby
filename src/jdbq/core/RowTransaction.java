@@ -13,8 +13,8 @@ public class RowTransaction implements SqlTransaction {
         this.t = t;
     }
 
-    public <T> RowMapper<T> mapper(Class<T> rowType) {
-        return rowMapperFactory.mapper(rowType);
+    public <T> RowMapper<T> rowMapper(Class<T> rowType) {
+        return rowMapperFactory.rowMapper(rowType);
     }
 
     public <T> GeneratedKeyMapper<T> keyMapper(Class<T> keyType) {

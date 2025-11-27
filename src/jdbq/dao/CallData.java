@@ -26,8 +26,8 @@ final class CallData {
         return pq.toQuery(parameters::get);
     }
 
-    RowMapper<?> mapper() {
-        return ctx.mapper(getRowType());
+    RowMapper<?> rowMapper() {
+        return ctx.rowMapper(getRowType());
     }
 
     GeneratedKeyMapper<?> keyMapper() {
