@@ -79,7 +79,8 @@ final class CheckCompatibility {
         }
         RecordComponent[] components = rowType.getRecordComponents();
         for (int i = 0; i < components.length; i++) {
-            checkColumn(components[i], indexes[i], columnMappers.get(i));
+            RecordComponent component = components[i];
+            checkColumn(component, indexes[i], columnMappers.get(i));
         }
     }
 
