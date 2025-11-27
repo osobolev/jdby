@@ -205,8 +205,8 @@ final class CheckCompatibility {
     void checkName(ResultSet rs, Class<?> rowType, List<NamedColumn> columnNames) throws SQLException {
         int[] indexes = new int[columnNames.size()];
         Set<Integer> usedSqlColumns = new HashSet<>();
-        for (int i = 0; i < columnNames.size(); i++) {
-            String sqlName = columnNames.get(i).sqlName();
+        for (int i = 0; i < columnMappers.size(); i++) {
+            String sqlName = sqlNames.get(i);
             int index = rs.findColumn(sqlName);
             if (!usedSqlColumns.add(index)) {
                 // todo: warn about duplicate???
@@ -224,7 +224,7 @@ final class CheckCompatibility {
         }
         RecordComponent[] components = rowType.getRecordComponents();
         for (int i = 0; i < components.length; i++) {
-            ColumnMapper columnMapper = columnNames.get(i).mapper();
+            ColumnMapper columnMapper = columnMappers.get(i);
             checkCompatibility(components[i], indexes[i], columnMapper.checkCompatibility());
         }
     }
