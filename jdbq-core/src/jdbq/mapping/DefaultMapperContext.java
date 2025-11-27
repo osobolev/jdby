@@ -1,7 +1,7 @@
 package jdbq.mapping;
 
 import jdbq.core.RowMapper;
-import jdbq.testing.SqlTesting;
+import jdbq.testing.SqlTestingHook;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
@@ -85,8 +85,8 @@ public class DefaultMapperContext implements MapperContext {
         } else {
             ColumnMapper columnMapper = columnMapper(rowType);
             return (RowMapper<Object>) rs -> {
-                if (SqlTesting.testing != null) {
-                    SqlTesting.testing.checkColumn(rs, rowType, columnMapper);
+                if (SqlTestingHook.hook != null) {
+                    SqlTestingHook.hook.checkColumn(rs, rowType, columnMapper);
                     Object array = Array.newInstance(rowType, 1);
                     return Array.get(array, 0);
                 }
