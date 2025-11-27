@@ -59,12 +59,10 @@ public class DefaultDaoContext extends DefaultMapperContext implements DaoContex
             return parameter;
         } else if (type instanceof Class<?> cls) {
             JDBCType jdbcType = jdbcType(cls);
-            if (jdbcType == null) {
-                throw new IllegalArgumentException("Cannot create parameter of class " + cls.getName());
+            if (jdbcType != null) {
+                return SqlParameter.jdbc(value, jdbcType);
             }
-            return SqlParameter.jdbc(value, jdbcType);
-        } else {
-            throw new IllegalArgumentException("Cannot create parameter of type " + type);
         }
+        throw new IllegalArgumentException("Cannot create parameter of " + type);
     }
 }

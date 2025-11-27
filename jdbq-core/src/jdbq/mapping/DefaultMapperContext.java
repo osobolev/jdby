@@ -56,7 +56,7 @@ public class DefaultMapperContext implements MapperContext {
     public ColumnMapper columnMapper(Type type) {
         ColumnMapper columnMapper = columnMappers.get(type);
         if (columnMapper == null) {
-            throw new IllegalArgumentException("Unsupported type " + type + " for columns");
+            throw new IllegalArgumentException("Unsupported type for columns: " + type);
         }
         return columnMapper;
     }
