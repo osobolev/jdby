@@ -1,5 +1,7 @@
 package jdbq.core;
 
+import jdbq.testing.SqlTesting;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -62,7 +64,7 @@ public final class Query implements QueryLike {
     public <T> List<T> listRows(SqlTransaction t, RowMapper<T> rowMapper) throws SQLException {
         try (PreparedStatement ps = preparedStatement(t)) {
             try (ResultSet rs = ps.executeQuery()) {
-                if (SqlTesting.testing) {
+                if (SqlTesting.isTesting()) {
                     rowMapper.mapRow(rs);
                     return Collections.emptyList();
                 }
@@ -83,7 +85,7 @@ public final class Query implements QueryLike {
     public <T> T exactlyOneRow(SqlTransaction t, RowMapper<T> rowMapper) throws SQLException {
         try (PreparedStatement ps = preparedStatement(t)) {
             try (ResultSet rs = ps.executeQuery()) {
-                if (SqlTesting.testing) {
+                if (SqlTesting.isTesting()) {
                     return rowMapper.mapRow(rs);
                 }
                 if (rs.next()) {
@@ -105,7 +107,7 @@ public final class Query implements QueryLike {
     public <T> T maybeRow(SqlTransaction t, RowMapper<T> rowMapper) throws SQLException {
         try (PreparedStatement ps = preparedStatement(t)) {
             try (ResultSet rs = ps.executeQuery()) {
-                if (SqlTesting.testing) {
+                if (SqlTesting.isTesting()) {
                     return rowMapper.mapRow(rs);
                 }
                 if (rs.next()) {

@@ -1,7 +1,7 @@
 package jdbq.mapping;
 
 import jdbq.core.RowMapper;
-import jdbq.core.SqlTesting;
+import jdbq.testing.SqlTesting;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultMapperContext implements MapperContext {
-
-    public static volatile CheckColumnCompatibility check = null;
 
     private final ColumnNaming columnNaming;
     private final ConcurrentHashMap<Type, ColumnMapper> columnMappers = new ConcurrentHashMap<>();
@@ -87,9 +85,8 @@ public class DefaultMapperContext implements MapperContext {
         } else {
             ColumnMapper columnMapper = columnMapper(rowType);
             return (RowMapper<Object>) rs -> {
-                if (SqlTesting.testing) {
-                    CheckCompatibility checker = new CheckCompatibility(rs.getMetaData());
-                    checker.checkCompatibility(rowType, "<column>", 1, columnMapper.checkCompatibility());
+                if (SqlTesting.testing != null) {
+                    SqlTesting.testing.checkColumn(rs, rowType, columnMapper);
                     Object array = Array.newInstance(rowType, 1);
                     return Array.get(array, 0);
                 }
