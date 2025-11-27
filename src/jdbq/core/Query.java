@@ -127,11 +127,11 @@ public final class Query implements QueryLike {
         }
     }
 
-    public <T> T executeUpdate(SqlTransaction t, GeneratedKeyMapper<T> mapper, String... generatedColumns) throws SQLException {
+    public <T> T executeUpdate(SqlTransaction t, GeneratedKeyMapper<T> keyMapper, String... generatedColumns) throws SQLException {
         try (PreparedStatement ps = preparedStatement(t)) {
             int rows = ps.executeUpdate();
             try (ResultSet rs = ps.getGeneratedKeys()) {
-                return mapper.map(rows, generatedColumns, rs);
+                return keyMapper.map(rows, generatedColumns, rs);
             }
         }
     }
