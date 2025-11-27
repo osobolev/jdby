@@ -48,8 +48,9 @@ final class CheckOneColumn {
         return 0;
     }
 
-    private static boolean fitsIntoPrecision(Class<?> cls, int precision) {
-        // todo: customize this check
+    private boolean fitsIntoPrecision(Class<?> cls, int precision) {
+        if (options.strictness != TestStrictness.STRICT_TYPE_CHECK)
+            return true;
         int intLen = intLen(cls);
         return switch (intLen) {
             case 0 -> false;

@@ -12,6 +12,7 @@ public final class TestingOptions {
         throw new IllegalArgumentException(message);
     };
     public boolean checkNamesForPositions = true;
+    public TestStrictness strictness = TestStrictness.STRICT_TYPE_CHECK;
 
     public void warn(String message) {
         warn.accept(message);

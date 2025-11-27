@@ -15,7 +15,6 @@ import java.util.stream.IntStream;
 
 import static jdbq.testing.CheckOneColumn.dbColumnName;
 
-// todo: modes: check only column correspondence, basic typecheck, strict typecheck (int withds)
 final class CheckCompatibility {
 
     private final TestingOptions options;
@@ -27,6 +26,8 @@ final class CheckCompatibility {
     }
 
     void checkColumn(Type javaType, String javaName, int index, ColumnMapper columnMapper) throws SQLException {
+        if (options.strictness == TestStrictness.NO_TYPE_CHECK)
+            return;
         JDBCType dbType = JDBCType.valueOf(rsmd.getColumnType(index));
         List<CheckColumnCompatibility> checks = Arrays.asList(options.check, columnMapper.checkCompatibility());
         new CheckOneColumn(options, rsmd, index, dbType, javaType, javaName, checks).checkCompatibility();
