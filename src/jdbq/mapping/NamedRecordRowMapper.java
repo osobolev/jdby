@@ -15,12 +15,10 @@ import java.util.function.Function;
 
 final class NamedRecordRowMapper<R extends Record> implements RowMapper<R> {
 
-    private record ColumnDesc(String sqlName, ColumnMapperName mapper) {}
-
     private final Constructor<R> constructor;
-    private final List<ColumnDesc> columns;
+    private final List<NamedColumn> columns;
 
-    private NamedRecordRowMapper(Constructor<R> constructor, List<ColumnDesc> columns) {
+    private NamedRecordRowMapper(Constructor<R> constructor, List<NamedColumn> columns) {
         this.constructor = constructor;
         this.columns = columns;
     }
@@ -28,7 +26,7 @@ final class NamedRecordRowMapper<R extends Record> implements RowMapper<R> {
     static <R extends Record> NamedRecordRowMapper<R> create(Class<R> cls, ColumnNaming columnNaming,
                                                              Function<Type, ColumnMapperName> getColumnMapper) {
         RecordComponent[] rcs = Objects.requireNonNull(cls.getRecordComponents(), "Must be a record");
-        List<ColumnDesc> columns = new ArrayList<>(rcs.length);
+        List<NamedColumn> columns = new ArrayList<>(rcs.length);
         Class<?>[] types = new Class[rcs.length];
         for (int i = 0; i < rcs.length; i++) {
             RecordComponent rc = rcs[i];
@@ -36,7 +34,7 @@ final class NamedRecordRowMapper<R extends Record> implements RowMapper<R> {
             Type genericType = rc.getGenericType();
             ColumnMapperName columnMapper = getColumnMapper.apply(genericType);
             String sqlName = columnNaming.sqlName(rc);
-            columns.add(new ColumnDesc(sqlName, columnMapper));
+            columns.add(new NamedColumn(sqlName, columnMapper));
         }
         Constructor<R> constructor;
         try {
@@ -51,8 +49,8 @@ final class NamedRecordRowMapper<R extends Record> implements RowMapper<R> {
     public R mapRow(ResultSet rs) throws SQLException {
         Object[] args = new Object[columns.size()];
         for (int i = 0; i < columns.size(); i++) {
-            ColumnDesc column = columns.get(i);
-            args[i] = column.mapper.getColumn(rs, column.sqlName());
+            NamedColumn column = columns.get(i);
+            args[i] = column.mapper().getColumn(rs, column.sqlName());
         }
         try {
             return constructor.newInstance(args);
