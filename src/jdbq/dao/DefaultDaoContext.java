@@ -55,7 +55,9 @@ public class DefaultDaoContext extends DefaultMapperFactory implements DaoContex
 
     @Override
     public SqlParameter parameter(Type type, Object value) {
-        if (type instanceof Class<?> cls) {
+        if (value instanceof SqlParameter parameter) {
+            return parameter;
+        } else if (type instanceof Class<?> cls) {
             JDBCType jdbcType = jdbcType(cls);
             if (jdbcType == null) {
                 throw new IllegalArgumentException("Cannot create parameter of class " + cls.getName());
