@@ -11,3 +11,4 @@ fun add(name: String, path: String) {
 }
 
 add("jdbq", "jdbq-core")
+add("jdbq-testing", "jdbq-testing")
