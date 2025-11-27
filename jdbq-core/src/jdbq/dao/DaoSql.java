@@ -47,7 +47,7 @@ public final class DaoSql {
             if (!parameter.isNamePresent()) {
                 throw new IllegalArgumentException("Parameter name is not present for method '" + method + "'");
             }
-            SqlParameter value = ctx.parameter(parameter.getType(), args[i]);
+            SqlParameter value = ctx.parameter(parameter.getParameterizedType(), args[i]);
             argsMap.put(parameter.getName(), value);
         }
         if (!method.isDefault()) {
