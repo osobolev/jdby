@@ -47,7 +47,7 @@ final class CheckCompatibility {
         return switch (intLen) {
             case 0 -> false;
             case 1 -> precision <= 2; // byte can fit only 2 digits
-            case 2 -> precision <= 2; // short can fit only 4 digits
+            case 2 -> precision <= 4; // short can fit only 4 digits
             case 4 -> precision <= 9; // int can fit only 9 digits
             case 8 -> precision <= 18; // long can fit only 18 digits
             default -> true;
