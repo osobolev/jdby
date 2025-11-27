@@ -1,6 +1,7 @@
 package jdbq.mapping;
 
 import jdbq.core.RowMapper;
+import jdbq.core.SqlTesting;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -46,6 +47,11 @@ final class PositionalRecordRowMapper<R extends Record> implements RowMapper<R> 
 
     @Override
     public R mapRow(ResultSet rs) throws SQLException {
+        if (SqlTesting.testing) {
+            CheckCompatibility checker = new CheckCompatibility(rs.getMetaData());
+            checker.checkPosition(constructor.getDeclaringClass().getRecordComponents(), columnMappers);
+            return null;
+        }
         Object[] args = new Object[columnMappers.size()];
         for (int i = 0; i < columnMappers.size(); i++) {
             args[i] = columnMappers.get(i).getColumn(rs, 1 + i);

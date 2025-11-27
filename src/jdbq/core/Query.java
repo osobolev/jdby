@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public final class Query implements QueryLike {
@@ -61,6 +62,10 @@ public final class Query implements QueryLike {
     public <T> List<T> listRows(SqlTransaction t, RowMapper<T> mapper) throws SQLException {
         try (PreparedStatement ps = preparedStatement(t)) {
             try (ResultSet rs = ps.executeQuery()) {
+                if (SqlTesting.testing) {
+                    mapper.mapRow(rs);
+                    return Collections.emptyList();
+                }
                 List<T> list = new ArrayList<>();
                 while (rs.next()) {
                     T row = mapper.mapRow(rs);
@@ -78,6 +83,9 @@ public final class Query implements QueryLike {
     public <T> T exactlyOneRow(SqlTransaction t, RowMapper<T> mapper) throws SQLException {
         try (PreparedStatement ps = preparedStatement(t)) {
             try (ResultSet rs = ps.executeQuery()) {
+                if (SqlTesting.testing) {
+                    return mapper.mapRow(rs);
+                }
                 if (rs.next()) {
                     T row = mapper.mapRow(rs);
                     if (rs.next())
@@ -97,6 +105,9 @@ public final class Query implements QueryLike {
     public <T> T maybeRow(SqlTransaction t, RowMapper<T> mapper) throws SQLException {
         try (PreparedStatement ps = preparedStatement(t)) {
             try (ResultSet rs = ps.executeQuery()) {
+                if (SqlTesting.testing) {
+                    return mapper.mapRow(rs);
+                }
                 if (rs.next()) {
                     return mapper.mapRow(rs);
                 } else {

@@ -75,6 +75,12 @@ public class DefaultMapperFactory implements MapperFactory {
         } else {
             ColumnMapper columnMapper = columnMapper(rowType);
             return (RowMapper<Object>) rs -> {
+                if (SqlTesting.testing) {
+                    CheckCompatibility checker = new CheckCompatibility(rs.getMetaData());
+                    checker.checkCompatibility(rowType, "<column>", 1, columnMapper.checkCompatibility());
+                    Object array = Array.newInstance(rowType, 1);
+                    return Array.get(array, 0);
+                }
                 return columnMapper.getColumn(rs, 1);
             };
         }
