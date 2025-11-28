@@ -70,6 +70,14 @@ public final class DaoSql {
         data.parameters.put(name, value);
     }
 
+    public static SqlBuilder builder(String... sql) {
+        SqlBuilder buf = new SqlBuilder();
+        for (String s : sql) {
+            buf.append(s);
+        }
+        return buf;
+    }
+
     @SuppressWarnings("unchecked")
     public static <T> List<T> listRows(CharSequence sql) throws SQLException {
         CallData data = getCallData();

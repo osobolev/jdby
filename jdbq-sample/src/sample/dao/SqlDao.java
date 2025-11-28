@@ -1,6 +1,6 @@
 package sample.dao;
 
-import jdbq.core.QueryBuilder;
+import jdbq.dao.SqlBuilder;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -35,7 +35,7 @@ public interface SqlDao {
     }
 
     default List<UserRow> listUsersByFilter(String nameMask, LocalDate birthdayFrom, LocalDate birthdayTo) throws SQLException {
-        QueryBuilder buf = new QueryBuilder(
+        SqlBuilder buf = builder(
             """
                 select id, full_name, dob, last_login
                   from users
@@ -43,13 +43,13 @@ public interface SqlDao {
                 """
         );
         if (nameMask != null) {
-            buf.append(sql("and full_name like :nameMask"));
+            buf.append("and full_name like :nameMask");
         }
         if (birthdayFrom != null) {
-            buf.append(sql("and dob >= :birthdayFrom"));
+            buf.append("and dob >= :birthdayFrom");
         }
         if (birthdayTo != null) {
-            buf.append(sql("and dob <= :birthdayTo"));
+            buf.append("and dob <= :birthdayTo");
         }
         buf.append("order by full_name");
         return listRows(buf);
