@@ -26,6 +26,10 @@ public final class Query implements QueryLike {
         return new Query(sql, parameters);
     }
 
+    public static Query sql(String sql, SqlParameter... parameters) {
+        return jdbcSql(sql, parameters);
+    }
+
     @Override
     public String getSql() {
         return sql;
