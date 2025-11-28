@@ -53,6 +53,9 @@ public final class DaoSql {
         if (!method.isDefault()) {
             throw new IllegalArgumentException("Call to non-default method '" + method + "'");
         }
+        if (CALL_DATA.get() != null) {
+            throw new IllegalStateException("Cannot call proxy from proxy");
+        }
         CALL_DATA.set(new CallData(ctx, method, argsMap, connection));
         try {
             return InvocationHandler.invokeDefault(proxy, method, args);
