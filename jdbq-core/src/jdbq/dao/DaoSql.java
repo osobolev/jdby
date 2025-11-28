@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class DaoSql {
 
@@ -28,6 +30,14 @@ public final class DaoSql {
             )
         );
         return iface.cast(created);
+    }
+
+    public static String methodString(Method method) {
+        return
+            "'" + method.getDeclaringClass().getName() + "." + method.getName() +
+            "(" +
+            Stream.of(method.getParameters()).map(p -> p.getType().getName()).collect(Collectors.joining(", ")) +
+            ")'";
     }
 
     private static Object runProxyMethod(DaoContext ctx, Connection connection,
