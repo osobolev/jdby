@@ -61,7 +61,24 @@ final class ParsedQuery {
         for (String paramName : paramNames) {
             SqlParameter parameter = byName.get(paramName);
             if (parameter == null) {
-                throw new IllegalArgumentException("Value for parameter '" + paramName + "' not found");
+                String details;
+                if (byName.size() <= 10) {
+                    String available;
+                    if (byName.isEmpty()) {
+                        available = "none";
+                    } else {
+                        available = byName
+                            .keySet()
+                            .stream()
+                            .sorted()
+                            .map(p -> "'" + p + "'")
+                            .collect(Collectors.joining(", "));
+                    }
+                    details = "; available parameters: " + available;
+                } else {
+                    details = "";
+                }
+                throw new IllegalArgumentException("Value for parameter '" + paramName + "' not found" + details);
             }
             parameters.add(parameter);
         }
