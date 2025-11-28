@@ -1,7 +1,6 @@
 package jdbq.dao;
 
 import jdbq.core.Query;
-import jdbq.core.QueryLike;
 import jdbq.core.SqlParameter;
 
 import java.lang.reflect.InvocationHandler;
@@ -66,76 +65,42 @@ public final class DaoSql {
         return Objects.requireNonNull(data, "Must call through the proxy");
     }
 
-    public static Query sql(String sql) {
-        CallData data = getCallData();
-        return data.substituteArgs(sql);
-    }
-
     public static void parameter(String name, SqlParameter value) {
         CallData data = getCallData();
         data.parameters.put(name, value);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> List<T> listRows(String sql) throws SQLException {
+    public static <T> List<T> listRows(CharSequence sql) throws SQLException {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
         return (List<T>) query.listRows(data.connection, data.rowMapper());
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> List<T> listRows(QueryLike query) throws SQLException {
-        CallData data = getCallData();
-        return (List<T>) query.toQuery().listRows(data.connection, data.rowMapper());
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> T exactlyOneRow(String sql) throws SQLException {
+    public static <T> T exactlyOneRow(CharSequence sql) throws SQLException {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
         return (T) query.exactlyOneRow(data.connection, data.rowMapper());
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T exactlyOneRow(QueryLike query) throws SQLException {
-        CallData data = getCallData();
-        return (T) query.toQuery().exactlyOneRow(data.connection, data.rowMapper());
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> T maybeRow(String sql) throws SQLException {
+    public static <T> T maybeRow(CharSequence sql) throws SQLException {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
         return (T) query.maybeRow(data.connection, data.rowMapper());
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T> T maybeRow(QueryLike query) throws SQLException {
-        CallData data = getCallData();
-        return (T) query.toQuery().maybeRow(data.connection, data.rowMapper());
-    }
-
-    public static int executeUpdate(String sql) throws SQLException {
+    public static int executeUpdate(CharSequence sql) throws SQLException {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
         return query.executeUpdate(data.connection);
     }
 
-    public static int executeUpdate(QueryLike query) throws SQLException {
-        CallData data = getCallData();
-        return query.toQuery().executeUpdate(data.connection);
-    }
-
     @SuppressWarnings("unchecked")
-    public static <T> T executeUpdate(String sql, String generatedColumn, String... otherGeneratedColumns) throws SQLException {
+    public static <T> T executeUpdate(CharSequence sql, String generatedColumn, String... otherGeneratedColumns) throws SQLException {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
         return (T) query.executeUpdate(data.connection, data.keyMapper(), generatedColumn, otherGeneratedColumns);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> T executeUpdate(QueryLike query, String generatedColumn, String... otherGeneratedColumns) throws SQLException {
-        CallData data = getCallData();
-        return (T) query.toQuery().executeUpdate(data.connection, data.keyMapper(), generatedColumn, otherGeneratedColumns);
     }
 }
