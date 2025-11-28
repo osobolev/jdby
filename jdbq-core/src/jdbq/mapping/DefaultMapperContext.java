@@ -20,13 +20,13 @@ public class DefaultMapperContext implements MapperContext {
 
     public DefaultMapperContext(ColumnNaming columnNaming) {
         this.columnNaming = columnNaming;
-        registerSimple(SimpleColumnMapper.byteMapper());
-        registerSimple(SimpleColumnMapper.shortMapper());
-        registerSimple(SimpleColumnMapper.intMapper());
-        registerSimple(SimpleColumnMapper.longMapper());
-        registerSimple(SimpleColumnMapper.floatMapper());
-        registerSimple(SimpleColumnMapper.doubleMapper());
-        registerSimple(SimpleColumnMapper.booleanMapper());
+        registerSimple(byte.class, ColumnMapper.byteMapper());
+        registerSimple(short.class, ColumnMapper.shortMapper());
+        registerSimple(int.class, ColumnMapper.intMapper());
+        registerSimple(long.class, ColumnMapper.longMapper());
+        registerSimple(float.class, ColumnMapper.floatMapper());
+        registerSimple(double.class, ColumnMapper.doubleMapper());
+        registerSimple(boolean.class, ColumnMapper.booleanMapper());
         List<Class<?>> jdbcTypes = List.of(
             Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Boolean.class,
             String.class, byte[].class,
@@ -34,12 +34,12 @@ public class DefaultMapperContext implements MapperContext {
             LocalDate.class, LocalTime.class, OffsetDateTime.class, LocalDateTime.class
         );
         for (Class<?> jdbcType : jdbcTypes) {
-            registerSimple(SimpleColumnMapper.jdbcMapper(jdbcType));
+            registerColumn(jdbcType, ColumnMapper.jdbcMapper(jdbcType));
         }
     }
 
-    private <T> void registerSimple(SimpleColumnMapper<T> columnMapper) {
-        registerColumn(columnMapper.cls, columnMapper);
+    private <T> void registerSimple(Class<T> cls, SimpleColumnMapper<?> columnMapper) {
+        registerColumn(cls, columnMapper);
     }
 
     public void registerColumn(Type type, ColumnMapper columnMapper) {
