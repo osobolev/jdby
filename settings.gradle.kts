@@ -5,6 +5,5 @@ plugins {
 rootProject.name = "jdbq"
 
 include("jdbq-core")
-include("jdbq-dao")
 include("jdbq-testing")
 include("jdbq-sample")
