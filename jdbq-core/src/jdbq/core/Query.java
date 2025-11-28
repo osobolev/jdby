@@ -3,7 +3,6 @@ package jdbq.core;
 import jdbq.core.testing.SqlTestingHook;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -74,12 +73,7 @@ public final class Query implements QueryLike {
                     rowMapper.mapRow(rs);
                     return Collections.emptyList();
                 }
-                List<T> list = new ArrayList<>();
-                while (rs.next()) {
-                    T row = rowMapper.mapRow(rs);
-                    list.add(row);
-                }
-                return list;
+                return rowMapper.mapAllRows(rs);
             }
         }
     }
