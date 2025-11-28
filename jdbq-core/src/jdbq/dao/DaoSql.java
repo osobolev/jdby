@@ -101,21 +101,21 @@ public final class DaoSql {
     public static <T> List<T> listRows(CharSequence sql) throws SQLException {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
-        return (List<T>) query.listRows(data.connection, data.rowMapper());
+        return (List<T>) query.listRows(data.connection, data.rowMapper(List.class));
     }
 
     @SuppressWarnings("unchecked")
     public static <T> T exactlyOneRow(CharSequence sql) throws SQLException {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
-        return (T) query.exactlyOneRow(data.connection, data.rowMapper());
+        return (T) query.exactlyOneRow(data.connection, data.rowMapper(null));
     }
 
     @SuppressWarnings("unchecked")
     public static <T> T maybeRow(CharSequence sql) throws SQLException {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
-        return (T) query.maybeRow(data.connection, data.rowMapper());
+        return (T) query.maybeRow(data.connection, data.rowMapper(null));
     }
 
     public static int executeUpdate(CharSequence sql) throws SQLException {

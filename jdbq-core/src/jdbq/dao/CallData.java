@@ -30,30 +30,24 @@ final class CallData {
         return pq.toQuery(parameters::get);
     }
 
-    RowMapper<?> rowMapper() {
-        return ctx.rowMapper(getRowType());
+    RowMapper<?> rowMapper(Class<?> requiredClass) {
+        return ctx.rowMapper(getRowType(requiredClass));
     }
 
     GeneratedKeyMapper<?> keyMapper() {
-        return ctx.keyMapper(getRowType());
+        return ctx.keyMapper(getRowType(null));
     }
 
-    private Class<?> getRowType() {
+    private Class<?> getRowType(Class<?> requiredClass) {
         Type returnType = method.getGenericReturnType();
         if (returnType instanceof Class<?> cls) {
             return cls;
         } else if (returnType instanceof ParameterizedType pt) {
             Type[] typeArguments = pt.getActualTypeArguments();
-            if (typeArguments.length != 1) {
-                throw new IllegalArgumentException("Method '" + method + "' return type must have only 1 generic parameter");
-            }
-            if (typeArguments[0] instanceof Class<?> cls) {
+            if (typeArguments.length == 1 && typeArguments[0] instanceof Class<?> cls) {
                 return cls;
-            } else {
-                throw new IllegalArgumentException("Method '" + method + "' return type generic parameter must be a class");
             }
-        } else {
-            throw new IllegalArgumentException("Method '" + method + "' return type must be a class or a simple generic");
         }
+        return null;
     }
 }
