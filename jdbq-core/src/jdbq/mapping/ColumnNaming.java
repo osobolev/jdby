@@ -2,6 +2,7 @@ package jdbq.mapping;
 
 import java.lang.reflect.RecordComponent;
 import java.util.Objects;
+import java.util.function.Function;
 
 public interface ColumnNaming {
 
@@ -9,12 +10,17 @@ public interface ColumnNaming {
         return true;
     }
 
-    default String sqlName(RecordComponent component) {
+    static String sqlNameFromAnnotation(RecordComponent component, Function<String, String> fallback) {
         SqlName sqlName = component.getDeclaredAnnotation(SqlName.class);
         if (sqlName != null) {
             return sqlName.value();
+        } else {
+            return fallback.apply(component.getName());
         }
-        return sqlName(component.getName());
+    }
+
+    default String sqlName(RecordComponent component) {
+        return sqlNameFromAnnotation(component, this::sqlName);
     }
 
     String sqlName(String javaName);

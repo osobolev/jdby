@@ -2,6 +2,7 @@ package jdbq.testing;
 
 import jdbq.mapping.CheckColumnCompatibility;
 import jdbq.mapping.ColumnMapper;
+import jdbq.mapping.ColumnNaming;
 
 import java.lang.reflect.RecordComponent;
 import java.lang.reflect.Type;
@@ -10,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -48,7 +50,7 @@ final class CheckCompatibility {
         String dbName = rsmd.getColumnName(index);
         if (dbName == null || dbName.isEmpty())
             return;
-        String javaName = component.getName();
+        String javaName = ColumnNaming.sqlNameFromAnnotation(component, Function.identity());
         if (!Objects.equals(canonicalize(dbName), canonicalize(javaName))) {
             options.warn(String.format(
                 "Java field '%s' and DB column '%s' have different names for row type %s",
