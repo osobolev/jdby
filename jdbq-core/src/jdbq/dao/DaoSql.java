@@ -36,7 +36,7 @@ public final class DaoSql {
         return
             "'" + method.getDeclaringClass().getName() + "." + method.getName() +
             "(" +
-            Stream.of(method.getParameters()).map(p -> p.getType().getName()).collect(Collectors.joining(", ")) +
+            Stream.of(method.getParameters()).map(p -> p.getType().getTypeName()).collect(Collectors.joining(", ")) +
             ")'";
     }
 
