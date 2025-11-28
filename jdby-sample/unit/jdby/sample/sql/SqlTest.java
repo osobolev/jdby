@@ -2,7 +2,6 @@ package jdby.sample.sql;
 
 import jdby.mapping.ColumnNaming;
 import jdby.mapping.DefaultMapperContext;
-import jdby.sample.sql.SqlDao;
 import jdby.testing.SqlTesting;
 import jdby.testing.TestingOptions;
 import org.junit.jupiter.api.Test;
@@ -12,7 +11,7 @@ import java.util.List;
 public class SqlTest {
 
     @Test
-    public void testDao() throws Throwable {
+    public void testDao() throws Exception {
         TestingOptions options = new TestingOptions();
         DefaultMapperContext ctx = new DefaultMapperContext(ColumnNaming.camelCase());
         options.ctx = ctx;

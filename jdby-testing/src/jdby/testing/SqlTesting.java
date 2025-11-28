@@ -45,7 +45,7 @@ public final class SqlTesting {
         }
     }
 
-    private void runAllMethods(Class<?> cls, Object o) throws Throwable {
+    private void runAllMethods(Class<?> cls, Object o) throws Exception {
         for (Method method : cls.getDeclaredMethods()) {
             int modifiers = method.getModifiers();
             if (!Modifier.isPublic(modifiers))
@@ -68,7 +68,11 @@ public final class SqlTesting {
             try (RollbackGuard guard = new RollbackGuard(connection)) {
                 method.invoke(o, args);
             } catch (InvocationTargetException itex) {
-                throw itex.getTargetException();
+                if (itex.getCause() instanceof Exception ex) {
+                    throw ex;
+                } else {
+                    throw itex;
+                }
             }
         }
     }
@@ -79,7 +83,7 @@ public final class SqlTesting {
     }
 
     public static void runTests(TestingOptions options, Callable<Connection> getConnection,
-                                List<Class<?>> daoClasses, CreateTestDao factory) throws Throwable {
+                                List<Class<?>> daoClasses, CreateTestDao factory) throws Exception {
         try (Connection connection = getConnection.call()) {
             connection.setAutoCommit(false);
             options.initConnection.start(connection);
@@ -144,7 +148,7 @@ public final class SqlTesting {
     }
 
     public static void runTests(TestingOptions options, Callable<Connection> getConnection,
-                                List<Class<?>> daoClasses) throws Throwable {
+                                List<Class<?>> daoClasses) throws Exception {
         runTests(
             options, getConnection, daoClasses,
             (connection, cls) -> createTestDao(options.ctx, cls, connection)

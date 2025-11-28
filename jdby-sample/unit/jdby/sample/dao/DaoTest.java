@@ -2,7 +2,6 @@ package jdby.sample.dao;
 
 import jdby.dao.DefaultDaoContext;
 import jdby.mapping.ColumnNaming;
-import jdby.sample.dao.SqlDao;
 import jdby.testing.SqlTesting;
 import jdby.testing.TestingOptions;
 import org.junit.jupiter.api.Test;
@@ -12,7 +11,7 @@ import java.util.List;
 public class DaoTest {
 
     @Test
-    public void testDao() throws Throwable {
+    public void testDao() throws Exception {
         TestingOptions options = new TestingOptions();
         DefaultDaoContext ctx = new DefaultDaoContext(ColumnNaming.camelCase());
         options.ctx = ctx;

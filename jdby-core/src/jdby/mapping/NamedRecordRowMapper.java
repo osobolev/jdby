@@ -66,8 +66,10 @@ final class NamedRecordRowMapper<R> implements RowMapper<R> {
             throw new SQLException(ex);
         } catch (InvocationTargetException ex) {
             Throwable cause = ex.getCause();
-            if (cause instanceof SQLException) {
-                throw (SQLException) cause;
+            if (cause instanceof SQLException sex) {
+                throw sex;
+            } else if (cause instanceof RuntimeException rtex) {
+                throw rtex;
             } else {
                 throw new SQLException(cause);
             }
