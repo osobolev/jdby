@@ -56,3 +56,10 @@ tasks {
 tasks.clean {
     delete("$projectDir/out")
 }
+
+tasks.named<Test>("test").configure {
+    useJUnitPlatform()
+    testLogging {
+        showStandardStreams = true
+    }
+}
