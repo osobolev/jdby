@@ -1,6 +1,7 @@
 package jdbq.dao;
 
 import jdbq.core.Query;
+import jdbq.core.RowConnection;
 import jdbq.core.SqlParameter;
 
 import java.lang.reflect.InvocationHandler;
@@ -68,6 +69,11 @@ public final class DaoSql {
     public static void parameter(String name, SqlParameter value) {
         CallData data = getCallData();
         data.parameters.put(name, value);
+    }
+
+    public static RowConnection getConnection() {
+        CallData data = getCallData();
+        return data.ctx.withConnection(data.connection);
     }
 
     public static SqlBuilder builder(String... sql) {
