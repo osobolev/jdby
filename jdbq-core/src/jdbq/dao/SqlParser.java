@@ -55,7 +55,6 @@ final class SqlParser {
     }
 
     void parse() {
-        // todo: error out on '?' ???
         while (!eof()) {
             char ch = ch();
             int from = i++;
