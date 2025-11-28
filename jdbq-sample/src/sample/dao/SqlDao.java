@@ -49,7 +49,7 @@ public interface SqlDao {
             buf.append(sql("and dob >= :birthdayFrom"));
         }
         if (birthdayTo != null) {
-            buf.append("and dob <= :birthdayTo");
+            buf.append(sql("and dob <= :birthdayTo"));
         }
         buf.append("order by full_name");
         return listRows(buf);
