@@ -12,7 +12,7 @@ public final class QueryBuilder implements QueryLike {
     public QueryBuilder() {
     }
 
-    public QueryBuilder(String sql, SqlParameter... parameters) {
+    public QueryBuilder(CharSequence sql, SqlParameter... parameters) {
         buf.append(sql);
         this.parameters.addAll(Arrays.asList(parameters));
     }
