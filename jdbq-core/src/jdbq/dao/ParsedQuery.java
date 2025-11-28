@@ -5,7 +5,8 @@ import jdbq.core.SqlParameter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 final class ParsedQuery {
 
@@ -55,10 +56,10 @@ final class ParsedQuery {
         return new ParsedQuery(state.buf.toString(), state.paramNames);
     }
 
-    Query toQuery(Function<String, SqlParameter> getParameters) {
+    Query toQuery(Map<String, SqlParameter> byName) {
         List<SqlParameter> parameters = new ArrayList<>(paramNames.size());
         for (String paramName : paramNames) {
-            SqlParameter parameter = getParameters.apply(paramName);
+            SqlParameter parameter = byName.get(paramName);
             if (parameter == null) {
                 throw new IllegalArgumentException("Value for parameter '" + paramName + "' not found");
             }

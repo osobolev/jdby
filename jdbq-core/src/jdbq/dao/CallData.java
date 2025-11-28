@@ -27,7 +27,7 @@ final class CallData {
 
     Query substituteArgs(CharSequence sql) {
         ParsedQuery pq = ParsedQuery.parse(sql); // todo: cache it???
-        return pq.toQuery(parameters::get);
+        return pq.toQuery(parameters);
     }
 
     RowMapper<?> rowMapper(Class<?> requiredClass) {
