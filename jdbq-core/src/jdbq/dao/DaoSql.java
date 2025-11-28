@@ -127,15 +127,15 @@ public final class DaoSql {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T executeUpdate(String sql, String... generatedColumns) throws SQLException {
+    public static <T> T executeUpdate(String sql, String generatedColumn, String... otherGeneratedColumns) throws SQLException {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
-        return (T) query.executeUpdate(data.connection, data.keyMapper(), generatedColumns);
+        return (T) query.executeUpdate(data.connection, data.keyMapper(), generatedColumn, otherGeneratedColumns);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T executeUpdate(QueryLike query, String... generatedColumns) throws SQLException {
+    public static <T> T executeUpdate(QueryLike query, String generatedColumn, String... otherGeneratedColumns) throws SQLException {
         CallData data = getCallData();
-        return (T) query.toQuery().executeUpdate(data.connection, data.keyMapper(), generatedColumns);
+        return (T) query.toQuery().executeUpdate(data.connection, data.keyMapper(), generatedColumn, otherGeneratedColumns);
     }
 }

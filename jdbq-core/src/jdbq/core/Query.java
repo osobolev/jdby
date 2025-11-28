@@ -143,8 +143,17 @@ public final class Query implements QueryLike {
         }
     }
 
-    public <T> T executeUpdate(Connection connection, GeneratedKeyMapper<T> keyMapper, String... generatedColumns) throws SQLException {
-        try (PreparedStatement ps = preparedStatement(connection)) {
+    public int executeUpdate(RowConnection connection) throws SQLException {
+        return executeUpdate(connection.getConnection());
+    }
+
+    public <T> T executeUpdate(Connection connection, GeneratedKeyMapper<T> keyMapper,
+                               String generatedColumn, String... otherGeneratedColumns) throws SQLException {
+        String[] generatedColumns = new String[1 + otherGeneratedColumns.length];
+        generatedColumns[0] = generatedColumn;
+        System.arraycopy(otherGeneratedColumns, 0, generatedColumns, 1, otherGeneratedColumns.length);
+        try (PreparedStatement ps = connection.prepareStatement(sql, generatedColumns)) {
+            setParameters(ps);
             int rows = executeUpdate(ps);
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 return keyMapper.map(rows, generatedColumns, rs);
@@ -152,7 +161,11 @@ public final class Query implements QueryLike {
         }
     }
 
-    public <T> T executeUpdate(RowConnection connection, Class<T> keyType, String... generatedColumns) throws SQLException {
-        return executeUpdate(connection.getConnection(), connection.keyMapper(keyType), generatedColumns);
+    public <T> T executeUpdate(RowConnection connection, Class<T> keyType,
+                               String generatedColumn, String... otherGeneratedColumns) throws SQLException {
+        return executeUpdate(
+            connection.getConnection(), connection.keyMapper(keyType),
+            generatedColumn, otherGeneratedColumns
+        );
     }
 }
