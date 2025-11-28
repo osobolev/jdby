@@ -55,13 +55,13 @@ public final class DaoSql {
         for (int i = 0; i < parameters.length; i++) {
             Parameter parameter = parameters[i];
             if (!parameter.isNamePresent()) {
-                throw new IllegalArgumentException("Parameter name is not present for method '" + method + "'; recompile with '-parameters'");
+                throw new IllegalArgumentException("Parameter names are not present for " + iface + "; recompile with '-parameters'");
             }
             SqlParameter value = ctx.parameter(parameter.getParameterizedType(), args[i]);
             argsMap.put(parameter.getName(), value);
         }
         if (!method.isDefault()) {
-            throw new IllegalArgumentException("Call to non-default method '" + method + "'");
+            throw new IllegalArgumentException("Call of non-default method " + methodString(method));
         }
         if (CALL_DATA.get() != null) {
             throw new IllegalStateException("Cannot call proxy from proxy");
