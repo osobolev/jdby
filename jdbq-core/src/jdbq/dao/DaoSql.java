@@ -84,6 +84,11 @@ public final class DaoSql {
         data.parameters.put(name, value);
     }
 
+    public static <T> void parameter(String name, T value, Class<T> cls) {
+        CallData data = getCallData();
+        data.parameters.put(name, data.ctx.parameter(cls, value));
+    }
+
     public static RowConnection getConnection() {
         CallData data = getCallData();
         return data.ctx.withConnection(data.connection);
