@@ -67,9 +67,8 @@ final class CheckCompatibility {
                 "Row type '%s' has %s columns (%s) than select (%s)",
                 rowType.getName(), components.length > columnCount ? "more" : "less", components.length, columnCount
             ));
-            return;
         }
-        for (int i = 0; i < components.length; i++) {
+        for (int i = 0; i < Math.min(components.length, columnCount); i++) {
             int index = i + 1;
             RecordComponent component = components[i];
             checkColumn(component, index, columnMappers.get(i));
