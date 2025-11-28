@@ -35,6 +35,18 @@ public class SqlExample {
 
             List<UserRow> zoomers = dao.listUsersByFilter(null, LocalDate.of(2000, 1, 1), null);
             System.out.println("Zoomers: " + zoomers);
+
+            UserRow nick = dao.maybeUser(idNick);
+            System.out.println("Nick: " + nick);
+
+            UserRow unknown = dao.maybeUser(-1);
+            System.out.println("Unknown user: " + unknown);
+
+            try {
+                dao.loadUser(-1);
+            } catch (SQLException ex) {
+                System.out.println("User not found!");
+            }
         }
     }
 }

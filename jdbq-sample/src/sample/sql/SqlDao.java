@@ -80,4 +80,26 @@ public class SqlDao {
             pDateTime(lastLogin), pInt(id)
         ).executeUpdate(connection);
     }
+
+    public UserRow maybeUser(int id) throws SQLException {
+        return sql(
+            """
+                select id, full_name, dob, last_login
+                  from users
+                 where id = ?
+                """,
+            pInt(id)
+        ).maybeRow(connection, UserRow.class);
+    }
+
+    public UserRow loadUser(int id) throws SQLException {
+        return sql(
+            """
+                select id, full_name, dob, last_login
+                  from users
+                 where id = ?
+                """,
+            pInt(id)
+        ).exactlyOneRow(connection, UserRow.class);
+    }
 }
