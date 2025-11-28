@@ -1,6 +1,9 @@
 package jdbq.dao;
 
-import jdbq.core.*;
+import jdbq.core.GeneratedKeyMapper;
+import jdbq.core.Query;
+import jdbq.core.RowMapper;
+import jdbq.core.SqlParameter;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
