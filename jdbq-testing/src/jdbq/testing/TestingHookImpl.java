@@ -1,7 +1,7 @@
 package jdbq.testing;
 
-import jdbq.mapping.ColumnMapper;
 import jdbq.core.testing.SqlTestingHook;
+import jdbq.mapping.ColumnMapper;
 
 import java.lang.reflect.Type;
 import java.sql.ResultSet;
