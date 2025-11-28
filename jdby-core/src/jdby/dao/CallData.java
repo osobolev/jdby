@@ -4,6 +4,7 @@ import jdby.core.GeneratedKeyMapper;
 import jdby.core.Query;
 import jdby.core.RowMapper;
 import jdby.core.SqlParameter;
+import jdby.internal.Utils;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -44,12 +45,12 @@ final class CallData {
             return cls;
         }
         if (requiredClass == null) {
-            throw new IllegalArgumentException("Method " + DaoSql.methodString(method) + " return type must be non-generic");
+            throw new IllegalArgumentException("Method " + Utils.methodString(method) + " return type must be non-generic");
         } else {
             Class<?> paramClass = getGenericParameter(returnType, requiredClass);
             if (paramClass != null)
                 return paramClass;
-            throw new IllegalArgumentException("Method " + DaoSql.methodString(method) + " return type must be '" + requiredClass.getName() + "<...>'");
+            throw new IllegalArgumentException("Method " + Utils.methodString(method) + " return type must be '" + requiredClass.getName() + "<...>'");
         }
     }
 

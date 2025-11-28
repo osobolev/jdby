@@ -3,6 +3,7 @@ package jdby.dao;
 import jdby.core.Query;
 import jdby.core.RowConnection;
 import jdby.core.SqlParameter;
+import jdby.internal.Utils;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -14,8 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public final class DaoSql {
 
@@ -30,14 +29,6 @@ public final class DaoSql {
             )
         );
         return iface.cast(created);
-    }
-
-    public static String methodString(Method method) {
-        return
-            "'" + method.getDeclaringClass().getName() + "." + method.getName() +
-            "(" +
-            Stream.of(method.getParameters()).map(p -> p.getType().getTypeName()).collect(Collectors.joining(", ")) +
-            ")'";
     }
 
     private static Object runProxyMethod(DaoContext ctx, Connection connection,
@@ -61,7 +52,7 @@ public final class DaoSql {
             argsMap.put(parameter.getName(), value);
         }
         if (!method.isDefault()) {
-            throw new IllegalArgumentException("Call of non-default method " + methodString(method));
+            throw new IllegalArgumentException("Call of non-default method " + Utils.methodString(method));
         }
         if (CALL_DATA.get() != null) {
             throw new IllegalStateException("Cannot call proxy from proxy");

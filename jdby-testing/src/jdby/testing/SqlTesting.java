@@ -6,6 +6,7 @@ import jdby.core.testing.SqlTestingHook;
 import jdby.dao.DaoConnection;
 import jdby.dao.DaoContext;
 import jdby.dao.DaoSql;
+import jdby.internal.Utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -60,7 +61,7 @@ public final class SqlTesting {
                 args[i] = options.paramFactory.mockParameter(type, () -> {
                     throw new IllegalStateException(String.format(
                         "Unsupported type '%s' of parameter '%s' of method %s",
-                        type.getTypeName(), param.getName(), DaoSql.methodString(method)
+                        type.getTypeName(), param.getName(), Utils.methodString(method)
                     ));
                 });
             }

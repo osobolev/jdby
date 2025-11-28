@@ -1,5 +1,9 @@
 package jdby.internal;
 
+import java.lang.reflect.Method;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public final class Utils {
 
     private static boolean isSpace(char ch) {
@@ -15,5 +19,13 @@ public final class Utils {
             }
         }
         buf.append(sql);
+    }
+
+    public static String methodString(Method method) {
+        return
+            "'" + method.getDeclaringClass().getName() + "." + method.getName() +
+            "(" +
+            Stream.of(method.getParameters()).map(p -> p.getType().getTypeName()).collect(Collectors.joining(", ")) +
+            ")'";
     }
 }
