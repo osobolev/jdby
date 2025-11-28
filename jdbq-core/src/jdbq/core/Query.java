@@ -22,12 +22,16 @@ public final class Query implements QueryLike {
         this(sql, Arrays.asList(parameters));
     }
 
-    public static Query jdbcSql(String sql, SqlParameter... parameters) {
+    public static Query sql(String sql, SqlParameter... parameters) {
         return new Query(sql, parameters);
     }
 
-    public static Query sql(String sql, SqlParameter... parameters) {
-        return jdbcSql(sql, parameters);
+    public static QueryBuilder builder(String... sql) {
+        QueryBuilder buf = new QueryBuilder();
+        for (String s : sql) {
+            buf.append(s);
+        }
+        return buf;
     }
 
     @Override
