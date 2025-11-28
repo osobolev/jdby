@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    api(project(":jdbq"))
+    api(project(":jdbq-core"))
 
     "manualRuntimeOnly"("org.postgresql:postgresql:42.7.8")
 }
