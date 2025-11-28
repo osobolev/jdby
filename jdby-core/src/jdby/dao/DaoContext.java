@@ -8,7 +8,11 @@ import java.sql.Connection;
 
 public interface DaoContext extends MapperContext {
 
-    SqlParameter parameter(Type type, Object value);
+    ParameterMapper parameterMapper(Type type);
+
+    default SqlParameter parameter(Type type, Object value) {
+        return parameterMapper(type).toSql(value);
+    }
 
     @Override
     default DaoConnection withConnection(Connection connection) {

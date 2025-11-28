@@ -12,57 +12,58 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class DefaultDaoContext extends DefaultMapperContext implements DaoContext {
 
+    private final ConcurrentMap<Type, ParameterMapper> parameterMappers = new ConcurrentHashMap<>();
+
     public DefaultDaoContext(ColumnNaming columnNaming) {
         super(columnNaming);
+
+        registerSimple(byte.class, JDBCType.TINYINT);
+        registerSimple(Byte.class, JDBCType.TINYINT);
+        registerSimple(short.class, JDBCType.SMALLINT);
+        registerSimple(Short.class, JDBCType.SMALLINT);
+        registerSimple(int.class, JDBCType.INTEGER);
+        registerSimple(Integer.class, JDBCType.INTEGER);
+        registerSimple(long.class, JDBCType.BIGINT);
+        registerSimple(Long.class, JDBCType.BIGINT);
+        registerSimple(double.class, JDBCType.DOUBLE);
+        registerSimple(Double.class, JDBCType.DOUBLE);
+        registerSimple(float.class, JDBCType.FLOAT);
+        registerSimple(Float.class, JDBCType.FLOAT);
+        registerSimple(boolean.class, JDBCType.BOOLEAN);
+        registerSimple(Boolean.class, JDBCType.BOOLEAN);
+        registerSimple(BigInteger.class, JDBCType.BIGINT);
+        registerSimple(BigDecimal.class, JDBCType.DECIMAL);
+        registerSimple(String.class, JDBCType.VARCHAR);
+        registerSimple(LocalDate.class, JDBCType.DATE);
+        registerSimple(LocalTime.class, JDBCType.TIME);
+        registerSimple(LocalDateTime.class, JDBCType.TIMESTAMP);
+        registerSimple(OffsetDateTime.class, JDBCType.TIMESTAMP_WITH_TIMEZONE);
+        registerSimple(byte[].class, JDBCType.VARBINARY);
+
     }
 
-    public static JDBCType jdbcType(Class<?> type) {
-        if (type == int.class || type == Integer.class) {
-            return JDBCType.INTEGER;
-        } else if (type == long.class || type == Long.class || type == BigInteger.class) {
-            return JDBCType.BIGINT;
-        } else if (type == double.class || type == Double.class) {
-            return JDBCType.DOUBLE;
-        } else if (type == byte.class || type == Byte.class) {
-            return JDBCType.TINYINT;
-        } else if (type == short.class || type == Short.class) {
-            return JDBCType.SMALLINT;
-        } else if (type == float.class || type == Float.class) {
-            return JDBCType.FLOAT;
-        } else if (type == BigDecimal.class) {
-            return JDBCType.DECIMAL;
-        } else if (type == String.class) {
-            return JDBCType.VARCHAR;
-        } else if (type == LocalDate.class) {
-            return JDBCType.DATE;
-        } else if (type == OffsetDateTime.class) {
-            return JDBCType.TIMESTAMP_WITH_TIMEZONE;
-        } else if (type == LocalDateTime.class) {
-            return JDBCType.TIMESTAMP;
-        } else if (type == LocalTime.class) {
-            return JDBCType.TIME;
-        } else if (type == byte[].class) {
-            return JDBCType.VARBINARY;
-        } else if (type == boolean.class || type == Boolean.class) {
-            return JDBCType.BOOLEAN;
-        } else {
-            return null;
-        }
+    private void registerSimple(Class<?> cls, JDBCType jdbcType) {
+        registerParameter(cls, value -> SqlParameter.jdbc(value, jdbcType));
+    }
+
+    public void registerParameter(Type type, ParameterMapper parameterMapper) {
+        parameterMappers.put(type, parameterMapper);
     }
 
     @Override
-    public SqlParameter parameter(Type type, Object value) {
-        if (value instanceof SqlParameter parameter) {
-            return parameter;
-        } else if (type instanceof Class<?> cls) {
-            JDBCType jdbcType = jdbcType(cls);
-            if (jdbcType != null) {
-                return SqlParameter.jdbc(value, jdbcType);
-            }
+    public ParameterMapper parameterMapper(Type type) {
+        if (type == SqlParameter.class) {
+            return value -> (SqlParameter) value;
         }
-        throw new IllegalArgumentException("Cannot create parameter of type " + type.getTypeName());
+        ParameterMapper parameterMapper = parameterMappers.get(type);
+        if (parameterMapper == null) {
+            throw new IllegalArgumentException("Cannot create parameter of type '" + type.getTypeName() + "'");
+        }
+        return parameterMapper;
     }
 }
