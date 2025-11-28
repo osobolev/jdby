@@ -138,7 +138,7 @@ public final class SqlTesting {
             Constructor<?> constructor = candidates0.get(0);
             return constructor.newInstance();
         } else {
-            throw new IllegalArgumentException("Cannot find constructor for " + cls);
+            throw new IllegalArgumentException("Cannot find appropriate constructor for class '" + cls.getName() + "'");
         }
     }
 
