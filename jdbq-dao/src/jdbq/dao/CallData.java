@@ -22,7 +22,7 @@ final class CallData {
         this.connection = connection;
     }
 
-    Query substituteArgs(String sql) {
+    Query substituteArgs(CharSequence sql) {
         ParsedQuery pq = ParsedQuery.parse(sql); // todo: cache it???
         return pq.toQuery(parameters::get);
     }

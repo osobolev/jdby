@@ -24,12 +24,12 @@ final class ParsedQuery {
 
     private static final class ParserState implements SqlParser.Callback {
 
-        private final String sql;
+        private final CharSequence sql;
         private final StringBuilder buf = new StringBuilder();
         private final List<String> paramNames = new ArrayList<>();
         private int start = 0;
 
-        private ParserState(String sql) {
+        private ParserState(CharSequence sql) {
             this.sql = sql;
         }
 
@@ -46,7 +46,7 @@ final class ParsedQuery {
         }
     }
 
-    static ParsedQuery parse(String sql) {
+    static ParsedQuery parse(CharSequence sql) {
         ParserState state = new ParserState(sql);
         SqlParser parser = new SqlParser(sql, state);
         parser.parse();
