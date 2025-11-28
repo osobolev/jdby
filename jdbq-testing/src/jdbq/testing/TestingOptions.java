@@ -5,9 +5,15 @@ import jdbq.dao.DefaultDaoContext;
 import jdbq.mapping.CheckColumnCompatibility;
 import jdbq.mapping.ColumnNaming;
 
+import java.sql.Connection;
 import java.util.function.Consumer;
 
 public final class TestingOptions {
+
+    public interface ConnectionInit {
+
+        void start(Connection connection) throws Exception;
+    }
 
     /**
      * Is called for each column, if not null. Can:
@@ -29,6 +35,7 @@ public final class TestingOptions {
      */
     public TestStrictness strictness = TestStrictness.STRICT_TYPE_CHECK;
     public RowContext ctx = new DefaultDaoContext(ColumnNaming.camelCase());
+    public ConnectionInit initConnection = connection -> {};
 
     public Consumer<String> info = System.out::println;
     public Consumer<String> warn = System.err::println;

@@ -121,6 +121,7 @@ public final class SqlTesting {
                                 List<Class<?>> daoClasses, CreateTestDao factory) throws Throwable {
         try (Connection connection = getConnection.call()) {
             connection.setAutoCommit(false);
+            options.initConnection.start(connection);
             SqlTestingHook.hook = new TestingHookImpl(options);
             SqlTesting testing = new SqlTesting(options, connection);
             for (Class<?> daoClass : daoClasses) {
