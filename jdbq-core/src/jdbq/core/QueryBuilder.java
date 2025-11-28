@@ -31,7 +31,7 @@ public final class QueryBuilder implements QueryLike {
         return ch <= ' ';
     }
 
-    public void append(CharSequence sql, List<? extends SqlParameter> parameters) {
+    public static void append(StringBuilder buf, CharSequence sql) {
         if (!buf.isEmpty() && !sql.isEmpty()) {
             char lastChar = buf.charAt(buf.length() - 1);
             char firstChar = sql.charAt(0);
@@ -40,6 +40,10 @@ public final class QueryBuilder implements QueryLike {
             }
         }
         buf.append(sql);
+    }
+
+    public void append(CharSequence sql, List<? extends SqlParameter> parameters) {
+        append(buf, sql);
         this.parameters.addAll(parameters);
     }
 
