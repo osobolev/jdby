@@ -11,7 +11,7 @@ public enum TestStrictness {
      */
     RELAXED_TYPE_CHECK,
     /**
-     * Integral field types are strictly checked againt DB column sizes:
+     * Integral field types are strictly checked against DB column sizes:
      * <ul>
      *     <li>byte: maximum NUMERIC(2)</li>
      *     <li>short: maximum NUMERIC(4)</li>
