@@ -10,21 +10,15 @@ import jdbq.dao.DaoSql;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.reflect.*;
-import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Callable;
-import java.util.function.Supplier;
 
 public final class SqlTesting {
 
@@ -34,41 +28,6 @@ public final class SqlTesting {
     private SqlTesting(TestingOptions options, Connection connection) {
         this.options = options;
         this.connection = connection;
-    }
-
-    private Object mockObject(Type type, Supplier<RuntimeException> onFail) {
-        if (type == int.class || type == Integer.class) {
-            return 1;
-        } else if (type == long.class || type == Long.class) {
-            return 1L;
-        } else if (type == double.class || type == Double.class) {
-            return 1.0;
-        } else if (type == byte.class || type == Byte.class) {
-            return (byte) 1;
-        } else if (type == short.class || type == Short.class) {
-            return (short) 1;
-        } else if (type == float.class || type == Float.class) {
-            return 1.0f;
-        } else if (type == BigDecimal.class) {
-            return BigDecimal.ONE;
-        } else if (type == String.class) {
-            return "1";
-        } else if (type == LocalDate.class) {
-            return LocalDate.now();
-        } else if (type == OffsetDateTime.class) {
-            return OffsetDateTime.now();
-        } else if (type == LocalDateTime.class) {
-            return LocalDateTime.now();
-        } else if (type == LocalTime.class) {
-            return LocalTime.now();
-        } else if (type == byte[].class) {
-            return new byte[] {1};
-        } else if (type == boolean.class || type == Boolean.class) {
-            return true;
-        } else {
-            // todo: custom type as well!!!
-            throw onFail.get();
-        }
     }
 
     private static final class RollbackGuard implements AutoCloseable {
@@ -97,11 +56,12 @@ public final class SqlTesting {
             Object[] args = new Object[parameters.length];
             for (int i = 0; i < parameters.length; i++) {
                 Parameter param = parameters[i];
-                int paramIndex = i;
                 Type type = param.getParameterizedType();
-                args[i] = mockObject(type, () -> {
-                    String arg = param.getName() == null ? String.valueOf(paramIndex + 1) : param.getName();
-                    return new IllegalStateException(String.format("Unsupported arg type '%s' for arg %s", type, arg));
+                args[i] = options.paramFactory.mockParameter(type, () -> {
+                    throw new IllegalStateException(String.format(
+                        "Unsupported type '%s' of parameter '%s' of method %s",
+                        type.getTypeName(), param.getName(), DaoSql.methodString(method)
+                    ));
                 });
             }
             try (RollbackGuard guard = new RollbackGuard(connection)) {

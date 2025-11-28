@@ -25,6 +25,10 @@ public final class TestingOptions {
      */
     public CheckColumnCompatibility checkColumns = null;
     /**
+     * Can be overriden to support custom parameter types
+     */
+    public MockParamFactory paramFactory = new MockParamFactory();
+    /**
      * If {@link #ctx}'s {@link ColumnNaming} is {@link jdbq.mapping.ColumnNaming.ByPosition}, then
      * java field names are compared with DB column names at the same indexes. Normalized names are compared
      * (lower case with underscores removed). When there are differences, warning is emitted.
