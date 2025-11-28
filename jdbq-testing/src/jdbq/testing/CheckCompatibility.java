@@ -29,7 +29,7 @@ final class CheckCompatibility {
         if (options.strictness == TestStrictness.NO_TYPE_CHECK)
             return;
         JDBCType dbType = JDBCType.valueOf(rsmd.getColumnType(index));
-        List<CheckColumnCompatibility> checks = Arrays.asList(options.check, columnMapper.checkCompatibility());
+        List<CheckColumnCompatibility> checks = Arrays.asList(options.checkColumns, columnMapper.checkCompatibility());
         new CheckOneColumn(options, rsmd, index, dbType, javaType, javaName, checks).checkCompatibility();
     }
 
