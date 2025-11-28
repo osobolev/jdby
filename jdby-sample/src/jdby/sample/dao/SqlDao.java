@@ -1,4 +1,4 @@
-package sample.dao;
+package jdby.sample.dao;
 
 import jdby.dao.SqlBuilder;
 

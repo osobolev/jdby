@@ -1,22 +1,23 @@
-package sample.dao;
+package jdby.sample.sql;
 
-import jdby.dao.DefaultDaoContext;
 import jdby.mapping.ColumnNaming;
+import jdby.mapping.DefaultMapperContext;
+import jdby.sample.sql.SqlDao;
 import jdby.testing.SqlTesting;
 import jdby.testing.TestingOptions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class DaoTest {
+public class SqlTest {
 
     @Test
     public void testDao() throws Throwable {
         TestingOptions options = new TestingOptions();
-        DefaultDaoContext ctx = new DefaultDaoContext(ColumnNaming.camelCase());
+        DefaultMapperContext ctx = new DefaultMapperContext(ColumnNaming.camelCase());
         options.ctx = ctx;
         options.initConnection = connection -> {
-            ctx.withConnection(connection).dao(SqlDao.class).createSchema();
+            new SqlDao(ctx.withConnection(connection)).createSchema();
         };
         SqlTesting.runTests(
             options,

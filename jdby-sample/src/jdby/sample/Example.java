@@ -1,7 +1,7 @@
-package sample;
+package jdby.sample;
 
-import sample.dao.DaoExample;
-import sample.sql.SqlExample;
+import jdby.sample.dao.DaoExample;
+import jdby.sample.sql.SqlExample;
 
 import java.sql.SQLException;
 

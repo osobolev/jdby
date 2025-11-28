@@ -1,4 +1,4 @@
-package sample.sql;
+package jdby.sample.sql;
 
 import jdby.core.QueryBuilder;
 import jdby.core.RowConnection;

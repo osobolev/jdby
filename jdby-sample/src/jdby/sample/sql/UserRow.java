@@ -1,4 +1,4 @@
-package sample.dao;
+package jdby.sample.sql;
 
 import jdby.mapping.SqlName;
 

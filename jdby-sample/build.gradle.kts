@@ -15,5 +15,5 @@ dependencies {
 }
 
 application {
-    mainClass = "sample.Example"
+    mainClass = "jdby.sample.Example"
 }

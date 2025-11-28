@@ -1,8 +1,8 @@
-package sample.sql;
+package jdby.sample.dao;
 
-import jdby.core.RowConnection;
+import jdby.dao.DaoConnection;
+import jdby.dao.DefaultDaoContext;
 import jdby.mapping.ColumnNaming;
-import jdby.mapping.DefaultMapperContext;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,15 +12,15 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 @SuppressWarnings({"AutoUnboxing", "UseOfSystemOutOrSystemErr"})
-public class SqlExample {
+public class DaoExample {
 
     public static void main(String[] args) throws SQLException {
-        DefaultMapperContext ctx = new DefaultMapperContext(ColumnNaming.camelCase());
+        DefaultDaoContext ctx = new DefaultDaoContext(ColumnNaming.camelCase());
         try (Connection jdbcConnection = DriverManager.getConnection("jdbc:h2:mem:")) {
             jdbcConnection.setAutoCommit(false);
-            RowConnection connection = ctx.withConnection(jdbcConnection);
+            DaoConnection connection = ctx.withConnection(jdbcConnection);
 
-            SqlDao dao = new SqlDao(connection);
+            SqlDao dao = connection.dao(SqlDao.class);
 
             dao.createSchema();
 
