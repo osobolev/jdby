@@ -42,7 +42,19 @@ final class CallData {
         Type returnType = method.getGenericReturnType();
         if (returnType instanceof Class<?> cls) {
             return cls;
-        } else if (returnType instanceof ParameterizedType pt) {
+        }
+        if (requiredClass == null) {
+            throw new IllegalArgumentException("Method " + DaoSql.methodString(method) + " return type must be non-generic");
+        } else {
+            Class<?> paramClass = getGenericParameter(returnType, requiredClass);
+            if (paramClass != null)
+                return paramClass;
+            throw new IllegalArgumentException("Method " + DaoSql.methodString(method) + " return type must be " + requiredClass.getName() + "<...>");
+        }
+    }
+
+    private static Class<?> getGenericParameter(Type type, Class<?> requiredClass) {
+        if (type instanceof ParameterizedType pt && pt.getRawType() == requiredClass) {
             Type[] typeArguments = pt.getActualTypeArguments();
             if (typeArguments.length == 1 && typeArguments[0] instanceof Class<?> cls) {
                 return cls;
