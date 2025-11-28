@@ -1,6 +1,6 @@
 package jdby.dao;
 
-import jdby.core.QueryBuilder;
+import jdby.internal.Utils;
 
 import java.util.stream.IntStream;
 
@@ -16,7 +16,7 @@ public final class SqlBuilder implements CharSequence {
     }
 
     public void append(CharSequence sql) {
-        QueryBuilder.append(buf, sql);
+        Utils.append(buf, sql);
     }
 
     @Override
