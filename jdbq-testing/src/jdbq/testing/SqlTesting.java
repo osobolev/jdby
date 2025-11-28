@@ -193,6 +193,9 @@ public final class SqlTesting {
         return DriverManager.getConnection(url, username, password);
     }
 
+    /**
+     * @param file properties file with keys {@code jdbc.url}, {@code jdbc.username}, {@code jdbc.password}
+     */
     public static Connection fromFile(Path file) throws IOException, SQLException {
         Properties props = new Properties();
         try (BufferedReader rdr = Files.newBufferedReader(file)) {
@@ -204,6 +207,9 @@ public final class SqlTesting {
         return fromProperties(url, username, password);
     }
 
+    /**
+     * {@link #fromFile(Path)} with default file {@code db.properties}
+     */
     public static Connection fromFile() throws IOException, SQLException {
         return fromFile(Path.of("db.properties"));
     }
