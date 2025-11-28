@@ -55,7 +55,7 @@ public final class DaoSql {
         for (int i = 0; i < parameters.length; i++) {
             Parameter parameter = parameters[i];
             if (!parameter.isNamePresent()) {
-                throw new IllegalArgumentException("Parameter names are not present for " + iface + "; recompile with '-parameters'");
+                throw new IllegalArgumentException("Parameter names are not present for interface '" + iface.getName() + "'; recompile with '-parameters'");
             }
             SqlParameter value = ctx.parameter(parameter.getParameterizedType(), args[i]);
             argsMap.put(parameter.getName(), value);

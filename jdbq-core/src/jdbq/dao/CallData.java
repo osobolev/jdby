@@ -49,7 +49,7 @@ final class CallData {
             Class<?> paramClass = getGenericParameter(returnType, requiredClass);
             if (paramClass != null)
                 return paramClass;
-            throw new IllegalArgumentException("Method " + DaoSql.methodString(method) + " return type must be " + requiredClass.getName() + "<...>");
+            throw new IllegalArgumentException("Method " + DaoSql.methodString(method) + " return type must be '" + requiredClass.getName() + "<...>'");
         }
     }
 
