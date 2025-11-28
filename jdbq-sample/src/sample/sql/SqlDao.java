@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+import static jdbq.core.Query.builder;
 import static jdbq.core.Query.sql;
 import static jdbq.core.SqlParameter.*;
 
@@ -43,7 +44,7 @@ public class SqlDao {
     }
 
     public List<UserRow> listUsersByFilter(String nameMask, LocalDate birthdayFrom, LocalDate birthdayTo) throws SQLException {
-        QueryBuilder buf = new QueryBuilder(
+        QueryBuilder buf = builder(
             """
                 select id, full_name, dob, last_login
                   from users
