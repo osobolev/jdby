@@ -6,7 +6,7 @@ plugins {
     id("com.vanniktech.maven.publish")
 }
 
-group = "io.github.osobolev.jdbq"
+group = "io.github.osobolev.jdby"
 version = "1.0"
 
 mavenPublishing {
@@ -23,7 +23,7 @@ mavenPublishing {
 mavenPublishing.pom {
     name.set("${project.group}:${project.name}")
     description.set("Easy dynamic SQL and parameter substitution for JDBC")
-    url.set("https://github.com/osobolev/jdbq")
+    url.set("https://github.com/osobolev/jdby")
     licenses {
         license {
             name.set("The Apache License, Version 2.0")
@@ -37,8 +37,8 @@ mavenPublishing.pom {
         }
     }
     scm {
-        connection.set("scm:git:https://github.com/osobolev/jdbq.git")
-        developerConnection.set("scm:git:https://github.com/osobolev/jdbq.git")
-        url.set("https://github.com/osobolev/jdbq")
+        connection.set("scm:git:https://github.com/osobolev/jdby.git")
+        developerConnection.set("scm:git:https://github.com/osobolev/jdby.git")
+        url.set("https://github.com/osobolev/jdby")
     }
 }
