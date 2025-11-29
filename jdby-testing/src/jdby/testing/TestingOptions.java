@@ -38,7 +38,7 @@ public final class TestingOptions {
      * See {@link TestStrictness}
      */
     public TestStrictness strictness = TestStrictness.STRICT_TYPE_CHECK;
-    public RowContext ctx = new DefaultDaoContext(ColumnNaming.camelCase());
+    public RowContext ctx = new DefaultDaoContext();
     public ConnectionInit initConnection = connection -> {};
 
     public Consumer<String> info = System.out::println;
