@@ -20,7 +20,7 @@ public class SqlExample {
             jdbcConnection.setAutoCommit(false);
             RowConnection connection = ctx.withConnection(jdbcConnection);
 
-            SqlDao dao = new SqlDao(connection);
+            UserDao dao = new UserDao(connection);
 
             dao.createSchema();
 

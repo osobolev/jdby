@@ -13,11 +13,11 @@ import static jdby.core.Query.builder;
 import static jdby.core.Query.sql;
 import static jdby.core.SqlParameter.*;
 
-public class SqlDao {
+public class UserDao {
 
     private final RowConnection connection;
 
-    public SqlDao(RowConnection connection) {
+    public UserDao(RowConnection connection) {
         this.connection = connection;
     }
 

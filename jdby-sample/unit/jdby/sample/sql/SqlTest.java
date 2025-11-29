@@ -16,12 +16,12 @@ public class SqlTest {
         DefaultMapperContext ctx = new DefaultMapperContext();
         options.ctx = ctx;
         options.initConnection = connection -> {
-            new SqlDao(ctx.withConnection(connection)).createSchema();
+            new UserDao(ctx.withConnection(connection)).createSchema();
         };
         SqlTesting.runTests(
             options,
             () -> DriverManager.getConnection("jdbc:h2:mem:test"),
-            List.of(SqlDao.class)
+            List.of(UserDao.class)
         );
     }
 }

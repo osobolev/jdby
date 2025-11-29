@@ -10,7 +10,7 @@ import java.util.List;
 
 import static jdby.dao.SqlCommands.*;
 
-public interface SqlDao {
+public interface UserDao {
 
     default void createSchema() throws SQLException {
         executeUpdate(

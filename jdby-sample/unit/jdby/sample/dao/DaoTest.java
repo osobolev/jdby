@@ -16,12 +16,12 @@ public class DaoTest {
         DefaultDaoContext ctx = new DefaultDaoContext();
         options.ctx = ctx;
         options.initConnection = connection -> {
-            ctx.withConnection(connection).dao(SqlDao.class).createSchema();
+            ctx.withConnection(connection).dao(UserDao.class).createSchema();
         };
         SqlTesting.runTests(
             options,
             () -> DriverManager.getConnection("jdbc:h2:mem:test"),
-            List.of(SqlDao.class)
+            List.of(UserDao.class)
         );
     }
 }

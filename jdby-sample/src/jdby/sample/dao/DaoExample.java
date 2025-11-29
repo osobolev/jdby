@@ -20,7 +20,7 @@ public class DaoExample {
             jdbcConnection.setAutoCommit(false);
             DaoConnection connection = ctx.withConnection(jdbcConnection);
 
-            SqlDao dao = connection.dao(SqlDao.class);
+            UserDao dao = connection.dao(UserDao.class);
 
             dao.createSchema();
 
