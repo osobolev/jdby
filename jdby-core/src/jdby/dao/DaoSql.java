@@ -43,12 +43,13 @@ public final class DaoSql {
         for (int i = 0; i < parameters.length; i++) {
             Parameter parameter = parameters[i];
             Type type = parameter.getParameterizedType();
-            if (type == Batch.class)
+            Object arg = args[i];
+            if (ctx.nonSqlParameter(type, arg))
                 continue;
             if (!parameter.isNamePresent()) {
                 throw new IllegalArgumentException("Parameter names are not present for interface '" + iface.getName() + "'; recompile with '-parameters'");
             }
-            SqlParameter value = ctx.parameter(type, args[i]);
+            SqlParameter value = ctx.parameter(type, arg);
             argsMap.put(parameter.getName(), value);
         }
         if (!method.isDefault()) {
