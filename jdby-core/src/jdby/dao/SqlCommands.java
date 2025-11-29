@@ -60,10 +60,16 @@ public final class SqlCommands {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T executeUpdate(CharSequence sql, String generatedColumn, String... otherGeneratedColumns) throws SQLException {
+    public static <T> T insertRow(String generatedColumn, CharSequence sql) throws SQLException {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
-        return (T) query.executeUpdate(data.connection, data.keyMapper(), generatedColumn, otherGeneratedColumns);
+        return (T) query.executeUpdate(data.connection, data.keyMapper(), generatedColumn);
+    }
+
+    public static <T> T executeUpdate(CharSequence sql, GeneratedKeyMapper<T> keyMapper, String generatedColumn, String... otherGeneratedColumns) throws SQLException {
+        CallData data = getCallData();
+        Query query = data.substituteArgs(sql);
+        return query.executeUpdate(data.connection, keyMapper, generatedColumn, otherGeneratedColumns);
     }
 
     public static void executeBatch(Batch batch, CharSequence sql) throws SQLException {

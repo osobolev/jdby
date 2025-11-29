@@ -57,11 +57,11 @@ public interface SqlDao {
     }
 
     default Integer insertUser(String name, LocalDate birthday) throws SQLException {
-        return executeUpdate(
+        return insertRow(
+            "id",
             """
                 insert into users (full_name, dob) values (:name, :birthday)
-                """,
-            "id"
+                """
         );
     }
 
