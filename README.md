@@ -8,14 +8,12 @@ record UserRow (int id, String name) {}
 interface UserDao {
 
     default List<UserRow> listUsers(String nameMask) throws SQLException {
-        return listRows(
-            """
-                select id, name
-                  from users
-                 where name like :nameMask
-                order by name
-                """
-        );
+        return listRows("""
+            select id, name
+              from users
+             where name like :nameMask
+            order by name
+            """);
     }
 }
 ...
