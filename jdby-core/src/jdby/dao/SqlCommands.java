@@ -59,11 +59,17 @@ public final class SqlCommands {
         return query.executeUpdate(data.connection);
     }
 
+    public record ColumnName(String name) {}
+
+    public static ColumnName column(String name) {
+        return new ColumnName(name);
+    }
+
     @SuppressWarnings("unchecked")
-    public static <T> T insertRow(String generatedColumn, CharSequence sql) throws SQLException {
+    public static <T> T insertRow(ColumnName generatedColumn, CharSequence sql) throws SQLException {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
-        return (T) query.executeUpdate(data.connection, data.keyMapper(), generatedColumn);
+        return (T) query.executeUpdate(data.connection, data.keyMapper(), generatedColumn.name());
     }
 
     public static <T> T executeUpdate(CharSequence sql, GeneratedKeyMapper<T> keyMapper, String generatedColumn, String... otherGeneratedColumns) throws SQLException {
