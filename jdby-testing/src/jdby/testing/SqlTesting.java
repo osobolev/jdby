@@ -155,10 +155,6 @@ public final class SqlTesting {
         );
     }
 
-    public static Connection fromProperties(String url, String username, String password) throws SQLException {
-        return DriverManager.getConnection(url, username, password);
-    }
-
     /**
      * @param file properties file with keys {@code jdbc.url}, {@code jdbc.username}, {@code jdbc.password}
      */
@@ -170,7 +166,7 @@ public final class SqlTesting {
         String url = props.getProperty("jdbc.url");
         String username = props.getProperty("jdbc.username");
         String password = props.getProperty("jdbc.password");
-        return fromProperties(url, username, password);
+        return DriverManager.getConnection(url, username, password);
     }
 
     /**

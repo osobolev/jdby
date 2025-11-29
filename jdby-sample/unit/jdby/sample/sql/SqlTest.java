@@ -5,6 +5,7 @@ import jdby.testing.SqlTesting;
 import jdby.testing.TestingOptions;
 import org.junit.jupiter.api.Test;
 
+import java.sql.DriverManager;
 import java.util.List;
 
 public class SqlTest {
@@ -19,7 +20,7 @@ public class SqlTest {
         };
         SqlTesting.runTests(
             options,
-            () -> SqlTesting.fromProperties("jdbc:h2:mem:", null, null),
+            () -> DriverManager.getConnection("jdbc:h2:mem:test"),
             List.of(SqlDao.class)
         );
     }
