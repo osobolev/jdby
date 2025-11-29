@@ -1,14 +1,12 @@
 package jdby.dao;
 
+import jdby.core.Batch;
 import jdby.core.Query;
 import jdby.core.RowConnection;
 import jdby.core.SqlParameter;
 import jdby.internal.Utils;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.lang.reflect.Proxy;
+import java.lang.reflect.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -45,10 +43,13 @@ public final class DaoSql {
         Map<String, SqlParameter> argsMap = new HashMap<>();
         for (int i = 0; i < parameters.length; i++) {
             Parameter parameter = parameters[i];
+            Type type = parameter.getParameterizedType();
+            if (type == Batch.class)
+                continue;
             if (!parameter.isNamePresent()) {
                 throw new IllegalArgumentException("Parameter names are not present for interface '" + iface.getName() + "'; recompile with '-parameters'");
             }
-            SqlParameter value = ctx.parameter(parameter.getParameterizedType(), args[i]);
+            SqlParameter value = ctx.parameter(type, args[i]);
             argsMap.put(parameter.getName(), value);
         }
         if (!method.isDefault()) {
@@ -125,5 +126,11 @@ public final class DaoSql {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
         return (T) query.executeUpdate(data.connection, data.keyMapper(), generatedColumn, otherGeneratedColumns);
+    }
+
+    public static void executeBatch(Batch batch, CharSequence sql) throws SQLException {
+        CallData data = getCallData();
+        Query query = data.substituteArgs(sql);
+        batch.addBatch(data.connection, query);
     }
 }
