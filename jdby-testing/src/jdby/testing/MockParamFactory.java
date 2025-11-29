@@ -1,5 +1,7 @@
 package jdby.testing;
 
+import jdby.core.Batch;
+
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -39,6 +41,8 @@ public class MockParamFactory {
             return new byte[] {1};
         } else if (type == boolean.class || type == Boolean.class) {
             return true;
+        } else if (type == Batch.class) {
+            return new Batch(0);
         } else {
             return fallback.get();
         }
