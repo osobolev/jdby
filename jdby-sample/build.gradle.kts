@@ -6,7 +6,7 @@ plugins {
 dependencies {
     implementation(project(":jdby-core"))
 
-    runtimeOnly("com.h2database:h2:2.2.224")
+    runtimeOnly("com.h2database:h2:2.4.240")
 
     testImplementation(project(":jdby-testing"))
     testImplementation("org.junit.jupiter:junit-jupiter:5.14.1")
