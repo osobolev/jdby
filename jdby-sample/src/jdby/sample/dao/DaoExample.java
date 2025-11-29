@@ -3,7 +3,6 @@ package jdby.sample.dao;
 import jdby.core.Batch;
 import jdby.dao.DaoConnection;
 import jdby.dao.DefaultDaoContext;
-import jdby.mapping.ColumnNaming;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -16,7 +15,7 @@ import java.util.List;
 public class DaoExample {
 
     public static void main(String[] args) throws SQLException {
-        DefaultDaoContext ctx = new DefaultDaoContext(ColumnNaming.camelCase());
+        DefaultDaoContext ctx = new DefaultDaoContext();
         try (Connection jdbcConnection = DriverManager.getConnection("jdbc:h2:mem:")) {
             jdbcConnection.setAutoCommit(false);
             DaoConnection connection = ctx.withConnection(jdbcConnection);

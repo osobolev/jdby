@@ -1,7 +1,6 @@
 package jdby.sample.dao;
 
 import jdby.dao.DefaultDaoContext;
-import jdby.mapping.ColumnNaming;
 import jdby.testing.SqlTesting;
 import jdby.testing.TestingOptions;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,7 @@ public class DaoTest {
     @Test
     public void testDao() throws Exception {
         TestingOptions options = new TestingOptions();
-        DefaultDaoContext ctx = new DefaultDaoContext(ColumnNaming.camelCase());
+        DefaultDaoContext ctx = new DefaultDaoContext();
         options.ctx = ctx;
         options.initConnection = connection -> {
             ctx.withConnection(connection).dao(SqlDao.class).createSchema();

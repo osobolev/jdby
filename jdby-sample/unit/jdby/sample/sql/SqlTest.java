@@ -1,6 +1,5 @@
 package jdby.sample.sql;
 
-import jdby.mapping.ColumnNaming;
 import jdby.mapping.DefaultMapperContext;
 import jdby.testing.SqlTesting;
 import jdby.testing.TestingOptions;
@@ -13,7 +12,7 @@ public class SqlTest {
     @Test
     public void testDao() throws Exception {
         TestingOptions options = new TestingOptions();
-        DefaultMapperContext ctx = new DefaultMapperContext(ColumnNaming.camelCase());
+        DefaultMapperContext ctx = new DefaultMapperContext();
         options.ctx = ctx;
         options.initConnection = connection -> {
             new SqlDao(ctx.withConnection(connection)).createSchema();

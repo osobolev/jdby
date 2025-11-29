@@ -14,12 +14,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultMapperContext implements MapperContext {
 
-    private final ColumnNaming columnNaming;
+    private volatile ColumnNaming columnNaming = ColumnNaming.camelCase();
     private final ConcurrentHashMap<Type, ColumnMapper> columnMappers = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<Class<?>, RowMapper<?>> rowMappers = new ConcurrentHashMap<>();
 
-    public DefaultMapperContext(ColumnNaming columnNaming) {
-        this.columnNaming = columnNaming;
+    public DefaultMapperContext() {
         registerSimple(byte.class, ColumnMapper.byteMapper());
         registerSimple(short.class, ColumnMapper.shortMapper());
         registerSimple(int.class, ColumnMapper.intMapper());
@@ -40,6 +39,10 @@ public class DefaultMapperContext implements MapperContext {
 
     private <T> void registerSimple(Class<T> cls, SimpleColumnMapper<?> columnMapper) {
         registerColumn(cls, columnMapper);
+    }
+
+    public void setColumnNaming(ColumnNaming columnNaming) {
+        this.columnNaming = columnNaming;
     }
 
     public void registerColumn(Type type, ColumnMapper columnMapper) {

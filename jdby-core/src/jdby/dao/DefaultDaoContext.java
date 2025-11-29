@@ -1,7 +1,6 @@
 package jdby.dao;
 
 import jdby.core.SqlParameter;
-import jdby.mapping.ColumnNaming;
 import jdby.mapping.DefaultMapperContext;
 
 import java.lang.reflect.Type;
@@ -19,9 +18,7 @@ public class DefaultDaoContext extends DefaultMapperContext implements DaoContex
 
     private final ConcurrentMap<Type, ParameterMapper> parameterMappers = new ConcurrentHashMap<>();
 
-    public DefaultDaoContext(ColumnNaming columnNaming) {
-        super(columnNaming);
-
+    public DefaultDaoContext() {
         registerSimple(byte.class, JDBCType.TINYINT);
         registerSimple(Byte.class, JDBCType.TINYINT);
         registerSimple(short.class, JDBCType.SMALLINT);

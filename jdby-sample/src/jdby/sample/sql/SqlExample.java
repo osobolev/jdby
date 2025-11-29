@@ -1,8 +1,7 @@
 package jdby.sample.sql;
 
-import jdby.core.RowConnection;
 import jdby.core.Batch;
-import jdby.mapping.ColumnNaming;
+import jdby.core.RowConnection;
 import jdby.mapping.DefaultMapperContext;
 
 import java.sql.Connection;
@@ -16,7 +15,7 @@ import java.util.List;
 public class SqlExample {
 
     public static void main(String[] args) throws SQLException {
-        DefaultMapperContext ctx = new DefaultMapperContext(ColumnNaming.camelCase());
+        DefaultMapperContext ctx = new DefaultMapperContext();
         try (Connection jdbcConnection = DriverManager.getConnection("jdbc:h2:mem:")) {
             jdbcConnection.setAutoCommit(false);
             RowConnection connection = ctx.withConnection(jdbcConnection);
