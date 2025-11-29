@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import static jdby.dao.DaoSql.*;
+import static jdby.dao.SqlCommands.*;
 
 public interface SqlDao {
 

@@ -1,19 +1,14 @@
 package jdby.dao;
 
-import jdby.core.Batch;
-import jdby.core.Query;
-import jdby.core.RowConnection;
 import jdby.core.SqlParameter;
 import jdby.internal.Utils;
 
 import java.lang.reflect.*;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public final class DaoSql {
+public final class DaoProxies {
 
     private static final ThreadLocal<CallData> CALL_DATA = new ThreadLocal<>();
 
@@ -66,74 +61,11 @@ public final class DaoSql {
         }
     }
 
-    private static CallData getCallData() {
+    static CallData getCallData() {
         CallData data = CALL_DATA.get();
         if (data == null) {
             throw new IllegalStateException("Must call through the proxy");
         }
         return data;
-    }
-
-    public static void parameter(String name, SqlParameter value) {
-        CallData data = getCallData();
-        data.parameters.put(name, value);
-    }
-
-    public static <T> void parameter(String name, T value, Class<T> cls) {
-        CallData data = getCallData();
-        data.parameters.put(name, data.ctx.parameter(cls, value));
-    }
-
-    public static RowConnection getConnection() {
-        CallData data = getCallData();
-        return data.ctx.withConnection(data.connection);
-    }
-
-    public static SqlBuilder builder(String... sql) {
-        SqlBuilder buf = new SqlBuilder();
-        for (String s : sql) {
-            buf.append(s);
-        }
-        return buf;
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> List<T> listRows(CharSequence sql) throws SQLException {
-        CallData data = getCallData();
-        Query query = data.substituteArgs(sql);
-        return (List<T>) query.listRows(data.connection, data.rowMapper(List.class));
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> T exactlyOneRow(CharSequence sql) throws SQLException {
-        CallData data = getCallData();
-        Query query = data.substituteArgs(sql);
-        return (T) query.exactlyOneRow(data.connection, data.rowMapper(null));
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> T maybeRow(CharSequence sql) throws SQLException {
-        CallData data = getCallData();
-        Query query = data.substituteArgs(sql);
-        return (T) query.maybeRow(data.connection, data.rowMapper(null));
-    }
-
-    public static int executeUpdate(CharSequence sql) throws SQLException {
-        CallData data = getCallData();
-        Query query = data.substituteArgs(sql);
-        return query.executeUpdate(data.connection);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> T executeUpdate(CharSequence sql, String generatedColumn, String... otherGeneratedColumns) throws SQLException {
-        CallData data = getCallData();
-        Query query = data.substituteArgs(sql);
-        return (T) query.executeUpdate(data.connection, data.keyMapper(), generatedColumn, otherGeneratedColumns);
-    }
-
-    public static void executeBatch(Batch batch, CharSequence sql) throws SQLException {
-        CallData data = getCallData();
-        Query query = data.substituteArgs(sql);
-        batch.addBatch(data.connection, query);
     }
 }

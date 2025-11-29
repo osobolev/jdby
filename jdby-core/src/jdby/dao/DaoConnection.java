@@ -15,6 +15,6 @@ public class DaoConnection extends RowConnection {
 
     public <T> T dao(Class<T> cls) {
         // todo: cache proxies???
-        return DaoSql.createProxy(ctx, cls, getConnection());
+        return DaoProxies.createProxy(ctx, cls, getConnection());
     }
 }

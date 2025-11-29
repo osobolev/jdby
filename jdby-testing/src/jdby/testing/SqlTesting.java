@@ -5,7 +5,7 @@ import jdby.core.RowContext;
 import jdby.core.testing.SqlTestingHook;
 import jdby.dao.DaoConnection;
 import jdby.dao.DaoContext;
-import jdby.dao.DaoSql;
+import jdby.dao.DaoProxies;
 import jdby.internal.Utils;
 
 import java.io.BufferedReader;
@@ -112,7 +112,7 @@ public final class SqlTesting {
     private static Object createTestDao(RowContext ctx, Class<?> cls, Connection connection) throws Exception {
         if (cls.isInterface()) {
             if (ctx instanceof DaoContext dctx) {
-                return DaoSql.createProxy(dctx, cls, connection);
+                return DaoProxies.createProxy(dctx, cls, connection);
             } else {
                 throw new IllegalStateException("Interfaces are supported only for DaoContext");
             }
