@@ -85,6 +85,26 @@ default int insertUser(String name) throws SQLException {
 
 For more complex cases (more than one column or more than one row being inserted/updated) you can use the method `executeUpdate` with the `GeneratedKeyMapper` parameter.
 
+## Dynamic SQL
+
+You can use the `SqlBuilder` class to construct dynamic SQL queries from separate pieces:
+```java
+default List<UserRow> listUsersByFilter(LocalDate birthdayFrom, LocalDate birthdayTo) throws SQLException {
+    SqlBuilder buf = builder("""
+        select id, name
+          from users
+         where 1 = 1
+        """);
+    if (birthdayFrom != null) {
+        buf.append("and dob >= :birthdayFrom");
+    }
+    if (birthdayTo != null) {
+        buf.append("and dob <= :birthdayTo");
+    }
+    buf.append("order by name");
+    return listRows(buf);
+}
+```
 
 ## Batching
 
