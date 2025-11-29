@@ -163,11 +163,7 @@ public final class Query implements QueryLike {
         }
     }
 
-    public <T> T executeUpdate(RowConnection connection, Class<T> keyType,
-                               String generatedColumn, String... otherGeneratedColumns) throws SQLException {
-        return executeUpdate(
-            connection.getConnection(), connection.keyMapper(keyType),
-            generatedColumn, otherGeneratedColumns
-        );
+    public <T> T insertRow(RowConnection connection, String generatedColumn, Class<T> keyType) throws SQLException {
+        return executeUpdate(connection.getConnection(), connection.keyMapper(keyType), generatedColumn);
     }
 }

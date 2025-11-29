@@ -71,7 +71,7 @@ public class SqlDao {
                 insert into users (full_name, dob) values (?, ?)
                 """,
             pString(name), pDate(birthday)
-        ).executeUpdate(connection, Integer.class, "id");
+        ).insertRow(connection, "id", Integer.class);
     }
 
     public void setLastLogin(int id, OffsetDateTime lastLogin) throws SQLException {
