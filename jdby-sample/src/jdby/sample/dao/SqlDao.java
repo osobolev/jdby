@@ -1,5 +1,6 @@
 package jdby.sample.dao;
 
+import jdby.core.Batch;
 import jdby.dao.SqlBuilder;
 
 import java.sql.SQLException;
@@ -88,6 +89,15 @@ public interface SqlDao {
                 select id, full_name, dob, last_login
                   from users
                  where id = :id
+                """
+        );
+    }
+
+    default void batchAddUser(Batch batch, String name, LocalDate birthday) throws SQLException {
+        executeBatch(
+            batch,
+            """
+                insert into users (full_name, dob) values (:name, :birthday)
                 """
         );
     }
