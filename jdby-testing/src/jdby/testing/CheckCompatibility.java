@@ -12,7 +12,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static jdby.testing.CheckOneColumn.dbColumnName;
@@ -86,7 +85,7 @@ final class CheckCompatibility {
             int index = rs.findColumn(sqlName);
             if (!usedSqlColumns.add(index)) {
                 options.warn(String.format(
-                    "Column %s is used more than once when mapping row type %s",
+                    "Column %s is used more than once when mapping row type '%s'",
                     dbColumnName(rsmd, index), rowType.getName()
                 ));
             }
@@ -94,15 +93,17 @@ final class CheckCompatibility {
         }
         int columnCount = rsmd.getColumnCount();
         if (usedSqlColumns.size() < columnCount) {
-            String unused = IntStream
+            List<String> unused = IntStream
                 .rangeClosed(1, columnCount)
                 .filter(i -> !usedSqlColumns.contains(i))
                 .mapToObj(i -> dbColumnName(rsmd, i))
-                .collect(Collectors.joining(", "));
-            options.error(String.format(
-                "Columns %s are not used when mapping to row type %s",
-                unused, rowType.getName()
-            ));
+                .toList();
+            String unusedStr = String.join(", ", unused);
+            options.error(
+                (unused.size() == 1 ? String.format("Column %s is", unusedStr) : String.format("Columns %s are", unusedStr))
+                +
+                String.format(" not used when mapping to row type '%s'", rowType.getName())
+            );
         }
         RecordComponent[] components = rowType.getRecordComponents();
         for (int i = 0; i < components.length; i++) {
