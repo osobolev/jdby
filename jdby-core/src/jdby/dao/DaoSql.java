@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public final class DaoSql {
 
@@ -68,7 +67,10 @@ public final class DaoSql {
 
     private static CallData getCallData() {
         CallData data = CALL_DATA.get();
-        return Objects.requireNonNull(data, "Must call through the proxy");
+        if (data == null) {
+            throw new IllegalStateException("Must call through the proxy");
+        }
+        return data;
     }
 
     public static void parameter(String name, SqlParameter value) {
