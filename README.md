@@ -25,6 +25,8 @@ UserDao dao = connection.dao(UserDao.class);
 List<UserRow> found = dao.listUsers("%John%");
 ```
 
+See full example code [here](https://github.com/osobolev/jdby/blob/master/jdby-sample/src/jdby/sample/dao)
+
 ## Use
 
 Maven:
