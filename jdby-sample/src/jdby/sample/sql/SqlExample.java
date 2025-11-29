@@ -1,6 +1,7 @@
 package jdby.sample.sql;
 
 import jdby.core.RowConnection;
+import jdby.core.Batch;
 import jdby.mapping.ColumnNaming;
 import jdby.mapping.DefaultMapperContext;
 
@@ -47,6 +48,13 @@ public class SqlExample {
             } catch (SQLException ex) {
                 System.out.println("User not found!");
             }
+
+            try (Batch batch = new Batch(10)) {
+                for (int i = 0; i < 20; i++) {
+                    dao.batchAddUser(batch, "Test user", null);
+                }
+            }
+            System.out.println(dao.listAllUsers().size());
         }
     }
 }

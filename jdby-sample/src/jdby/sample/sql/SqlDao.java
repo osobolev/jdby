@@ -2,6 +2,7 @@ package jdby.sample.sql;
 
 import jdby.core.QueryBuilder;
 import jdby.core.RowConnection;
+import jdby.core.Batch;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -102,5 +103,14 @@ public class SqlDao {
                 """,
             pInt(id)
         ).exactlyOneRow(connection, UserRow.class);
+    }
+
+    public void batchAddUser(Batch batch, String name, LocalDate birthday) throws SQLException {
+        batch.addBatch(connection, sql(
+            """
+                insert into users (full_name, dob) values (?, ?)
+                """,
+            pString(name), pDate(birthday)
+        ));
     }
 }
