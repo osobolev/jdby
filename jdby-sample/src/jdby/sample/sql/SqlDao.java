@@ -1,8 +1,8 @@
 package jdby.sample.sql;
 
+import jdby.core.Batch;
 import jdby.core.QueryBuilder;
 import jdby.core.RowConnection;
-import jdby.core.Batch;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
