@@ -62,6 +62,7 @@ implementation("io.github.osobolev.jdby:jdby-core:1.0")
 
 - **Java 17 or newer** is required.
 - **Only records** are supported for multi-column queries.
+- Query parameters for DAOs are mapped by name, so `-parameter` is required for `javac`.
 
 ## Single-column queries
 
