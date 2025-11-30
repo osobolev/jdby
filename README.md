@@ -27,6 +27,20 @@ List<UserRow> found = dao.listUsers("%John%");
 
 See full example code [here](https://github.com/osobolev/jdby/blob/master/jdby-sample/src/jdby/sample/dao).
 
+## Why not JDBI?
+
+- JDBI's support for **dynamic SQL** in declarative queries relies on hard-to-manage string templates.
+- JDBI's support for records does not work out of the box (you need to specify a mapper somewhere).
+- **JDBI is too large** for simple SQL execution. For example, the equivalent of the sample at the above link 
+requires **1.6 Mb** of dependencies (**1.2 Mb** for JDBI itself + **0.4 Mb** for StringTemplate4 engine)
+
+So if you:
+- need only standard SQL execution functionality 
+- use dynamic SQL extensively
+- don't like bloated software
+
+then you can choose JDBY.
+
 ## Use
 
 Maven:
