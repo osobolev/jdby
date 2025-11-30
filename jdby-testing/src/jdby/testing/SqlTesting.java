@@ -90,7 +90,7 @@ public final class SqlTesting {
             SqlTestingHook.hook = new TestingHookImpl(options);
             SqlTesting testing = new SqlTesting(options, connection);
             for (Class<?> daoClass : daoClasses) {
-                options.info("Running " + daoClass.getSimpleName());
+                options.info("Running " + daoClass.getName());
                 Object instance = factory.newDao(connection, daoClass);
                 testing.runAllMethods(daoClass, instance);
             }
