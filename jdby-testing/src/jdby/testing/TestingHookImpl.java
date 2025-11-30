@@ -27,6 +27,6 @@ final class TestingHookImpl implements SqlTestingHook.Checker {
 
     @Override
     public void checkColumn(ResultSet rs, Type javaType, ColumnMapper columnMapper) throws SQLException {
-        getChecker(rs).checkColumn(javaType, "<column>", 1, columnMapper);
+        getChecker(rs).checkColumn(javaType, "column", 1, columnMapper);
     }
 }
