@@ -57,7 +57,7 @@ public class DefaultMapperContextBuilder {
         return this;
     }
 
-    public MapperContext build() {
+    public MapperContext buildCore() {
         return new DefaultMapperContext(columnNaming, columnMappers, rowMappers);
     }
 }

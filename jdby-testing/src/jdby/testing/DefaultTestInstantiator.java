@@ -14,11 +14,11 @@ public class DefaultTestInstantiator extends BaseTestInstantiator {
 
     @Override
     protected MapperContext mapper() {
-        return builder.build();
+        return builder.buildCore();
     }
 
     @Override
     protected DaoContext dao() {
-        return builder.buildDao();
+        return builder.build();
     }
 }

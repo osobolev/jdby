@@ -17,7 +17,7 @@ import java.util.List;
 public class SqlExample {
 
     public static void main(String[] args) throws SQLException {
-        MapperContext ctx = MapperContext.builder().build();
+        MapperContext ctx = MapperContext.builder().buildCore();
         try (Connection jdbcConnection = DriverManager.getConnection("jdbc:h2:mem:")) {
             jdbcConnection.setAutoCommit(false);
             RowConnection connection = ctx.withConnection(jdbcConnection);

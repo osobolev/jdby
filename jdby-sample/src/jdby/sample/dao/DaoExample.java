@@ -17,7 +17,7 @@ import java.util.List;
 public class DaoExample {
 
     public static void main(String[] args) throws SQLException {
-        DaoContext ctx = DaoContext.builder().buildDao();
+        DaoContext ctx = DaoContext.builder().build();
         try (Connection jdbcConnection = DriverManager.getConnection("jdbc:h2:mem:")) {
             jdbcConnection.setAutoCommit(false);
             DaoConnection connection = ctx.withConnection(jdbcConnection);

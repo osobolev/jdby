@@ -52,7 +52,7 @@ public class DefaultDaoContextBuilder extends DefaultMapperContextBuilder {
         return this;
     }
 
-    public DaoContext buildDao() {
-        return new DefaultDaoContext(super.build(), parameterMappers);
+    public DaoContext build() {
+        return new DefaultDaoContext(super.buildCore(), parameterMappers);
     }
 }
