@@ -30,6 +30,9 @@ public interface DaoContext {
     ParameterMapper parameterMapper(Type type);
 
     default SqlParameter parameter(Type type, Object value) {
+        if (type == SqlParameter.class) {
+            return (SqlParameter) value;
+        }
         return parameterMapper(type).toSql(value);
     }
 

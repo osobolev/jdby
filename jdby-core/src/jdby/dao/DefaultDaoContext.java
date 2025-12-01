@@ -1,6 +1,5 @@
 package jdby.dao;
 
-import jdby.core.SqlParameter;
 import jdby.mapping.MapperContext;
 
 import java.lang.reflect.Type;
@@ -24,9 +23,6 @@ public class DefaultDaoContext implements DaoContext {
 
     @Override
     public ParameterMapper parameterMapper(Type type) {
-        if (type == SqlParameter.class) {
-            return value -> (SqlParameter) value;
-        }
         ParameterMapper parameterMapper = parameterMappers.get(type);
         if (parameterMapper == null) {
             throw new IllegalArgumentException("Cannot create parameter of type '" + type.getTypeName() + "'");
