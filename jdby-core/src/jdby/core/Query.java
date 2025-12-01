@@ -84,7 +84,7 @@ public final class Query implements QueryLike {
         return listRows(connection.getConnection(), connection.rowMapper(rowType));
     }
 
-    private  <T> T oneRow(Connection connection, boolean canHaveNone, boolean canHaveMore, RowMapper<T> rowMapper) {
+    private <T> T oneRow(Connection connection, boolean canHaveNone, boolean canHaveMore, RowMapper<T> rowMapper) {
         try (PreparedStatement ps = preparedStatement(connection)) {
             try (ResultSet rs = ps.executeQuery()) {
                 if (SqlTestingHook.isTesting()) {
