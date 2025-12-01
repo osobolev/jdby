@@ -84,16 +84,20 @@ public final class SqlTesting {
         }
     }
 
-    private static boolean match(RowContext ctx, Class<?> paramType) {
+    private static Callable<?> match1(RowContext ctx, Connection connection,
+                                      Constructor<?> constructor1, Class<?> paramType) {
         if (paramType == Connection.class) {
-            return true;
+            return () -> constructor1.newInstance(connection);
         } else if (paramType == RowConnection.class) {
-            return ctx != null;
+            if (ctx != null) {
+                return () -> constructor1.newInstance(new RowConnection(ctx, connection));
+            }
         } else if (paramType == DaoConnection.class) {
-            return ctx instanceof DaoContext;
-        } else {
-            return false;
+            if (ctx instanceof DaoContext) {
+                return () -> constructor1.newInstance(new DaoConnection((DaoContext) ctx, connection));
+            }
         }
+        return null;
     }
 
     private static Object createTestDao(RowContext ctx, Class<?> cls, Connection connection) throws Exception {
@@ -105,33 +109,28 @@ public final class SqlTesting {
             }
         }
         Constructor<?>[] constructors = cls.getConstructors();
-        List<Constructor<?>> candidates0 = new ArrayList<>();
-        List<Constructor<?>> candidates1 = new ArrayList<>();
+        List<Callable<?>> candidates0 = new ArrayList<>();
+        List<Callable<?>> candidates1 = new ArrayList<>();
         for (Constructor<?> constructor : constructors) {
             Class<?>[] types = constructor.getParameterTypes();
             if (types.length == 0) {
-                candidates0.add(constructor);
+                candidates0.add(constructor::newInstance);
             } else if (types.length == 1) {
                 Class<?> type = types[0];
-                if (match(ctx, type)) {
-                    candidates1.add(constructor);
+                Callable<?> newInstance = match1(ctx, connection, constructor, type);
+                if (newInstance != null) {
+                    candidates1.add(newInstance);
                 }
             }
         }
         if (candidates1.size() == 1) {
-            Constructor<?> constructor = candidates1.get(0);
-            Class<?> type = constructor.getParameterTypes()[0];
-            if (type == Connection.class) {
-                return constructor.newInstance(connection);
-            } else {
-                return constructor.newInstance(ctx.withConnection(connection));
-            }
+            Callable<?> newInstance = candidates1.get(0);
+            return newInstance.call();
         } else if (candidates0.size() == 1) {
-            Constructor<?> constructor = candidates0.get(0);
-            return constructor.newInstance();
-        } else {
-            throw new IllegalArgumentException("Cannot find appropriate constructor for class '" + cls.getName() + "'");
+            Callable<?> newInstance = candidates0.get(0);
+            return newInstance.call();
         }
+        throw new IllegalArgumentException("Cannot find appropriate constructor for class '" + cls.getName() + "'");
     }
 
     public static void runTests(TestingOptions options, Callable<Connection> getConnection,
