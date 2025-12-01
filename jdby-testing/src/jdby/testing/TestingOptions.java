@@ -29,7 +29,7 @@ public final class TestingOptions {
      */
     public MockParamFactory paramFactory = new MockParamFactory();
     /**
-     * If {@link ColumnNaming} created in {@link #instantiator} is {@link jdby.mapping.ColumnNaming.ByPosition}, then
+     * If {@link ColumnNaming} created in {@link #instantiator} is {@link ColumnNaming.ByPosition}, then
      * java field names are compared with DB column names at the same indexes. Normalized names are compared
      * (lower case with underscores removed). When there are differences, warning is emitted.
      */
