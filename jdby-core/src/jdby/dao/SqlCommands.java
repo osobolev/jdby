@@ -20,7 +20,7 @@ public final class SqlCommands {
 
     public static RowConnection getConnection() {
         CallData data = getCallData();
-        return data.ctx.withConnection(data.connection);
+        return data.ctx.getMapperContext().withConnection(data.connection);
     }
 
     public static SqlBuilder builder(String... sql) {
