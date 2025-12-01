@@ -49,6 +49,12 @@ public final class SqlCommands {
         return data.cast(query.maybeRow(data.connection, data.rowMapper(false)));
     }
 
+    public static <T> T firstRow(CharSequence sql) {
+        CallData data = getCallData();
+        Query query = data.substituteArgs(sql);
+        return data.cast(query.firstRow(data.connection, data.rowMapper(false)));
+    }
+
     public static int executeUpdate(CharSequence sql) {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);

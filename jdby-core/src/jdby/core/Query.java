@@ -84,7 +84,7 @@ public final class Query implements QueryLike {
         return listRows(connection.getConnection(), connection.rowMapper(rowType));
     }
 
-    public <T> T exactlyOneRow(Connection connection, RowMapper<T> rowMapper) {
+    private  <T> T oneRow(Connection connection, boolean canHaveNone, boolean canHaveMore, RowMapper<T> rowMapper) {
         try (PreparedStatement ps = preparedStatement(connection)) {
             try (ResultSet rs = ps.executeQuery()) {
                 if (SqlTestingHook.isTesting()) {
@@ -92,31 +92,14 @@ public final class Query implements QueryLike {
                 }
                 if (rs.next()) {
                     T row = rowMapper.mapRow(rs);
-                    if (rs.next())
+                    if (!canHaveMore && rs.next()) {
                         throw new UncheckedSQLException("More than one rows found");
+                    }
                     return row;
                 } else {
-                    throw new UncheckedSQLException("No rows found");
-                }
-            }
-        } catch (SQLException ex) {
-            throw new UncheckedSQLException(ex);
-        }
-    }
-
-    public <T> T exactlyOneRow(RowConnection connection, Class<T> rowType) {
-        return exactlyOneRow(connection.getConnection(), connection.rowMapper(rowType));
-    }
-
-    public <T> T maybeRow(Connection connection, RowMapper<T> rowMapper) {
-        try (PreparedStatement ps = preparedStatement(connection)) {
-            try (ResultSet rs = ps.executeQuery()) {
-                if (SqlTestingHook.isTesting()) {
-                    return rowMapper.mapRow(rs);
-                }
-                if (rs.next()) {
-                    return rowMapper.mapRow(rs);
-                } else {
+                    if (!canHaveNone) {
+                        throw new UncheckedSQLException("No rows found");
+                    }
                     return null;
                 }
             }
@@ -125,8 +108,28 @@ public final class Query implements QueryLike {
         }
     }
 
+    public <T> T exactlyOneRow(Connection connection, RowMapper<T> rowMapper) {
+        return oneRow(connection, false, false, rowMapper);
+    }
+
+    public <T> T exactlyOneRow(RowConnection connection, Class<T> rowType) {
+        return exactlyOneRow(connection.getConnection(), connection.rowMapper(rowType));
+    }
+
+    public <T> T maybeRow(Connection connection, RowMapper<T> rowMapper) {
+        return oneRow(connection, true, false, rowMapper);
+    }
+
     public <T> T maybeRow(RowConnection connection, Class<T> rowType) {
         return maybeRow(connection.getConnection(), connection.rowMapper(rowType));
+    }
+
+    public <T> T firstRow(Connection connection, RowMapper<T> rowMapper) {
+        return oneRow(connection, true, true, rowMapper);
+    }
+
+    public <T> T firstRow(RowConnection connection, Class<T> rowType) {
+        return firstRow(connection.getConnection(), connection.rowMapper(rowType));
     }
 
     private static int executeUpdate(PreparedStatement ps) throws SQLException {
