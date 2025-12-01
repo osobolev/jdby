@@ -18,7 +18,7 @@ interface UserDao {
 }
 ...
 Connection jdbcConnection = ...;
-DefaultDaoContext ctx = new DefaultDaoContext();
+DaoContext ctx = DaoContext.builder().build();
 DaoConnection connection = ctx.withConnection(jdbcConnection);
 
 UserDao dao = connection.dao(UserDao.class);
@@ -141,7 +141,7 @@ try (Batch batch = new Batch(10)) {
 
 ## Mapping of record fields to query columns
 
-- `DefaultDaoContext.setColumnNaming` defines the default mapping strategy. There are three built-in strategies:
+- `DaoContext.builder().setColumnNaming()` defines the default mapping strategy. There are three built-in strategies:
     - `ColumnNaming.CamelCase` (**default strategy**): a record field like `fullName` is queried from the DB column `full_name`.
     - `ColumnNaming.Raw`: the record field value is queried from the DB column with the **same name**.
     - `ColumnNaming.ByPosition`: the record field value is queried from the DB column at the **same position** in the column list.
@@ -175,7 +175,7 @@ This ensures that all SQL queries are valid and column-to-record mapping is corr
 
 ## Customization
 
-- `DefaultDaoContext.setColumnNaming` customizes the automatic record-to-column name mapping strategy (e.g., changing from `camelCase` to `snake_case`).
-- `DefaultDaoContext.registerColumn` customizes the mapping for an individual column, which applies to both single-column queries and columns within a record.
-- `DefaultDaoContext.registerRow` customizes manual record-to-column mapping.
-- `DefaultDaoContext.registerParameter` customizes how a specific Java type is passed as a parameter into an SQL query.
+- `DaoContext.builder().setColumnNaming()` customizes the automatic record-to-column name mapping strategy (e.g., changing from `camelCase` to `snake_case`).
+- `DaoContext.builder().registerColumn()` customizes the mapping for an individual column, which applies to both single-column queries and columns within a record.
+- `DaoContext.builder().registerRow()` customizes manual row mapping (your only way to use non-record classes as row types).
+- `DaoContext.builder().registerParameter()` customizes how a specific Java type is passed as a parameter into an SQL query.
