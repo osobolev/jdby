@@ -58,6 +58,6 @@ public class DefaultMapperContextBuilder {
     }
 
     public MapperContext buildCore() {
-        return new DefaultMapperContext(columnNaming, Map.copyOf(columnMappers), Map.copyOf(rowMappers));
+        return new DefaultMapperContext(columnNaming, columnMappers, rowMappers);
     }
 }

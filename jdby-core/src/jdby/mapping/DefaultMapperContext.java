@@ -4,19 +4,21 @@ import jdby.core.RowMapper;
 
 import java.lang.reflect.Type;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class DefaultMapperContext implements MapperContext {
 
     private final ColumnNaming columnNaming;
     private final Map<Type, ColumnMapper> columnMappers;
-    private final Map<Class<?>, RowMapper<?>> rowMappers;
+    private final ConcurrentMap<Class<?>, RowMapper<?>> rowMappers = new ConcurrentHashMap<>();
 
     public DefaultMapperContext(ColumnNaming columnNaming,
                                 Map<Type, ColumnMapper> columnMappers,
                                 Map<Class<?>, RowMapper<?>> rowMappers) {
         this.columnNaming = columnNaming;
-        this.columnMappers = columnMappers;
-        this.rowMappers = rowMappers;
+        this.columnMappers = Map.copyOf(columnMappers);
+        this.rowMappers.putAll(rowMappers);
     }
 
     @Override

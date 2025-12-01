@@ -13,7 +13,7 @@ public class DefaultDaoContext implements DaoContext {
     public DefaultDaoContext(MapperContext mapperContext,
                              Map<Type, ParameterMapper> parameterMappers) {
         this.mapperContext = mapperContext;
-        this.parameterMappers = parameterMappers;
+        this.parameterMappers = Map.copyOf(parameterMappers);
     }
 
     @Override
