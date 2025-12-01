@@ -18,7 +18,7 @@ public final class SqlCommands {
         data.parameters.put(name, data.ctx.parameter(cls, value));
     }
 
-    public static RowConnection getConnection() {
+    public static RowConnection getCoreConnection() {
         CallData data = getCallData();
         return data.ctx.getMapperContext().withConnection(data.connection);
     }
