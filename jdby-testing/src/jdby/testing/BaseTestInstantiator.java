@@ -19,11 +19,11 @@ public abstract class BaseTestInstantiator implements TestInstantiator {
     protected abstract DaoContext dao();
 
     private <T> Callable<T> match1(Connection connection, Constructor<T> constructor1, Class<?> paramType) {
-        if (Connection.class.isAssignableFrom(paramType)) {
+        if (paramType == Connection.class) {
             return () -> constructor1.newInstance(connection);
-        } else if (DaoConnection.class.isAssignableFrom(paramType)) {
+        } else if (paramType == DaoConnection.class) {
             return () -> constructor1.newInstance(dao().withConnection(connection));
-        } else if (RowConnection.class.isAssignableFrom(paramType)) {
+        } else if (paramType == RowConnection.class) {
             return () -> constructor1.newInstance(mapper().withConnection(connection));
         }
         return null;
