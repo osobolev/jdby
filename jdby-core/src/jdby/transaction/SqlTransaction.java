@@ -7,7 +7,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.function.Function;
 
-public class SqlTransaction<C> {
+public final class SqlTransaction<C> {
 
     private final ConnectionFactory dataSource;
     private final Function<Connection, C> wrap;
