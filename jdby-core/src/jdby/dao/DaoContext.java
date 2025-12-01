@@ -27,7 +27,7 @@ public interface DaoContext {
     }
 
     default DaoConnection withConnection(Connection connection) {
-        return new DaoConnection(this, connection);
+        return new DaoConnectionImpl(this, connection);
     }
 
     default <E extends Exception> SqlTransaction<DaoConnection> transaction(ConnectionFactory dataSource) throws E {

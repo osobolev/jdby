@@ -2,26 +2,9 @@ package jdby.dao;
 
 import java.sql.Connection;
 
-public class DaoConnection {
+public interface DaoConnection {
 
-    private final DaoContext ctx;
-    private final Connection connection;
+    <T> T dao(Class<T> daoInterface);
 
-    public DaoConnection(DaoContext ctx, Connection connection) {
-        this.ctx = ctx;
-        this.connection = connection;
-    }
-
-    public DaoContext getContext() {
-        return ctx;
-    }
-
-    public Connection getConnection() {
-        return connection;
-    }
-
-    public <T> T dao(Class<T> cls) {
-        // todo: cache proxies???
-        return DaoProxies.createProxy(ctx, connection, cls);
-    }
+    Connection getConnection();
 }
