@@ -1,10 +1,10 @@
 package jdby.sample.dao;
 
 import jdby.core.Batch;
-import jdby.core.ConnectionFactory;
 import jdby.core.UncheckedSQLException;
 import jdby.dao.DaoConnection;
 import jdby.dao.DaoContext;
+import jdby.transaction.ConnectionFactory;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

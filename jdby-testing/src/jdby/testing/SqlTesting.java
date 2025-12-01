@@ -1,6 +1,5 @@
 package jdby.testing;
 
-import jdby.core.ConnectionFactory;
 import jdby.core.RowConnection;
 import jdby.core.testing.SqlTestingHook;
 import jdby.dao.DaoConnection;
@@ -9,6 +8,7 @@ import jdby.dao.DaoProxies;
 import jdby.internal.RollbackGuard;
 import jdby.internal.Utils;
 import jdby.mapping.MapperContext;
+import jdby.transaction.ConnectionFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;

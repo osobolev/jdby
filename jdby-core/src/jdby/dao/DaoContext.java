@@ -1,7 +1,11 @@
 package jdby.dao;
 
-import jdby.core.*;
+import jdby.core.Batch;
+import jdby.core.GeneratedKeyMapper;
+import jdby.core.RowMapper;
+import jdby.core.SqlParameter;
 import jdby.mapping.MapperContext;
+import jdby.transaction.ConnectionFactory;
 
 import java.lang.reflect.Type;
 import java.sql.Connection;

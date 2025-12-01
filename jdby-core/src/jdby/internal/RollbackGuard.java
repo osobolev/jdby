@@ -1,6 +1,6 @@
 package jdby.internal;
 
-import jdby.core.ConnectionFactory;
+import jdby.transaction.ConnectionFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;

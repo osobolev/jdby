@@ -1,10 +1,10 @@
 package jdby.mapping;
 
-import jdby.core.ConnectionFactory;
 import jdby.core.GeneratedKeyMapper;
 import jdby.core.RowConnection;
 import jdby.core.RowMapper;
 import jdby.core.testing.SqlTestingHook;
+import jdby.transaction.ConnectionFactory;
 
 import java.lang.reflect.Type;
 import java.sql.Connection;

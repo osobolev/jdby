@@ -1,5 +1,6 @@
-package jdby.core;
+package jdby.transaction;
 
+import jdby.core.UncheckedSQLException;
 import jdby.internal.RollbackGuard;
 
 import javax.sql.DataSource;

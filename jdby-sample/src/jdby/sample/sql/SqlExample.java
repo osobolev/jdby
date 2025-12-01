@@ -1,10 +1,10 @@
 package jdby.sample.sql;
 
 import jdby.core.Batch;
-import jdby.core.ConnectionFactory;
 import jdby.core.RowConnection;
 import jdby.core.UncheckedSQLException;
 import jdby.mapping.MapperContext;
+import jdby.transaction.ConnectionFactory;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
