@@ -100,4 +100,8 @@ public interface UserDao {
                 """
         );
     }
+
+    default void deleteAllUsers() {
+        executeUpdate("delete from users");
+    }
 }

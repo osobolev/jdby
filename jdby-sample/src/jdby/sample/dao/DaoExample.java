@@ -1,6 +1,7 @@
 package jdby.sample.dao;
 
 import jdby.core.Batch;
+import jdby.core.ConnectionFactory;
 import jdby.core.UncheckedSQLException;
 import jdby.dao.DaoConnection;
 import jdby.dao.DaoContext;
@@ -55,7 +56,19 @@ public class DaoExample {
                     dao.batchAddUser(batch, "Test user", null);
                 }
             }
-            System.out.println(dao.listAllUsers().size());
+            System.out.println("After batch insert: " + dao.listAllUsers().size());
+
+            // Commit previous transaction:
+            connection.getConnection().commit();
+            try {
+                ctx.transaction(ConnectionFactory.fromConnection(jdbcConnection), c -> {
+                    UserDao transDao = c.dao(UserDao.class);
+                    transDao.deleteAllUsers();
+                    throw new IllegalStateException("Should rollback");
+                });
+            } catch (IllegalStateException ex) {
+                System.out.println("After delete rollback: " + dao.listAllUsers().size());
+            }
         }
     }
 }

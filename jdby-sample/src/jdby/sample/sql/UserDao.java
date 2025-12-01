@@ -112,4 +112,8 @@ public class UserDao {
             pString(name), pDate(birthday)
         ));
     }
+
+    public void deleteAllUsers() {
+        sql("delete from users").executeUpdate(connection);
+    }
 }

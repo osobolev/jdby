@@ -1,6 +1,7 @@
 package jdby.sample.sql;
 
 import jdby.core.Batch;
+import jdby.core.ConnectionFactory;
 import jdby.core.RowConnection;
 import jdby.core.UncheckedSQLException;
 import jdby.mapping.DefaultMapperContext;
@@ -55,7 +56,19 @@ public class SqlExample {
                     dao.batchAddUser(batch, "Test user", null);
                 }
             }
-            System.out.println(dao.listAllUsers().size());
+            System.out.println("After batch insert: " + dao.listAllUsers().size());
+
+            // Commit previous transaction:
+            connection.getConnection().commit();
+            try {
+                ctx.transaction(ConnectionFactory.fromConnection(jdbcConnection), c -> {
+                    UserDao transDao = new UserDao(c);
+                    transDao.deleteAllUsers();
+                    throw new IllegalStateException("Should rollback");
+                });
+            } catch (IllegalStateException ex) {
+                System.out.println("After delete rollback: " + dao.listAllUsers().size());
+            }
         }
     }
 }
