@@ -1,10 +1,10 @@
 package jdby.dao;
 
-import jdby.core.RowConnection;
+import jdby.mapping.MapperConnection;
 
 import java.sql.Connection;
 
-public class DaoConnection extends RowConnection {
+public class DaoConnection extends MapperConnection {
 
     private final DaoContext ctx;
 

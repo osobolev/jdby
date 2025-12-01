@@ -1,9 +1,9 @@
 package jdby.testing;
 
-import jdby.core.RowContext;
 import jdby.dao.DefaultDaoContext;
 import jdby.mapping.CheckColumnCompatibility;
 import jdby.mapping.ColumnNaming;
+import jdby.mapping.MapperContext;
 
 import java.sql.Connection;
 import java.util.function.Consumer;
@@ -38,7 +38,7 @@ public final class TestingOptions {
      * See {@link TestStrictness}
      */
     public TestStrictness strictness = TestStrictness.STRICT_TYPE_CHECK;
-    public RowContext ctx = new DefaultDaoContext();
+    public MapperContext ctx = new DefaultDaoContext();
     public ConnectionInit initConnection = connection -> {};
 
     public Consumer<String> info = System.out::println;

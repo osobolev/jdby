@@ -1,12 +1,16 @@
 package jdby.mapping;
 
 import jdby.core.GeneratedKeyMapper;
-import jdby.core.RowContext;
+import jdby.core.RowConnection;
+import jdby.core.RowMapper;
 import jdby.core.testing.SqlTestingHook;
 
 import java.lang.reflect.Type;
+import java.sql.Connection;
 
-public interface MapperContext extends RowContext {
+public interface MapperContext {
+
+    <T> RowMapper<T> rowMapper(Class<T> rowType);
 
     ColumnMapper columnMapper(Type type);
 
@@ -26,5 +30,9 @@ public interface MapperContext extends RowContext {
                 return null;
             }
         };
+    }
+
+    default RowConnection withConnection(Connection connection) {
+        return new MapperConnection(this, connection);
     }
 }

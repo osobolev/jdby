@@ -2,12 +2,13 @@ package jdby.testing;
 
 import jdby.core.RollbackGuard;
 import jdby.core.RowConnection;
-import jdby.core.RowContext;
 import jdby.core.testing.SqlTestingHook;
 import jdby.dao.DaoConnection;
 import jdby.dao.DaoContext;
 import jdby.dao.DaoProxies;
 import jdby.internal.Utils;
+import jdby.mapping.MapperConnection;
+import jdby.mapping.MapperContext;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -84,13 +85,13 @@ public final class SqlTesting {
         }
     }
 
-    private static Callable<?> match1(RowContext ctx, Connection connection,
+    private static Callable<?> match1(MapperContext ctx, Connection connection,
                                       Constructor<?> constructor1, Class<?> paramType) {
         if (paramType == Connection.class) {
             return () -> constructor1.newInstance(connection);
         } else if (paramType == RowConnection.class) {
             if (ctx != null) {
-                return () -> constructor1.newInstance(new RowConnection(ctx, connection));
+                return () -> constructor1.newInstance(new MapperConnection(ctx, connection));
             }
         } else if (paramType == DaoConnection.class) {
             if (ctx instanceof DaoContext) {
@@ -100,7 +101,7 @@ public final class SqlTesting {
         return null;
     }
 
-    private static Object createTestDao(RowContext ctx, Class<?> cls, Connection connection) throws Exception {
+    private static Object createTestDao(MapperContext ctx, Class<?> cls, Connection connection) throws Exception {
         if (cls.isInterface()) {
             if (ctx instanceof DaoContext dctx) {
                 return DaoProxies.createProxy(dctx, cls, connection);
