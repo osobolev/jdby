@@ -12,6 +12,7 @@ import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 final class CallData {
 
@@ -40,26 +41,45 @@ final class CallData {
         return ctx.keyMapper(getRowType(false));
     }
 
-    private Class<?> getRowType(boolean list) {
-        Type returnType = method.getGenericReturnType();
-        if (returnType instanceof Class<?> cls) {
-            return cls;
-        }
-        if (!list) {
-            throw new IllegalStateException("Method " + Utils.methodString(method) + " return type must be non-generic");
+    @SuppressWarnings("unchecked")
+    <T> T cast(Object value) {
+        if (unwrapType(Optional.class) != null) {
+            return (T) Optional.ofNullable(value);
         } else {
-            Class<?> paramClass = getGenericParameter(returnType, List.class);
-            if (paramClass != null)
-                return paramClass;
+            return (T) value;
+        }
+    }
+
+    private Class<?> getRowType(boolean list) {
+        if (!list) {
+            Class<?> plainType = unwrapType(null);
+            if (plainType != null) {
+                return plainType;
+            }
+            Class<?> rowType = unwrapType(Optional.class);
+            if (rowType != null)
+                return rowType;
+            throw new IllegalStateException("Method " + Utils.methodString(method) + " return type must be a simple class or Optional<...>");
+        } else {
+            Class<?> rowType = unwrapType(List.class);
+            if (rowType != null)
+                return rowType;
             throw new IllegalStateException("Method " + Utils.methodString(method) + " return type must be 'List<...>'");
         }
     }
 
-    private static Class<?> getGenericParameter(Type type, Class<?> requiredClass) {
-        if (type instanceof ParameterizedType pt && pt.getRawType() == requiredClass) {
-            Type[] typeArguments = pt.getActualTypeArguments();
-            if (typeArguments.length == 1 && typeArguments[0] instanceof Class<?> cls) {
+    private Class<?> unwrapType(Class<?> wrapperClass) {
+        Type type = method.getGenericReturnType();
+        if (wrapperClass == null) {
+            if (type instanceof Class<?> cls) {
                 return cls;
+            }
+        } else {
+            if (type instanceof ParameterizedType pt && pt.getRawType() == wrapperClass) {
+                Type[] typeArguments = pt.getActualTypeArguments();
+                if (typeArguments.length == 1 && typeArguments[0] instanceof Class<?> cls) {
+                    return cls;
+                }
             }
         }
         return null;
