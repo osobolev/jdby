@@ -41,7 +41,6 @@ public class DefaultDaoContext extends DefaultMapperContext implements DaoContex
         registerSimple(LocalDateTime.class, JDBCType.TIMESTAMP);
         registerSimple(OffsetDateTime.class, JDBCType.TIMESTAMP_WITH_TIMEZONE);
         registerSimple(byte[].class, JDBCType.VARBINARY);
-
     }
 
     private void registerSimple(Class<?> cls, JDBCType jdbcType) {
