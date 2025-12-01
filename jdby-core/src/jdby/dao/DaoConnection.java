@@ -33,6 +33,6 @@ public class DaoConnection implements RowConnection {
 
     public <T> T dao(Class<T> cls) {
         // todo: cache proxies???
-        return DaoProxies.createProxy(ctx, cls, getConnection());
+        return DaoProxies.createProxy(ctx, getConnection(), cls);
     }
 }

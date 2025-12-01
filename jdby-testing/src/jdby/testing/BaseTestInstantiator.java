@@ -33,7 +33,7 @@ public abstract class BaseTestInstantiator implements TestInstantiator {
     @Override
     public <T> T create(Connection connection, Class<T> cls) throws Exception {
         if (cls.isInterface()) {
-            return DaoProxies.createProxy(dao(), cls, connection);
+            return DaoProxies.createProxy(dao(), connection, cls);
         }
         Constructor<?>[] constructors = cls.getConstructors();
         List<Callable<T>> candidates0 = new ArrayList<>();

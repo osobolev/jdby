@@ -1,7 +1,9 @@
 package jdby.dao;
 
 import jdby.core.SqlParameter;
+import jdby.internal.RollbackGuard;
 import jdby.internal.Utils;
+import jdby.transaction.ConnectionFactory;
 
 import java.lang.reflect.*;
 import java.sql.Connection;
@@ -13,18 +15,22 @@ public final class DaoProxies {
 
     private static final ThreadLocal<ArrayDeque<CallData>> CALL_DATA = new ThreadLocal<>();
 
-    public static <T> T createProxy(DaoContext ctx, Class<T> iface, Connection connection) {
+    public static <T> T createProxy(DaoContext ctx, Connection connection, Class<T> iface) {
+        return createProxy(ctx, ConnectionFactory.fromConnection(connection), false, iface);
+    }
+
+    public static <T> T createProxy(DaoContext ctx, ConnectionFactory dataSource, boolean commit, Class<T> iface) {
         Object created = Proxy.newProxyInstance(
             iface.getClassLoader(),
             new Class<?>[] {iface},
             (proxy, method, args) -> runProxyMethod(
-                ctx, connection, iface, proxy, method, args
+                ctx, dataSource, commit, iface, proxy, method, args
             )
         );
         return iface.cast(created);
     }
 
-    private static Object runProxyMethod(DaoContext ctx, Connection connection,
+    private static Object runProxyMethod(DaoContext ctx, ConnectionFactory dataSource, boolean commit,
                                          Class<?> iface, Object proxy, Method method, Object[] args) throws Throwable {
         Parameter[] parameters = method.getParameters();
         String name = method.getName();
@@ -56,13 +62,25 @@ public final class DaoProxies {
             deque = new ArrayDeque<>();
             CALL_DATA.set(deque);
         }
-        deque.push(new CallData(ctx, method, argsMap, connection));
-        try {
-            return InvocationHandler.invokeDefault(proxy, method, args);
-        } finally {
-            deque.pop();
-            if (deque.isEmpty()) {
-                CALL_DATA.remove();
+        try (RollbackGuard guard = RollbackGuard.create(dataSource)) {
+            if (!commit) {
+                // So it does not call rollback at close:
+                guard.ok();
+            }
+            Connection connection = guard.getConnection();
+            deque.push(new CallData(ctx, method, argsMap, connection));
+            try {
+                Object result = InvocationHandler.invokeDefault(proxy, method, args);
+                if (commit) {
+                    connection.commit();
+                    guard.ok();
+                }
+                return result;
+            } finally {
+                deque.pop();
+                if (deque.isEmpty()) {
+                    CALL_DATA.remove();
+                }
             }
         }
     }
