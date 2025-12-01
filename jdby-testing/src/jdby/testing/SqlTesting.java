@@ -34,18 +34,7 @@ public final class SqlTesting {
     }
 
     private void runAllMethods(Class<?> cls, Object o) throws Exception {
-        ConnectionFactory testConnectionFactory = new ConnectionFactory() {
-
-            @Override
-            public Connection openConnection() {
-                return connection;
-            }
-
-            @Override
-            public void closeConnection(Connection connection) {
-                // do nothing
-            }
-        };
+        ConnectionFactory testConnectionFactory = ConnectionFactory.fromConnection(connection);
         for (Method method : cls.getDeclaredMethods()) {
             int modifiers = method.getModifiers();
             if (!Modifier.isPublic(modifiers))

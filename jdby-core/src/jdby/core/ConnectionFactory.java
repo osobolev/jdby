@@ -2,6 +2,7 @@ package jdby.core;
 
 import jdby.internal.RollbackGuard;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.function.Function;
@@ -12,6 +13,25 @@ public interface ConnectionFactory {
 
     default void closeConnection(Connection connection) throws SQLException {
         connection.close();
+    }
+
+    static ConnectionFactory fromConnection(Connection connection) {
+        return new ConnectionFactory() {
+
+            @Override
+            public Connection openConnection() {
+                return connection;
+            }
+
+            @Override
+            public void closeConnection(Connection connection) {
+                // do nothing
+            }
+        };
+    }
+
+    static ConnectionFactory fromDataSource(DataSource dataSource) {
+        return dataSource::getConnection;
     }
 
     interface SqlFunction<C, R, E extends Exception> {
