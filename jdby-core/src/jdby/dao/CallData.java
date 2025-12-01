@@ -34,11 +34,11 @@ final class CallData {
     }
 
     RowMapper<?> rowMapper(boolean list) {
-        return ctx.rowMapper(getRowType(list));
+        return ctx.getMapperContext().rowMapper(getRowType(list));
     }
 
     GeneratedKeyMapper<?> keyMapper() {
-        return ctx.keyMapper(getRowType(false));
+        return ctx.getMapperContext().keyMapper(getRowType(false));
     }
 
     @SuppressWarnings("unchecked")

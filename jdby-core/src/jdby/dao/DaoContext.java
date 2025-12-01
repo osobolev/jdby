@@ -1,8 +1,6 @@
 package jdby.dao;
 
 import jdby.core.Batch;
-import jdby.core.GeneratedKeyMapper;
-import jdby.core.RowMapper;
 import jdby.core.SqlParameter;
 import jdby.mapping.MapperContext;
 import jdby.transaction.ConnectionFactory;
@@ -14,14 +12,6 @@ import java.sql.Connection;
 public interface DaoContext {
 
     MapperContext getMapperContext();
-
-    default <T> RowMapper<T> rowMapper(Class<T> rowType) {
-        return getMapperContext().rowMapper(rowType);
-    }
-
-    default <K> GeneratedKeyMapper<K> keyMapper(Class<K> cls) {
-        return getMapperContext().keyMapper(cls);
-    }
 
     default boolean nonSqlParameter(Type type, Object value) {
         return type == Batch.class;
