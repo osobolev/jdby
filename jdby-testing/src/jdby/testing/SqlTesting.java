@@ -86,23 +86,25 @@ public final class SqlTesting {
         }
     }
 
-    private static Callable<?> match1(MapperContext ctx, Connection connection,
+    private static Callable<?> match1(Object ctx, Connection connection,
                                       Constructor<?> constructor1, Class<?> paramType) {
-        if (paramType.isAssignableFrom(Connection.class)) {
+        if (Connection.class.isAssignableFrom(paramType)) {
             return () -> constructor1.newInstance(connection);
-        } else if (paramType.isAssignableFrom(DaoConnection.class)) {
+        } else if (DaoConnection.class.isAssignableFrom(paramType)) {
             if (ctx instanceof DaoContext) {
                 return () -> constructor1.newInstance(((DaoContext) ctx).withConnection(connection));
             }
-        } else if (paramType.isAssignableFrom(RowConnection.class)) {
-            if (ctx != null) {
-                return () -> constructor1.newInstance(ctx.withConnection(connection));
+        } else if (RowConnection.class.isAssignableFrom(paramType)) {
+            if (ctx instanceof MapperContext) {
+                return () -> constructor1.newInstance(((MapperContext) ctx).withConnection(connection));
+            } else if (ctx instanceof DaoContext) {
+                return () -> constructor1.newInstance(((DaoContext) ctx).getMapperContext().withConnection(connection));
             }
         }
         return null;
     }
 
-    private static Object createTestDao(MapperContext ctx, Class<?> cls, Connection connection) throws Exception {
+    private static Object createTestDao(Object ctx, Class<?> cls, Connection connection) throws Exception {
         if (cls.isInterface()) {
             if (ctx instanceof DaoContext dctx) {
                 return DaoProxies.createProxy(dctx, cls, connection);

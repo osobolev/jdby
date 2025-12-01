@@ -1,19 +1,22 @@
 package jdby.dao;
 
-import jdby.core.Batch;
-import jdby.core.ConnectionFactory;
-import jdby.core.GeneratedKeyMapper;
-import jdby.core.RowMapper;
-import jdby.core.SqlParameter;
+import jdby.core.*;
+import jdby.mapping.MapperContext;
 
 import java.lang.reflect.Type;
 import java.sql.Connection;
 
 public interface DaoContext {
 
-    <T> RowMapper<T> rowMapper(Class<T> rowType);
+    MapperContext getMapperContext();
 
-    <K> GeneratedKeyMapper<K> keyMapper(Class<K> cls);
+    default <T> RowMapper<T> rowMapper(Class<T> rowType) {
+        return getMapperContext().rowMapper(rowType);
+    }
+
+    default <K> GeneratedKeyMapper<K> keyMapper(Class<K> cls) {
+        return getMapperContext().keyMapper(cls);
+    }
 
     default boolean nonSqlParameter(Type type, Object value) {
         return type == Batch.class;
@@ -41,5 +44,9 @@ public interface DaoContext {
 
     default <R, E extends Exception> R transactionCall(ConnectionFactory dataSource, DaoFunction<R, E> call) throws E {
         return ConnectionFactory.transactionCall(dataSource, this::withConnection, call);
+    }
+
+    static DefaultDaoContextBuilder builder() {
+        return new DefaultDaoContextBuilder();
     }
 }

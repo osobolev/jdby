@@ -4,7 +4,6 @@ import jdby.core.Batch;
 import jdby.core.ConnectionFactory;
 import jdby.core.RowConnection;
 import jdby.core.UncheckedSQLException;
-import jdby.mapping.DefaultMapperContext;
 import jdby.mapping.MapperContext;
 
 import java.sql.Connection;
@@ -18,7 +17,7 @@ import java.util.List;
 public class SqlExample {
 
     public static void main(String[] args) throws SQLException {
-        MapperContext ctx = new DefaultMapperContext();
+        MapperContext ctx = MapperContext.builder().build();
         try (Connection jdbcConnection = DriverManager.getConnection("jdbc:h2:mem:")) {
             jdbcConnection.setAutoCommit(false);
             RowConnection connection = ctx.withConnection(jdbcConnection);

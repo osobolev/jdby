@@ -47,4 +47,8 @@ public interface MapperContext {
     default <R, E extends Exception> R transactionCall(ConnectionFactory dataSource, RowFunction<R, E> call) throws E {
         return ConnectionFactory.transactionCall(dataSource, this::withConnection, call);
     }
+
+    static DefaultMapperContextBuilder builder() {
+        return new DefaultMapperContextBuilder();
+    }
 }
