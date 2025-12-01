@@ -5,12 +5,13 @@ import jdby.internal.Utils;
 
 import java.lang.reflect.*;
 import java.sql.Connection;
+import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Map;
 
 public final class DaoProxies {
 
-    private static final ThreadLocal<CallData> CALL_DATA = new ThreadLocal<>();
+    private static final ThreadLocal<ArrayDeque<CallData>> CALL_DATA = new ThreadLocal<>();
 
     public static <T> T createProxy(DaoContext ctx, Class<T> iface, Connection connection) {
         Object created = Proxy.newProxyInstance(
@@ -50,19 +51,25 @@ public final class DaoProxies {
         if (!method.isDefault()) {
             throw new IllegalStateException("Call of non-default method " + Utils.methodString(method));
         }
-        if (CALL_DATA.get() != null) {
-            throw new IllegalStateException("Cannot call proxy from proxy");
+        ArrayDeque<CallData> deque = CALL_DATA.get();
+        if (deque == null) {
+            deque = new ArrayDeque<>();
+            CALL_DATA.set(deque);
         }
-        CALL_DATA.set(new CallData(ctx, method, argsMap, connection));
+        deque.push(new CallData(ctx, method, argsMap, connection));
         try {
             return InvocationHandler.invokeDefault(proxy, method, args);
         } finally {
-            CALL_DATA.remove();
+            deque.pop();
+            if (deque.isEmpty()) {
+                CALL_DATA.remove();
+            }
         }
     }
 
     static CallData getCallData() {
-        CallData data = CALL_DATA.get();
+        ArrayDeque<CallData> deque = CALL_DATA.get();
+        CallData data = deque == null ? null : deque.peek();
         if (data == null) {
             throw new IllegalStateException("Must call through the proxy");
         }
