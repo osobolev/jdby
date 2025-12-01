@@ -35,21 +35,21 @@ public final class SqlCommands {
     public static <T> List<T> listRows(CharSequence sql) {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
-        return (List<T>) query.listRows(data.connection, data.rowMapper(List.class));
+        return (List<T>) query.listRows(data.connection, data.rowMapper(true));
     }
 
     @SuppressWarnings("unchecked")
     public static <T> T exactlyOneRow(CharSequence sql) {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
-        return (T) query.exactlyOneRow(data.connection, data.rowMapper(null));
+        return (T) query.exactlyOneRow(data.connection, data.rowMapper(false));
     }
 
     @SuppressWarnings("unchecked")
     public static <T> T maybeRow(CharSequence sql) {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
-        return (T) query.maybeRow(data.connection, data.rowMapper(null));
+        return (T) query.maybeRow(data.connection, data.rowMapper(false));
     }
 
     public static int executeUpdate(CharSequence sql) {

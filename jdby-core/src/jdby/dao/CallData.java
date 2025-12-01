@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.sql.Connection;
+import java.util.List;
 import java.util.Map;
 
 final class CallData {
@@ -31,26 +32,26 @@ final class CallData {
         return pq.toQuery(parameters);
     }
 
-    RowMapper<?> rowMapper(Class<?> requiredClass) {
-        return ctx.rowMapper(getRowType(requiredClass));
+    RowMapper<?> rowMapper(boolean list) {
+        return ctx.rowMapper(getRowType(list));
     }
 
     GeneratedKeyMapper<?> keyMapper() {
-        return ctx.keyMapper(getRowType(null));
+        return ctx.keyMapper(getRowType(false));
     }
 
-    private Class<?> getRowType(Class<?> requiredClass) {
+    private Class<?> getRowType(boolean list) {
         Type returnType = method.getGenericReturnType();
         if (returnType instanceof Class<?> cls) {
             return cls;
         }
-        if (requiredClass == null) {
+        if (!list) {
             throw new IllegalStateException("Method " + Utils.methodString(method) + " return type must be non-generic");
         } else {
-            Class<?> paramClass = getGenericParameter(returnType, requiredClass);
+            Class<?> paramClass = getGenericParameter(returnType, List.class);
             if (paramClass != null)
                 return paramClass;
-            throw new IllegalStateException("Method " + Utils.methodString(method) + " return type must be '" + requiredClass.getName() + "<...>'");
+            throw new IllegalStateException("Method " + Utils.methodString(method) + " return type must be 'List<...>'");
         }
     }
 
