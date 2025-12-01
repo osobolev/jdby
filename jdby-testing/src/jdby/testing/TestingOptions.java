@@ -44,7 +44,7 @@ public final class TestingOptions {
     public Consumer<String> info = System.out::println;
     public Consumer<String> warn = System.err::println;
     public Consumer<String> error = message -> {
-        throw new IllegalArgumentException(message);
+        throw new IllegalStateException(message);
     };
 
     public void info(String message) {

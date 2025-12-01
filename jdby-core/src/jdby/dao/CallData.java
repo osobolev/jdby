@@ -45,12 +45,12 @@ final class CallData {
             return cls;
         }
         if (requiredClass == null) {
-            throw new IllegalArgumentException("Method " + Utils.methodString(method) + " return type must be non-generic");
+            throw new IllegalStateException("Method " + Utils.methodString(method) + " return type must be non-generic");
         } else {
             Class<?> paramClass = getGenericParameter(returnType, requiredClass);
             if (paramClass != null)
                 return paramClass;
-            throw new IllegalArgumentException("Method " + Utils.methodString(method) + " return type must be '" + requiredClass.getName() + "<...>'");
+            throw new IllegalStateException("Method " + Utils.methodString(method) + " return type must be '" + requiredClass.getName() + "<...>'");
         }
     }
 

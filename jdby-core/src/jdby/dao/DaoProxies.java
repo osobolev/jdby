@@ -42,13 +42,13 @@ public final class DaoProxies {
             if (ctx.nonSqlParameter(type, arg))
                 continue;
             if (!parameter.isNamePresent()) {
-                throw new IllegalArgumentException("Parameter names are not present for interface '" + iface.getName() + "'; recompile with '-parameters'");
+                throw new IllegalStateException("Parameter names are not present for interface '" + iface.getName() + "'; recompile with '-parameters'");
             }
             SqlParameter value = ctx.parameter(type, arg);
             argsMap.put(parameter.getName(), value);
         }
         if (!method.isDefault()) {
-            throw new IllegalArgumentException("Call of non-default method " + Utils.methodString(method));
+            throw new IllegalStateException("Call of non-default method " + Utils.methodString(method));
         }
         if (CALL_DATA.get() != null) {
             throw new IllegalStateException("Cannot call proxy from proxy");
