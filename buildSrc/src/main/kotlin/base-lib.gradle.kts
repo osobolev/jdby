@@ -40,7 +40,6 @@ tasks {
     withType(JavaCompile::class).configureEach {
         options.encoding = "UTF-8"
         options.release.set(17)
-        options.compilerArgs.add("-parameters")
         options.compilerArgs.add("-Xlint:-module")
     }
     javadoc {
@@ -56,11 +55,4 @@ tasks {
 
 tasks.clean {
     delete("$projectDir/out")
-}
-
-tasks.named<Test>("test").configure {
-    useJUnitPlatform()
-    testLogging {
-        showStandardStreams = true
-    }
 }
