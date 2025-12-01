@@ -19,8 +19,9 @@ public final class SqlTransaction<C> {
 
     public <R, E extends Exception> R call(SqlFunction<C, R, E> function) throws E {
         try (RollbackGuard guard = RollbackGuard.create(dataSource)) {
-            C connection = wrap.apply(guard.getConnection());
-            R result = function.call(connection);
+            Connection connection = guard.getConnection();
+            R result = function.call(wrap.apply(connection));
+            connection.commit();
             guard.ok();
             return result;
         } catch (SQLException ex) {

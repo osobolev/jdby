@@ -37,9 +37,7 @@ public final class RollbackGuard implements AutoCloseable {
     @Override
     public void close() throws SQLException {
         try {
-            if (ok) {
-                connection.commit();
-            } else {
+            if (!ok) {
                 connection.rollback();
             }
         } catch (SQLException ex) {
