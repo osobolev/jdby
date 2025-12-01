@@ -1,11 +1,13 @@
 package jdby.dao;
 
+import jdby.core.GeneratedKeyMapper;
 import jdby.core.SqlParameter;
 import jdby.mapping.DefaultMapperContext;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.Connection;
 import java.sql.JDBCType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -52,6 +54,11 @@ public class DefaultDaoContext extends DefaultMapperContext implements DaoContex
     }
 
     @Override
+    public <K> GeneratedKeyMapper<K> keyMapper(Class<K> cls) {
+        return super.keyMapper(cls);
+    }
+
+    @Override
     public ParameterMapper parameterMapper(Type type) {
         if (type == SqlParameter.class) {
             return value -> (SqlParameter) value;
@@ -61,5 +68,10 @@ public class DefaultDaoContext extends DefaultMapperContext implements DaoContex
             throw new IllegalArgumentException("Cannot create parameter of type '" + type.getTypeName() + "'");
         }
         return parameterMapper;
+    }
+
+    @Override
+    public DaoConnection withConnection(Connection connection) {
+        return DaoContext.super.withConnection(connection);
     }
 }
