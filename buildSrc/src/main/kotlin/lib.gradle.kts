@@ -22,7 +22,7 @@ mavenPublishing {
 
 mavenPublishing.pom {
     name.set("${project.group}:${project.name}")
-    description.set("Easy dynamic SQL and parameter substitution for JDBC")
+    description.set("JDBC wrapper for easy row mapping and dynamic SQL")
     url.set("https://github.com/osobolev/jdby")
     licenses {
         license {
