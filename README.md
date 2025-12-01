@@ -76,13 +76,13 @@ default List<Integer> listUserIds() {
 
 ## Single-row queries
 
-- `maybeRow`: returns **null** when no rows are found; returns the first row when one or more rows exist.
+- `maybeRow`: returns **null** when no rows are found; returns the first row when one or more rows exist:
 ```java
 default UserRow maybeUser(int userId) {
     return maybeRow("select id, name from users where id = :userId");
 }
 ```
-- `exactlyOneRow`: throws exception if there are no rows or more than one row.
+- `exactlyOneRow`: throws exception if there are no rows or more than one row:
 ```java
 default UserRow loadUser(int userId) {
     return exactlyOneRow("select id, name from users where id = :userId");
@@ -123,7 +123,7 @@ default List<UserRow> listUsersByFilter(LocalDate birthdayFrom, LocalDate birthd
 
 ## Batching
 
-You can use query **batching** in the following way:
+You can use query batching in the following way:
 ```java
 interface UserDao {
 
