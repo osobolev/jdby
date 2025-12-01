@@ -6,12 +6,12 @@ import jdby.core.RowMapper;
 
 import java.sql.Connection;
 
-public class MapperConnection implements RowConnection {
+public class RowConnectionImpl implements RowConnection {
 
     private final MapperContext ctx;
     private final Connection connection;
 
-    public MapperConnection(MapperContext ctx, Connection connection) {
+    public RowConnectionImpl(MapperContext ctx, Connection connection) {
         this.ctx = ctx;
         this.connection = connection;
     }

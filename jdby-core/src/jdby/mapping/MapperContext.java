@@ -32,7 +32,7 @@ public interface MapperContext {
     }
 
     default RowConnection withConnection(Connection connection) {
-        return new MapperConnection(this, connection);
+        return new RowConnectionImpl(this, connection);
     }
 
     default <E extends Exception> SqlTransaction<RowConnection> transaction(ConnectionFactory dataSource) throws E {
