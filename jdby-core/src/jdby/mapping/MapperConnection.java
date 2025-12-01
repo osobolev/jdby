@@ -16,6 +16,10 @@ public class MapperConnection implements RowConnection {
         this.connection = connection;
     }
 
+    public MapperContext getContext() {
+        return ctx;
+    }
+
     @Override
     public <T> RowMapper<T> rowMapper(Class<T> rowType) {
         return ctx.rowMapper(rowType);
