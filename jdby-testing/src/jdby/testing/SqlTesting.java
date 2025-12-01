@@ -8,7 +8,6 @@ import jdby.dao.DaoContext;
 import jdby.dao.DaoProxies;
 import jdby.internal.RollbackGuard;
 import jdby.internal.Utils;
-import jdby.mapping.MapperConnection;
 import jdby.mapping.MapperContext;
 
 import java.io.BufferedReader;
@@ -104,11 +103,11 @@ public final class SqlTesting {
             return () -> constructor1.newInstance(connection);
         } else if (paramType.isAssignableFrom(DaoConnection.class)) {
             if (ctx instanceof DaoContext) {
-                return () -> constructor1.newInstance(new DaoConnection((DaoContext) ctx, connection));
+                return () -> constructor1.newInstance(((DaoContext) ctx).withConnection(connection));
             }
         } else if (paramType.isAssignableFrom(RowConnection.class)) {
             if (ctx != null) {
-                return () -> constructor1.newInstance(new MapperConnection(ctx, connection));
+                return () -> constructor1.newInstance(ctx.withConnection(connection));
             }
         }
         return null;
