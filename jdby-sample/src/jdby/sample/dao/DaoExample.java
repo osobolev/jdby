@@ -3,6 +3,7 @@ package jdby.sample.dao;
 import jdby.core.Batch;
 import jdby.core.UncheckedSQLException;
 import jdby.dao.DaoConnection;
+import jdby.dao.DaoContext;
 import jdby.dao.DefaultDaoContext;
 
 import java.sql.Connection;
@@ -16,7 +17,7 @@ import java.util.List;
 public class DaoExample {
 
     public static void main(String[] args) throws SQLException {
-        DefaultDaoContext ctx = new DefaultDaoContext();
+        DaoContext ctx = new DefaultDaoContext();
         try (Connection jdbcConnection = DriverManager.getConnection("jdbc:h2:mem:")) {
             jdbcConnection.setAutoCommit(false);
             DaoConnection connection = ctx.withConnection(jdbcConnection);
