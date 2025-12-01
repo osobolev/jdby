@@ -1,11 +1,12 @@
 package jdby.testing;
 
-import jdby.core.RollbackGuard;
+import jdby.core.ConnectionFactory;
 import jdby.core.RowConnection;
 import jdby.core.testing.SqlTestingHook;
 import jdby.dao.DaoConnection;
 import jdby.dao.DaoContext;
 import jdby.dao.DaoProxies;
+import jdby.internal.RollbackGuard;
 import jdby.internal.Utils;
 import jdby.mapping.MapperConnection;
 import jdby.mapping.MapperContext;
@@ -34,6 +35,18 @@ public final class SqlTesting {
     }
 
     private void runAllMethods(Class<?> cls, Object o) throws Exception {
+        ConnectionFactory testConnectionFactory = new ConnectionFactory() {
+
+            @Override
+            public Connection openConnection() {
+                return connection;
+            }
+
+            @Override
+            public void closeConnection(Connection connection) {
+                // do nothing
+            }
+        };
         for (Method method : cls.getDeclaredMethods()) {
             int modifiers = method.getModifiers();
             if (!Modifier.isPublic(modifiers))
@@ -53,7 +66,7 @@ public final class SqlTesting {
                     ));
                 });
             }
-            try (RollbackGuard guard = new RollbackGuard(connection)) {
+            try (RollbackGuard guard = RollbackGuard.create(testConnectionFactory)) {
                 method.invoke(o, args);
             } catch (InvocationTargetException itex) {
                 if (itex.getCause() instanceof Exception ex) {
