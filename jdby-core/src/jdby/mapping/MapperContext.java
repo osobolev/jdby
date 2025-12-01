@@ -15,10 +15,7 @@ public interface MapperContext {
     ColumnMapper columnMapper(Type type);
 
     default <K> GeneratedKeyMapper<K> keyMapper(Class<K> cls) {
-        return generatedKey(cls, columnMapper(cls));
-    }
-
-    static <K> GeneratedKeyMapper<K> generatedKey(Class<K> cls, ColumnMapper columnMapper) {
+        ColumnMapper columnMapper = columnMapper(cls);
         return (rows, columns, rs) -> {
             if (SqlTestingHook.isTesting()) {
                 SqlTestingHook.hook.checkColumn(rs, cls, columnMapper);
