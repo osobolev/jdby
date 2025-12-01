@@ -1,7 +1,5 @@
 package jdby.mapping;
 
-import jdby.core.UncheckedSQLException;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.RecordComponent;
@@ -42,8 +40,10 @@ final class RecordConstructor<R> {
                 throw sex;
             } else if (cause instanceof RuntimeException rtex) {
                 throw rtex;
+            } else if (cause instanceof Error e) {
+                throw e;
             } else {
-                throw new UncheckedSQLException(cause);
+                throw new IllegalStateException(cause);
             }
         }
     }
