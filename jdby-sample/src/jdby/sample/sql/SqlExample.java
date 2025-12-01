@@ -60,7 +60,7 @@ public class SqlExample {
             // Commit previous transaction:
             connection.getConnection().commit();
             try {
-                ctx.transaction(ConnectionFactory.fromConnection(jdbcConnection), c -> {
+                ctx.transaction(ConnectionFactory.fromConnection(jdbcConnection)).run(c -> {
                     UserDao transDao = new UserDao(c);
                     transDao.deleteAllUsers();
                     throw new IllegalStateException("Should rollback");

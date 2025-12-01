@@ -5,6 +5,7 @@ import jdby.core.RowConnection;
 import jdby.core.RowMapper;
 import jdby.core.testing.SqlTestingHook;
 import jdby.transaction.ConnectionFactory;
+import jdby.transaction.SqlTransaction;
 
 import java.lang.reflect.Type;
 import java.sql.Connection;
@@ -34,18 +35,8 @@ public interface MapperContext {
         return new MapperConnection(this, connection);
     }
 
-    interface RowAction<E extends Exception> extends ConnectionFactory.SqlAction<RowConnection, E> {
-    }
-
-    interface RowFunction<R, E extends Exception> extends ConnectionFactory.SqlFunction<RowConnection, R, E> {
-    }
-
-    default <E extends Exception> void transaction(ConnectionFactory dataSource, RowAction<E> action) throws E {
-        ConnectionFactory.transactionAction(dataSource, this::withConnection, action);
-    }
-
-    default <R, E extends Exception> R transactionCall(ConnectionFactory dataSource, RowFunction<R, E> call) throws E {
-        return ConnectionFactory.transactionCall(dataSource, this::withConnection, call);
+    default <E extends Exception> SqlTransaction<RowConnection> transaction(ConnectionFactory dataSource) throws E {
+        return new SqlTransaction<>(dataSource, this::withConnection);
     }
 
     static DefaultMapperContextBuilder builder() {
