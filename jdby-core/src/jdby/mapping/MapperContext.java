@@ -1,5 +1,6 @@
 package jdby.mapping;
 
+import jdby.core.ConnectionFactory;
 import jdby.core.GeneratedKeyMapper;
 import jdby.core.RowConnection;
 import jdby.core.RowMapper;
@@ -31,5 +32,19 @@ public interface MapperContext {
 
     default RowConnection withConnection(Connection connection) {
         return new MapperConnection(this, connection);
+    }
+
+    interface RowAction<E extends Exception> extends ConnectionFactory.SqlAction<RowConnection, E> {
+    }
+
+    interface RowFunction<R, E extends Exception> extends ConnectionFactory.SqlFunction<RowConnection, R, E> {
+    }
+
+    default <E extends Exception> void transaction(ConnectionFactory dataSource, RowAction<E> action) throws E {
+        ConnectionFactory.transactionAction(dataSource, this::withConnection, action);
+    }
+
+    default <R, E extends Exception> R transactionCall(ConnectionFactory dataSource, RowFunction<R, E> call) throws E {
+        return ConnectionFactory.transactionCall(dataSource, this::withConnection, call);
     }
 }
