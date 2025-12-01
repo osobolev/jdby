@@ -38,7 +38,7 @@ public class DefaultMapperContextBuilder {
         }
     }
 
-    private <T> void registerSimple(Class<T> cls, SimpleColumnMapper<?> columnMapper) {
+    private <T> void registerSimple(Class<T> cls, SimpleColumnMapper<T> columnMapper) {
         registerColumn(cls, columnMapper);
     }
 
