@@ -76,7 +76,7 @@ default List<Integer> listUserIds() {
 
 ## Single-row queries
 
-- `maybeRow` returns null or empty `Optional` when no rows are found; returns the first row when one or more rows exist:
+- `maybeRow` returns null or an empty `Optional` when no rows are found; throws an exception when more than one row exists:
 ```java
 // Returns null if no rows found
 default UserRow maybeUser(int userId) {
@@ -88,7 +88,8 @@ default Optional<UserRow> optionalUser(int userId) {
   return maybeRow("select id, name from users where id = :userId");
 }
 ```
-- `exactlyOneRow` throws exception if there are no rows or more than one row:
+- `firstRow` is similar to `maybeRow` but returns the first row even when more than one row exists. 
+- `exactlyOneRow` throws an exception if there are no rows or more than one row:
 ```java
 default UserRow loadUser(int userId) {
     return exactlyOneRow("select id, name from users where id = :userId");
