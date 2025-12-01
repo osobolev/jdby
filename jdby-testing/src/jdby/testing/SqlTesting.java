@@ -87,15 +87,15 @@ public final class SqlTesting {
 
     private static Callable<?> match1(MapperContext ctx, Connection connection,
                                       Constructor<?> constructor1, Class<?> paramType) {
-        if (paramType == Connection.class) {
+        if (paramType.isAssignableFrom(Connection.class)) {
             return () -> constructor1.newInstance(connection);
-        } else if (paramType == RowConnection.class) {
-            if (ctx != null) {
-                return () -> constructor1.newInstance(new MapperConnection(ctx, connection));
-            }
-        } else if (paramType == DaoConnection.class) {
+        } else if (paramType.isAssignableFrom(DaoConnection.class)) {
             if (ctx instanceof DaoContext) {
                 return () -> constructor1.newInstance(new DaoConnection((DaoContext) ctx, connection));
+            }
+        } else if (paramType.isAssignableFrom(RowConnection.class)) {
+            if (ctx != null) {
+                return () -> constructor1.newInstance(new MapperConnection(ctx, connection));
             }
         }
         return null;
