@@ -93,12 +93,12 @@ public final class Query implements QueryLike {
                 if (rs.next()) {
                     T row = rowMapper.mapRow(rs);
                     if (!canHaveMore && rs.next()) {
-                        throw new UncheckedSQLException("More than one rows found");
+                        throw new UncheckedSQLException("21000", "More than one rows found");
                     }
                     return row;
                 } else {
                     if (!canHaveNone) {
-                        throw new UncheckedSQLException("No rows found");
+                        throw new UncheckedSQLException("02000", "No rows found");
                     }
                     return null;
                 }

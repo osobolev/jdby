@@ -4,12 +4,16 @@ import java.sql.SQLException;
 
 public class UncheckedSQLException extends RuntimeException {
 
-    public UncheckedSQLException(String message) {
+    private final String sqlState;
+
+    public UncheckedSQLException(String sqlState, String message) {
         super(message);
+        this.sqlState = sqlState;
     }
 
     public UncheckedSQLException(SQLException cause) {
         super(cause);
+        this.sqlState = cause.getSQLState();
     }
 
     public SQLException getCause() {
@@ -17,7 +21,6 @@ public class UncheckedSQLException extends RuntimeException {
     }
 
     public String getSQLState() {
-        SQLException cause = getCause();
-        return cause == null ? null : cause.getSQLState();
+        return sqlState;
     }
 }
