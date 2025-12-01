@@ -1,6 +1,7 @@
 package jdby.sample.dao;
 
 import jdby.core.Batch;
+import jdby.core.UncheckedSQLException;
 import jdby.dao.DaoConnection;
 import jdby.dao.DefaultDaoContext;
 
@@ -44,7 +45,7 @@ public class DaoExample {
 
             try {
                 dao.loadUser(-1);
-            } catch (SQLException ex) {
+            } catch (UncheckedSQLException ex) {
                 System.out.println("User not found!");
             }
 

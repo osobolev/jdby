@@ -60,27 +60,31 @@ public final class Batch implements AutoCloseable {
         this.batchPortionSize = batchPortionSize;
     }
 
-    public void addBatch(Connection connection, Query query) throws SQLException {
+    public void addBatch(Connection connection, Query query) {
         String sql = query.getSql();
         if (SqlTestingHook.isTesting()) {
             query.executeUpdate(connection);
             return;
         }
-        BatchedStatement bs = bySql.get(sql);
-        if (bs == null) {
-            bs = new BatchedStatement(connection.prepareStatement(sql));
-            bySql.put(sql, bs);
+        try {
+            BatchedStatement bs = bySql.get(sql);
+            if (bs == null) {
+                bs = new BatchedStatement(connection.prepareStatement(sql));
+                bySql.put(sql, bs);
+            }
+            query.setParameters(bs.ps);
+            bs.addBatch(batchPortionSize);
+        } catch (SQLException ex) {
+            throw new UncheckedSQLException(ex);
         }
-        query.setParameters(bs.ps);
-        bs.addBatch(batchPortionSize);
     }
 
-    public void addBatch(RowConnection connection, Query query) throws SQLException {
+    public void addBatch(RowConnection connection, Query query) {
         addBatch(connection.getConnection(), query);
     }
 
     @Override
-    public void close() throws SQLException {
+    public void close() {
         SQLException error = null;
         for (BatchedStatement bs : bySql.values()) {
             try {
@@ -94,7 +98,7 @@ public final class Batch implements AutoCloseable {
             }
         }
         if (error != null) {
-            throw error;
+            throw new UncheckedSQLException(error);
         }
     }
 }

@@ -4,7 +4,6 @@ import jdby.core.Batch;
 import jdby.core.QueryBuilder;
 import jdby.core.RowConnection;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -21,7 +20,7 @@ public class UserDao {
         this.connection = connection;
     }
 
-    public void createSchema() throws SQLException {
+    public void createSchema() {
         sql(
             """
                 create table if not exists users (
@@ -34,7 +33,7 @@ public class UserDao {
         ).executeUpdate(connection);
     }
 
-    public List<UserRow> listAllUsers() throws SQLException {
+    public List<UserRow> listAllUsers() {
         return sql(
             """
                 select id, full_name, dob, last_login
@@ -44,7 +43,7 @@ public class UserDao {
         ).listRows(connection, UserRow.class);
     }
 
-    public List<UserRow> listUsersByFilter(String nameMask, LocalDate birthdayFrom, LocalDate birthdayTo) throws SQLException {
+    public List<UserRow> listUsersByFilter(String nameMask, LocalDate birthdayFrom, LocalDate birthdayTo) {
         QueryBuilder buf = builder(
             """
                 select id, full_name, dob, last_login
@@ -65,7 +64,7 @@ public class UserDao {
         return buf.toQuery().listRows(connection, UserRow.class);
     }
 
-    public Integer insertUser(String name, LocalDate birthday) throws SQLException {
+    public Integer insertUser(String name, LocalDate birthday) {
         return sql(
             """
                 insert into users (full_name, dob) values (?, ?)
@@ -74,7 +73,7 @@ public class UserDao {
         ).insertRow(connection, "id", Integer.class);
     }
 
-    public void setLastLogin(int id, OffsetDateTime lastLogin) throws SQLException {
+    public void setLastLogin(int id, OffsetDateTime lastLogin) {
         sql(
             """
                 update users set last_login = ? where id = ?
@@ -83,7 +82,7 @@ public class UserDao {
         ).executeUpdate(connection);
     }
 
-    public UserRow maybeUser(int id) throws SQLException {
+    public UserRow maybeUser(int id) {
         return sql(
             """
                 select id, full_name, dob, last_login
@@ -94,7 +93,7 @@ public class UserDao {
         ).maybeRow(connection, UserRow.class);
     }
 
-    public UserRow loadUser(int id) throws SQLException {
+    public UserRow loadUser(int id) {
         return sql(
             """
                 select id, full_name, dob, last_login
@@ -105,7 +104,7 @@ public class UserDao {
         ).exactlyOneRow(connection, UserRow.class);
     }
 
-    public void batchAddUser(Batch batch, String name, LocalDate birthday) throws SQLException {
+    public void batchAddUser(Batch batch, String name, LocalDate birthday) {
         batch.addBatch(connection, sql(
             """
                 insert into users (full_name, dob) values (?, ?)

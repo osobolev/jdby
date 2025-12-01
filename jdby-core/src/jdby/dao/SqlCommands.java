@@ -2,7 +2,6 @@ package jdby.dao;
 
 import jdby.core.*;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import static jdby.dao.DaoProxies.getCallData;
@@ -33,27 +32,27 @@ public final class SqlCommands {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> List<T> listRows(CharSequence sql) throws SQLException {
+    public static <T> List<T> listRows(CharSequence sql) {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
         return (List<T>) query.listRows(data.connection, data.rowMapper(List.class));
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T exactlyOneRow(CharSequence sql) throws SQLException {
+    public static <T> T exactlyOneRow(CharSequence sql) {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
         return (T) query.exactlyOneRow(data.connection, data.rowMapper(null));
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T maybeRow(CharSequence sql) throws SQLException {
+    public static <T> T maybeRow(CharSequence sql) {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
         return (T) query.maybeRow(data.connection, data.rowMapper(null));
     }
 
-    public static int executeUpdate(CharSequence sql) throws SQLException {
+    public static int executeUpdate(CharSequence sql) {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
         return query.executeUpdate(data.connection);
@@ -66,19 +65,19 @@ public final class SqlCommands {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T insertRow(ColumnName generatedColumn, CharSequence sql) throws SQLException {
+    public static <T> T insertRow(ColumnName generatedColumn, CharSequence sql) {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
         return (T) query.executeUpdate(data.connection, data.keyMapper(), generatedColumn.name());
     }
 
-    public static <T> T executeUpdate(CharSequence sql, GeneratedKeyMapper<T> keyMapper, String generatedColumn, String... otherGeneratedColumns) throws SQLException {
+    public static <T> T executeUpdate(CharSequence sql, GeneratedKeyMapper<T> keyMapper, String generatedColumn, String... otherGeneratedColumns) {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
         return query.executeUpdate(data.connection, keyMapper, generatedColumn, otherGeneratedColumns);
     }
 
-    public static void executeBatch(Batch batch, CharSequence sql) throws SQLException {
+    public static void executeBatch(Batch batch, CharSequence sql) {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
         batch.addBatch(data.connection, query);

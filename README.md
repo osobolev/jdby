@@ -7,7 +7,7 @@ record UserRow (int id, String name) {}
 
 interface UserDao {
 
-    default List<UserRow> listUsers(String nameMask) throws SQLException {
+    default List<UserRow> listUsers(String nameMask) {
         return listRows("""
             select id, name
               from users
@@ -69,7 +69,7 @@ implementation("io.github.osobolev.jdby:jdby-core:1.0")
 Simple types (primitive type wrappers, `String`, `BigInteger`, `BigDecimal`, `LocalDate`, `LocalTime`, `LocalDateTime`, `OffsetDateTime`, `byte[]`)
 are supported for single-column queries:
 ```java
-default List<Integer> listUserIds() throws SQLException {
+default List<Integer> listUserIds() {
     return listRows("select id from users order by id");
 }
 ```
@@ -78,13 +78,13 @@ default List<Integer> listUserIds() throws SQLException {
 
 - `maybeRow`: returns **null** when no rows are found; returns the first row when one or more rows exist.
 ```java
-default UserRow maybeUser(int userId) throws SQLException {
+default UserRow maybeUser(int userId) {
     return maybeRow("select id, name from users where id = :userId");
 }
 ```
-- `exactlyOneRow`: throws SQLException if there are no rows or more than one row.
+- `exactlyOneRow`: throws exception if there are no rows or more than one row.
 ```java
-default UserRow loadUser(int userId) throws SQLException {
+default UserRow loadUser(int userId) {
     return exactlyOneRow("select id, name from users where id = :userId");
 }
 ```
@@ -93,7 +93,7 @@ default UserRow loadUser(int userId) throws SQLException {
 
 You can retrieve the **generated ID** of an inserted row using the `insertRow` method:
 ```java
-default int insertUser(String name) throws SQLException {
+default int insertUser(String name) {
     return insertRow(column("id"), "insert into users (name) values (:name)");
 }
 ```
@@ -104,7 +104,7 @@ For more complex cases (more than one column or more than one row being inserted
 
 You can use the `SqlBuilder` class to construct dynamic SQL queries from separate pieces:
 ```java
-default List<UserRow> listUsersByFilter(LocalDate birthdayFrom, LocalDate birthdayTo) throws SQLException {
+default List<UserRow> listUsersByFilter(LocalDate birthdayFrom, LocalDate birthdayTo) {
     SqlBuilder buf = builder("""
         select id, name
           from users
@@ -127,7 +127,7 @@ You can use query **batching** in the following way:
 ```java
 interface UserDao {
 
-    default void batchInsertUser(Batch batch, String name) throws SQLException {
+    default void batchInsertUser(Batch batch, String name) {
         executeBatch(batch, "insert into users (name) values (:name)");
     }
 }

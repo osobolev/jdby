@@ -2,6 +2,7 @@ package jdby.sample.sql;
 
 import jdby.core.Batch;
 import jdby.core.RowConnection;
+import jdby.core.UncheckedSQLException;
 import jdby.mapping.DefaultMapperContext;
 
 import java.sql.Connection;
@@ -44,7 +45,7 @@ public class SqlExample {
 
             try {
                 dao.loadUser(-1);
-            } catch (SQLException ex) {
+            } catch (UncheckedSQLException ex) {
                 System.out.println("User not found!");
             }
 

@@ -3,7 +3,6 @@ package jdby.sample.dao;
 import jdby.core.Batch;
 import jdby.dao.SqlBuilder;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -12,7 +11,7 @@ import static jdby.dao.SqlCommands.*;
 
 public interface UserDao {
 
-    default void createSchema() throws SQLException {
+    default void createSchema() {
         executeUpdate(
             """
                 create table if not exists users (
@@ -25,7 +24,7 @@ public interface UserDao {
         );
     }
 
-    default List<UserRow> listAllUsers() throws SQLException {
+    default List<UserRow> listAllUsers() {
         return listRows(
             """
                 select id, full_name, dob, last_login
@@ -35,7 +34,7 @@ public interface UserDao {
         );
     }
 
-    default List<UserRow> listUsersByFilter(String nameMask, LocalDate birthdayFrom, LocalDate birthdayTo) throws SQLException {
+    default List<UserRow> listUsersByFilter(String nameMask, LocalDate birthdayFrom, LocalDate birthdayTo) {
         SqlBuilder buf = builder(
             """
                 select id, full_name, dob, last_login
@@ -56,7 +55,7 @@ public interface UserDao {
         return listRows(buf);
     }
 
-    default Integer insertUser(String name, LocalDate birthday) throws SQLException {
+    default Integer insertUser(String name, LocalDate birthday) {
         return insertRow(
             column("id"),
             """
@@ -65,7 +64,7 @@ public interface UserDao {
         );
     }
 
-    default void setLastLogin(int id, OffsetDateTime lastLogin) throws SQLException {
+    default void setLastLogin(int id, OffsetDateTime lastLogin) {
         executeUpdate(
             """
                 update users set last_login = :lastLogin where id = :id
@@ -73,7 +72,7 @@ public interface UserDao {
         );
     }
 
-    default UserRow maybeUser(int id) throws SQLException {
+    default UserRow maybeUser(int id) {
         return maybeRow(
             """
                 select id, full_name, dob, last_login
@@ -83,7 +82,7 @@ public interface UserDao {
         );
     }
 
-    default UserRow loadUser(int id) throws SQLException {
+    default UserRow loadUser(int id) {
         return exactlyOneRow(
             """
                 select id, full_name, dob, last_login
@@ -93,7 +92,7 @@ public interface UserDao {
         );
     }
 
-    default void batchAddUser(Batch batch, String name, LocalDate birthday) throws SQLException {
+    default void batchAddUser(Batch batch, String name, LocalDate birthday) {
         executeBatch(
             batch,
             """
