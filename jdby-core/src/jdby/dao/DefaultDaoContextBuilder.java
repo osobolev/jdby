@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class DefaultDaoContextBuilder extends DefaultMapperContextBuilder {
 
-    private final Map<Type, ParameterMapper> parameterMappers = new HashMap<>();
+    protected final Map<Type, ParameterMapper> parameterMappers = new HashMap<>();
 
     public DefaultDaoContextBuilder() {
         registerSimple(byte.class, JDBCType.TINYINT);
