@@ -1,6 +1,7 @@
 package jdby.testing;
 
 import jdby.dao.DaoContext;
+import jdby.dao.DefaultDaoContextBuilder;
 import jdby.mapping.CheckColumnCompatibility;
 import jdby.mapping.ColumnNaming;
 
@@ -28,7 +29,7 @@ public final class TestingOptions {
      */
     public MockParamFactory paramFactory = new MockParamFactory();
     /**
-     * If {@link #ctx}'s {@link ColumnNaming} is {@link jdby.mapping.ColumnNaming.ByPosition}, then
+     * If {@link ColumnNaming} created in {@link #instantiator} is {@link jdby.mapping.ColumnNaming.ByPosition}, then
      * java field names are compared with DB column names at the same indexes. Normalized names are compared
      * (lower case with underscores removed). When there are differences, warning is emitted.
      */
@@ -37,7 +38,8 @@ public final class TestingOptions {
      * See {@link TestStrictness}
      */
     public TestStrictness strictness = TestStrictness.STRICT_TYPE_CHECK;
-    public Object ctx = DaoContext.builder().build();
+    public DefaultDaoContextBuilder ctx = DaoContext.builder();
+    public TestInstantiator instantiator = new DefaultTestInstantiator(ctx);
     public ConnectionInit initConnection = connection -> {};
 
     public Consumer<String> info = System.out::println;

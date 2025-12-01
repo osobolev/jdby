@@ -1,13 +1,8 @@
 package jdby.testing;
 
-import jdby.core.RowConnection;
 import jdby.core.testing.SqlTestingHook;
-import jdby.dao.DaoConnection;
-import jdby.dao.DaoContext;
-import jdby.dao.DaoProxies;
 import jdby.internal.RollbackGuard;
 import jdby.internal.Utils;
-import jdby.mapping.MapperContext;
 import jdby.transaction.ConnectionFactory;
 
 import java.io.BufferedReader;
@@ -18,7 +13,6 @@ import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Callable;
@@ -86,63 +80,9 @@ public final class SqlTesting {
         }
     }
 
-    private static Callable<?> match1(Object ctx, Connection connection,
-                                      Constructor<?> constructor1, Class<?> paramType) {
-        if (Connection.class.isAssignableFrom(paramType)) {
-            return () -> constructor1.newInstance(connection);
-        } else if (DaoConnection.class.isAssignableFrom(paramType)) {
-            if (ctx instanceof DaoContext) {
-                return () -> constructor1.newInstance(((DaoContext) ctx).withConnection(connection));
-            }
-        } else if (RowConnection.class.isAssignableFrom(paramType)) {
-            if (ctx instanceof MapperContext) {
-                return () -> constructor1.newInstance(((MapperContext) ctx).withConnection(connection));
-            } else if (ctx instanceof DaoContext) {
-                return () -> constructor1.newInstance(((DaoContext) ctx).getMapperContext().withConnection(connection));
-            }
-        }
-        return null;
-    }
-
-    private static Object createTestDao(Object ctx, Class<?> cls, Connection connection) throws Exception {
-        if (cls.isInterface()) {
-            if (ctx instanceof DaoContext dctx) {
-                return DaoProxies.createProxy(dctx, cls, connection);
-            } else {
-                throw new IllegalStateException("Interfaces are supported only for DaoContext");
-            }
-        }
-        Constructor<?>[] constructors = cls.getConstructors();
-        List<Callable<?>> candidates0 = new ArrayList<>();
-        List<Callable<?>> candidates1 = new ArrayList<>();
-        for (Constructor<?> constructor : constructors) {
-            Class<?>[] types = constructor.getParameterTypes();
-            if (types.length == 0) {
-                candidates0.add(constructor::newInstance);
-            } else if (types.length == 1) {
-                Class<?> type = types[0];
-                Callable<?> newInstance = match1(ctx, connection, constructor, type);
-                if (newInstance != null) {
-                    candidates1.add(newInstance);
-                }
-            }
-        }
-        if (candidates1.size() == 1) {
-            Callable<?> newInstance = candidates1.get(0);
-            return newInstance.call();
-        } else if (candidates0.size() == 1) {
-            Callable<?> newInstance = candidates0.get(0);
-            return newInstance.call();
-        }
-        throw new IllegalArgumentException("Cannot find appropriate constructor for class '" + cls.getName() + "'");
-    }
-
     public static void runTests(TestingOptions options, Callable<Connection> getConnection,
                                 List<Class<?>> daoClasses) throws Exception {
-        runTests(
-            options, getConnection, daoClasses,
-            (connection, cls) -> createTestDao(options.ctx, cls, connection)
-        );
+        runTests(options, getConnection, daoClasses, options.instantiator::create);
     }
 
     /**

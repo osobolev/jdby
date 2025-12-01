@@ -1,6 +1,5 @@
 package jdby.sample.sql;
 
-import jdby.mapping.MapperContext;
 import jdby.testing.SqlTesting;
 import jdby.testing.TestingOptions;
 import org.junit.jupiter.api.Test;
@@ -13,10 +12,8 @@ public class SqlTest {
     @Test
     public void testDao() throws Exception {
         TestingOptions options = new TestingOptions();
-        MapperContext ctx = MapperContext.builder().build();
-        options.ctx = ctx;
         options.initConnection = connection -> {
-            new UserDao(ctx.withConnection(connection)).createSchema();
+            options.instantiator.create(connection, UserDao.class).createSchema();
         };
         SqlTesting.runTests(
             options,
