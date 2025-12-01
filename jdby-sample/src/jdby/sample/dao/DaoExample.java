@@ -60,9 +60,10 @@ public class DaoExample {
             // Commit previous transaction:
             connection.getConnection().commit();
             try {
-                ctx.transaction(ConnectionFactory.fromConnection(jdbcConnection)).run(c -> {
-                    UserDao transDao = c.dao(UserDao.class);
-                    transDao.deleteAllUsers();
+                ConnectionFactory dataSource = ConnectionFactory.fromConnection(jdbcConnection);
+                ctx.transaction(dataSource).run(tx -> {
+                    UserDao txDao = tx.dao(UserDao.class);
+                    txDao.deleteAllUsers();
                     throw new IllegalStateException("Should rollback");
                 });
             } catch (IllegalStateException ex) {

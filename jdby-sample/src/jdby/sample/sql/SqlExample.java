@@ -60,9 +60,10 @@ public class SqlExample {
             // Commit previous transaction:
             connection.getConnection().commit();
             try {
-                ctx.transaction(ConnectionFactory.fromConnection(jdbcConnection)).run(c -> {
-                    UserDao transDao = new UserDao(c);
-                    transDao.deleteAllUsers();
+                ConnectionFactory dataSource = ConnectionFactory.fromConnection(jdbcConnection);
+                ctx.transaction(dataSource).run(tx -> {
+                    UserDao txDao = new UserDao(tx);
+                    txDao.deleteAllUsers();
                     throw new IllegalStateException("Should rollback");
                 });
             } catch (IllegalStateException ex) {
