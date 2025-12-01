@@ -49,8 +49,9 @@ public class DefaultDaoContext extends DefaultMapperContext implements DaoContex
         registerParameter(cls, value -> SqlParameter.jdbc(value, jdbcType));
     }
 
-    public void registerParameter(Type type, ParameterMapper parameterMapper) {
+    public DefaultDaoContext registerParameter(Type type, ParameterMapper parameterMapper) {
         parameterMappers.put(type, parameterMapper);
+        return this;
     }
 
     @Override

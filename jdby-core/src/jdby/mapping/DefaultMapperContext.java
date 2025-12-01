@@ -41,16 +41,19 @@ public class DefaultMapperContext implements MapperContext {
         registerColumn(cls, columnMapper);
     }
 
-    public void setColumnNaming(ColumnNaming columnNaming) {
+    public DefaultMapperContext setColumnNaming(ColumnNaming columnNaming) {
         this.columnNaming = columnNaming;
+        return this;
     }
 
-    public void registerColumn(Type type, ColumnMapper columnMapper) {
+    public DefaultMapperContext registerColumn(Type type, ColumnMapper columnMapper) {
         columnMappers.put(type, columnMapper);
+        return this;
     }
 
-    public <T> void registerRow(Class<T> rowType, RowMapper<T> rowMapper) {
+    public <T> DefaultMapperContext registerRow(Class<T> rowType, RowMapper<T> rowMapper) {
         rowMappers.put(rowType, rowMapper);
+        return this;
     }
 
     @Override
