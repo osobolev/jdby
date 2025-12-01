@@ -5,6 +5,7 @@ import jdby.core.RowMapper;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -20,13 +21,13 @@ public class DefaultMapperContextBuilder {
     protected final Map<Class<?>, RowMapper<?>> rowMappers = new HashMap<>();
 
     public DefaultMapperContextBuilder() {
-        registerSimple(byte.class, ColumnMapper.byteMapper());
-        registerSimple(short.class, ColumnMapper.shortMapper());
-        registerSimple(int.class, ColumnMapper.intMapper());
-        registerSimple(long.class, ColumnMapper.longMapper());
-        registerSimple(float.class, ColumnMapper.floatMapper());
-        registerSimple(double.class, ColumnMapper.doubleMapper());
-        registerSimple(boolean.class, ColumnMapper.booleanMapper());
+        registerSimple(byte.class, new SimpleColumnMapper<>(ResultSet::getByte, ResultSet::getByte));
+        registerSimple(short.class, new SimpleColumnMapper<>(ResultSet::getShort, ResultSet::getShort));
+        registerSimple(int.class, new SimpleColumnMapper<>(ResultSet::getInt, ResultSet::getInt));
+        registerSimple(long.class, new SimpleColumnMapper<>(ResultSet::getLong, ResultSet::getLong));
+        registerSimple(float.class, new SimpleColumnMapper<>(ResultSet::getFloat, ResultSet::getFloat));
+        registerSimple(double.class, new SimpleColumnMapper<>(ResultSet::getDouble, ResultSet::getDouble));
+        registerSimple(boolean.class, new SimpleColumnMapper<>(ResultSet::getBoolean, ResultSet::getBoolean));
         List<Class<?>> jdbcTypes = List.of(
             Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Boolean.class,
             String.class, byte[].class,
