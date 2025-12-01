@@ -34,25 +34,25 @@ public final class SqlCommands {
     public static <T> List<T> listRows(CharSequence sql) {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
-        return data.cast(query.listRows(data.connection, data.rowMapper(true)));
+        return data.cast(query.listRows(data.connection, data.rowMapper(CallData.LIST)));
     }
 
     public static <T> T exactlyOneRow(CharSequence sql) {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
-        return data.cast(query.exactlyOneRow(data.connection, data.rowMapper(false)));
+        return data.cast(query.exactlyOneRow(data.connection, data.rowMapper(CallData.ONE)));
     }
 
     public static <T> T maybeRow(CharSequence sql) {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
-        return data.cast(query.maybeRow(data.connection, data.rowMapper(false)));
+        return data.cast(query.maybeRow(data.connection, data.rowMapper(CallData.OPTIONAL)));
     }
 
     public static <T> T firstRow(CharSequence sql) {
         CallData data = getCallData();
         Query query = data.substituteArgs(sql);
-        return data.cast(query.firstRow(data.connection, data.rowMapper(false)));
+        return data.cast(query.firstRow(data.connection, data.rowMapper(CallData.OPTIONAL)));
     }
 
     public static int executeUpdate(CharSequence sql) {

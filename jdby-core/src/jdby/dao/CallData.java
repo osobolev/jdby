@@ -16,6 +16,10 @@ import java.util.Optional;
 
 final class CallData {
 
+    static final int OPTIONAL = 0;
+    static final int ONE = 1;
+    static final int LIST = 2;
+
     final DaoContext ctx;
     final Method method;
     final Map<String, SqlParameter> parameters;
@@ -33,12 +37,12 @@ final class CallData {
         return pq.toQuery(parameters);
     }
 
-    RowMapper<?> rowMapper(boolean list) {
-        return ctx.getMapperContext().rowMapper(getRowType(list));
+    RowMapper<?> rowMapper(int multiplicity) {
+        return ctx.getMapperContext().rowMapper(getRowType(multiplicity));
     }
 
     GeneratedKeyMapper<?> keyMapper() {
-        return ctx.getMapperContext().keyMapper(getRowType(false));
+        return ctx.getMapperContext().keyMapper(getRowType(ONE));
     }
 
     @SuppressWarnings("unchecked")
@@ -50,16 +54,20 @@ final class CallData {
         }
     }
 
-    private Class<?> getRowType(boolean list) {
-        if (!list) {
+    private Class<?> getRowType(int multiplicity) {
+        if (multiplicity != LIST) {
             Class<?> plainType = unwrapType(null);
             if (plainType != null) {
                 return plainType;
             }
-            Class<?> rowType = unwrapType(Optional.class);
-            if (rowType != null)
-                return rowType;
-            throw new IllegalStateException("Method " + Utils.methodString(method) + " return type must be a simple class or Optional<...>");
+            if (multiplicity == OPTIONAL) {
+                Class<?> rowType = unwrapType(Optional.class);
+                if (rowType != null)
+                    return rowType;
+                throw new IllegalStateException("Method " + Utils.methodString(method) + " return type must be a simple class or Optional<...>");
+            } else {
+                throw new IllegalStateException("Method " + Utils.methodString(method) + " return type must be a simple class");
+            }
         } else {
             Class<?> rowType = unwrapType(List.class);
             if (rowType != null)
