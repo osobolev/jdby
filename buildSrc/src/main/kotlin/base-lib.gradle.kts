@@ -41,6 +41,7 @@ tasks {
         options.encoding = "UTF-8"
         options.release.set(17)
         options.compilerArgs.add("-parameters")
+        options.compilerArgs.add("-Xlint:-module")
     }
     javadoc {
         options.encoding = "UTF-8"
