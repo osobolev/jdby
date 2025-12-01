@@ -1,5 +1,6 @@
 package jdby.testing;
 
+import jdby.core.RollbackGuard;
 import jdby.core.RowConnection;
 import jdby.core.RowContext;
 import jdby.core.testing.SqlTestingHook;
@@ -29,20 +30,6 @@ public final class SqlTesting {
     private SqlTesting(TestingOptions options, Connection connection) {
         this.options = options;
         this.connection = connection;
-    }
-
-    private static final class RollbackGuard implements AutoCloseable {
-
-        private final Connection realConnection;
-
-        RollbackGuard(Connection realConnection) {
-            this.realConnection = realConnection;
-        }
-
-        @Override
-        public void close() throws SQLException {
-            realConnection.rollback();
-        }
     }
 
     private void runAllMethods(Class<?> cls, Object o) throws Exception {
