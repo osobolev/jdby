@@ -177,14 +177,14 @@ public class DaoTest {
 ```
 
 When testing **all public non-static methods** of the given DAO classes are invoked with mock parameters. Then following checks are then performed:
-- for `listRows`/`maybeRow`/`exactlyOneRow`, record fields are compared with query columns. Errors or warnings are reported if there are any **discrepancies** in names or types.
+- for `listRows`/`maybeRow`/`exactlyOneRow`, record fields are compared with query columns. Errors or warnings are reported if there are **any discrepancies** in names or types.
 - for `executeUpdate`/`insertRow` any changes are **rolled back**; any constraint violation errors are ignored (because mock values can violate unique/FK constraints).
 
 This ensures that all SQL queries are valid and column-to-record mapping is correct.
 
 ## Customization
 
-- `DaoContext.builder().setColumnNaming()` customizes the automatic record-to-column name mapping strategy (e.g., changing from `camelCase` to `snake_case`).
+- `DaoContext.builder().setColumnNaming()` customizes the automatic field-to-column name mapping strategy (e.g., changing from `camelCase` to `snake_case`).
 - `DaoContext.builder().registerColumn()` customizes the mapping for an individual column, which applies to both single-column queries and columns within a record.
 - `DaoContext.builder().registerRow()` customizes manual row mapping (your only way to use non-record classes as row types).
 - `DaoContext.builder().registerParameter()` customizes how a specific Java type is passed as a parameter into an SQL query.
