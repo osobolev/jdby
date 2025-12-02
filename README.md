@@ -167,7 +167,9 @@ public class DaoTest {
         // Possibly customize options.ctx
         SqlTesting.runTests(
             options,
+            // Connection to use for tests:
             () -> DriverManager.getConnection("jdbc:h2:mem:test"),
+            // List of tested DAO interfaces/classes:
             List.of(UserDao.class)
         );
     }
