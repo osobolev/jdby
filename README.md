@@ -177,7 +177,7 @@ public class DaoTest {
 }
 ```
 
-When testing **all public non-static methods** of the given DAO classes are invoked with mock parameters. Then following checks are then performed:
+When testing **all public non-static methods** of the given DAO classes are invoked with mock parameters. Then following checks are performed:
 - for `listRows`/`maybeRow`/`exactlyOneRow`, record fields are compared with query columns. Errors or warnings are reported if there are **any discrepancies** in names or types.
 - for `executeUpdate`/`insertRow` any changes are **rolled back**; any constraint violation errors are ignored (because mock values can violate unique/FK constraints).
 
