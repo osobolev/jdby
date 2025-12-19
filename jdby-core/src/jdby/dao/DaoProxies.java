@@ -57,17 +57,17 @@ public final class DaoProxies {
         if (!method.isDefault()) {
             throw new IllegalStateException("Call of non-default method " + Utils.methodString(method));
         }
-        ArrayDeque<CallData> deque = CALL_DATA.get();
-        if (deque == null) {
-            deque = new ArrayDeque<>();
-            CALL_DATA.set(deque);
-        }
         try (RollbackGuard guard = RollbackGuard.create(dataSource)) {
             if (!commit) {
-                // So it does not call rollback at close:
+                // So it does not call rollback in close:
                 guard.ok();
             }
             Connection connection = guard.getConnection();
+            ArrayDeque<CallData> deque = CALL_DATA.get();
+            if (deque == null) {
+                deque = new ArrayDeque<>();
+                CALL_DATA.set(deque);
+            }
             deque.push(new CallData(ctx, method, argsMap, connection));
             try {
                 Object result = InvocationHandler.invokeDefault(proxy, method, args);
