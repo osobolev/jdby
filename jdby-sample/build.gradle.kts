@@ -14,11 +14,11 @@ java {
 }
 
 dependencies {
-    implementation("io.github.osobolev.jdby:jdby-core:1.0")
+    implementation("io.github.osobolev.jdby:jdby-core:1.1")
 
     runtimeOnly("com.h2database:h2:2.4.240")
 
-    testImplementation("io.github.osobolev.jdby:jdby-testing:1.0")
+    testImplementation("io.github.osobolev.jdby:jdby-testing:1.1")
     testImplementation("org.junit.jupiter:junit-jupiter:5.14.1")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")

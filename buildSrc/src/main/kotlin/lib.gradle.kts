@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "io.github.osobolev.jdby"
-version = "1.0"
+version = "1.1"
 
 mavenPublishing {
     publishToMavenCentral()
