@@ -30,6 +30,18 @@ public interface DaoContext {
         return new DaoConnectionImpl(this, connection);
     }
 
+    /**
+     * Allocates new connection from the {@code dataSource} and commits the transaction
+     * for each DAO method call.
+     */
+    default DaoSource withDataSource(ConnectionFactory dataSource) {
+        return new DaoSource() {
+            @Override
+            public <T> T dao(Class<T> iface) {
+                return DaoProxies.createProxy(DaoContext.this, dataSource, true, iface);
+            }
+        };
+    }
     default <E extends Exception> SqlTransaction<DaoConnection> transaction(ConnectionFactory dataSource) throws E {
         return new SqlTransaction<>(dataSource, this::withConnection);
     }
