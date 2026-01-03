@@ -89,17 +89,17 @@ final class CheckOneColumn {
 
     private boolean isCompatible(Class<?> type) throws SQLException {
         return switch (dbType) {
-        case VARCHAR, NVARCHAR,
-             CHAR, NCHAR,
-             LONGVARCHAR, LONGNVARCHAR,
-             CLOB, NCLOB -> type == String.class;
-        case BINARY, VARBINARY, LONGVARBINARY, BLOB -> type == byte[].class;
-        case BIT, BOOLEAN -> type == boolean.class || type == Boolean.class;
-        case DATE -> type == LocalDate.class;
-        case TIME -> type == LocalTime.class;
-        case TIMESTAMP_WITH_TIMEZONE -> type == OffsetDateTime.class;
-        case TIMESTAMP -> type == LocalDateTime.class;
-        default -> isNumericCompatible(type);
+            case VARCHAR, NVARCHAR,
+                 CHAR, NCHAR,
+                 LONGVARCHAR, LONGNVARCHAR,
+                 CLOB, NCLOB -> type == String.class;
+            case BINARY, VARBINARY, LONGVARBINARY, BLOB -> type == byte[].class;
+            case BIT, BOOLEAN -> type == boolean.class || type == Boolean.class;
+            case DATE -> type == LocalDate.class;
+            case TIME -> type == LocalTime.class;
+            case TIMESTAMP_WITH_TIMEZONE -> type == OffsetDateTime.class;
+            case TIMESTAMP -> type == LocalDateTime.class;
+            default -> isNumericCompatible(type);
         };
     }
 

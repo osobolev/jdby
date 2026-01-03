@@ -42,6 +42,7 @@ public interface DaoContext {
             }
         };
     }
+
     default <E extends Exception> SqlTransaction<DaoConnection> transaction(ConnectionFactory dataSource) throws E {
         return new SqlTransaction<>(dataSource, this::withConnection);
     }
