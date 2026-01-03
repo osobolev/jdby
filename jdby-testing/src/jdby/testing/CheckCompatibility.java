@@ -37,7 +37,7 @@ final class CheckCompatibility {
     private void checkColumn(RecordComponent component, int index, ColumnMapper columnMapper) throws SQLException {
         checkColumn(
             component.getType(),
-            "field " + component.getDeclaringRecord().getName() + "#" + component.getName(),
+            "field '" + component.getDeclaringRecord().getName() + "#" + component.getName() + "'",
             index, columnMapper
         );
     }
