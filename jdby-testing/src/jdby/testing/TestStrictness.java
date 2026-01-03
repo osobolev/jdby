@@ -7,7 +7,7 @@ public enum TestStrictness {
     NO_TYPE_CHECK,
     /**
      * Java field types are checked against DB column types, but {@code int} fields
-     * are allowed for {@code NUMBER(20)} columns
+     * are allowed for {@code NUMERIC(20)} columns
      */
     RELAXED_TYPE_CHECK,
     /**
