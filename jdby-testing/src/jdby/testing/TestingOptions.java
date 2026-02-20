@@ -49,6 +49,12 @@ public final class TestingOptions {
         throw new IllegalStateException(message);
     };
 
+    public interface TestErrorHandler {
+
+        void testError(Exception error) throws Exception;
+    }
+    public TestErrorHandler exception = error -> { throw error; };
+
     public void info(String message) {
         info.accept(message);
     }

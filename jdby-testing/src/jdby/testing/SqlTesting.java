@@ -51,11 +51,13 @@ public final class SqlTesting {
             try (RollbackGuard guard = RollbackGuard.create(testConnectionFactory)) {
                 method.invoke(o, args);
             } catch (InvocationTargetException itex) {
+                Exception error;
                 if (itex.getCause() instanceof Exception ex) {
-                    throw ex;
+                    error = ex;
                 } else {
-                    throw itex;
+                    error = itex;
                 }
+                options.exception.testError(error);
             }
         }
     }
