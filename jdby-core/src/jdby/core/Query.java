@@ -66,6 +66,18 @@ public final class Query implements QueryLike {
         return ps;
     }
 
+    public void consumeRows(Connection connection, RowConsumer rowConsumer) {
+        try (PreparedStatement ps = preparedStatement(connection)) {
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    rowConsumer.consumeRow(rs);
+                }
+            }
+        } catch (SQLException ex) {
+            throw new UncheckedSQLException(ex);
+        }
+    }
+
     public <T> List<T> listRows(Connection connection, RowMapper<T> rowMapper) {
         try (PreparedStatement ps = preparedStatement(connection)) {
             try (ResultSet rs = ps.executeQuery()) {
