@@ -60,26 +60,46 @@ public final class Query implements QueryLike {
         }
     }
 
-    private PreparedStatement preparedStatement(Connection connection) throws SQLException {
-        PreparedStatement ps = connection.prepareStatement(sql);
-        setParameters(ps);
-        return ps;
+    private PreparedStatement preparedStatement(Connection connection, String[] generatedColumns) throws SQLException {
+        if (generatedColumns == null) {
+            return connection.prepareStatement(sql);
+        } else {
+            return connection.prepareStatement(sql, generatedColumns);
+        }
     }
 
-    public void consumeRows(Connection connection, RowConsumer rowConsumer) {
-        try (PreparedStatement ps = preparedStatement(connection)) {
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    rowConsumer.consumeRow(rs);
-                }
-            }
+    private interface StatementFunction<T> {
+
+        T apply(PreparedStatement ps) throws SQLException;
+    }
+
+    private <T> T withPreparedStatement(Connection connection, String[] generatedColumns,
+                                        StatementFunction<T> action) {
+        try (PreparedStatement ps = preparedStatement(connection, generatedColumns)) {
+            setParameters(ps);
+            return action.apply(ps);
         } catch (SQLException ex) {
             throw new UncheckedSQLException(ex);
         }
     }
 
+    private <T> T withPreparedStatement(Connection connection, StatementFunction<T> action) {
+        return withPreparedStatement(connection, null, action);
+    }
+
+    public void consumeRows(Connection connection, RowConsumer rowConsumer) {
+        withPreparedStatement(connection, ps -> {
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    rowConsumer.consumeRow(rs);
+                }
+            }
+            return null;
+        });
+    }
+
     public <T> List<T> listRows(Connection connection, RowMapper<T> rowMapper) {
-        try (PreparedStatement ps = preparedStatement(connection)) {
+        return withPreparedStatement(connection, ps -> {
             try (ResultSet rs = ps.executeQuery()) {
                 if (SqlTestingHook.isTesting()) {
                     rowMapper.mapRow(rs);
@@ -87,9 +107,7 @@ public final class Query implements QueryLike {
                 }
                 return rowMapper.mapAllRows(rs);
             }
-        } catch (SQLException ex) {
-            throw new UncheckedSQLException(ex);
-        }
+        });
     }
 
     public <T> List<T> listRows(RowConnection connection, Class<T> rowType) {
@@ -97,7 +115,7 @@ public final class Query implements QueryLike {
     }
 
     private <T> T oneRow(Connection connection, boolean canHaveNone, boolean canHaveMore, RowMapper<T> rowMapper) {
-        try (PreparedStatement ps = preparedStatement(connection)) {
+        return withPreparedStatement(connection, ps -> {
             try (ResultSet rs = ps.executeQuery()) {
                 if (SqlTestingHook.isTesting()) {
                     return rowMapper.mapRow(rs);
@@ -115,9 +133,7 @@ public final class Query implements QueryLike {
                     return null;
                 }
             }
-        } catch (SQLException ex) {
-            throw new UncheckedSQLException(ex);
-        }
+        });
     }
 
     public <T> T exactlyOneRow(Connection connection, RowMapper<T> rowMapper) {
@@ -161,11 +177,7 @@ public final class Query implements QueryLike {
     }
 
     public int executeUpdate(Connection connection) {
-        try (PreparedStatement ps = preparedStatement(connection)) {
-            return executeUpdate(ps);
-        } catch (SQLException ex) {
-            throw new UncheckedSQLException(ex);
-        }
+        return withPreparedStatement(connection, Query::executeUpdate).intValue();
     }
 
     public int executeUpdate(RowConnection connection) {
@@ -177,15 +189,12 @@ public final class Query implements QueryLike {
         String[] generatedColumns = new String[1 + otherGeneratedColumns.length];
         generatedColumns[0] = generatedColumn;
         System.arraycopy(otherGeneratedColumns, 0, generatedColumns, 1, otherGeneratedColumns.length);
-        try (PreparedStatement ps = connection.prepareStatement(sql, generatedColumns)) {
-            setParameters(ps);
+        return withPreparedStatement(connection, generatedColumns, ps -> {
             int rows = executeUpdate(ps);
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 return keyMapper.map(rows, generatedColumns, rs);
             }
-        } catch (SQLException ex) {
-            throw new UncheckedSQLException(ex);
-        }
+        });
     }
 
     public <T> T insertRow(RowConnection connection, String generatedColumn, Class<T> keyType) {
