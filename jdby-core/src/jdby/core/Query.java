@@ -75,6 +75,7 @@ public final class Query implements QueryLike {
 
     private <T> T withPreparedStatement(Connection connection, String[] generatedColumns,
                                         StatementFunction<T> action) {
+        SqlTestingHook.lastSql = sql;
         try (PreparedStatement ps = preparedStatement(connection, generatedColumns)) {
             setParameters(ps);
             return action.apply(ps);

@@ -18,6 +18,7 @@ public final class SqlTestingHook {
     }
 
     public static volatile Checker hook = null;
+    public static volatile String lastSql = null;
 
     public static boolean isTesting() {
         return hook != null;

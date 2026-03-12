@@ -58,6 +58,8 @@ public final class SqlTesting {
                     error = itex;
                 }
                 options.exception.testError(error);
+            } finally {
+                SqlTestingHook.lastSql = null;
             }
         }
     }
