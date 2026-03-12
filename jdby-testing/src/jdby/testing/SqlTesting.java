@@ -67,6 +67,9 @@ public final class SqlTesting {
                 method.invoke(o, args);
             } catch (InvocationTargetException itex) {
                 Exception error = getCause(itex);
+                if (error instanceof SQLException) {
+                    error = new SqlDetailsException(error, method, SqlTestingHook.lastSql);
+                }
                 options.exception.testError(error);
             } finally {
                 SqlTestingHook.lastSql = null;
