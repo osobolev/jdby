@@ -1,5 +1,6 @@
 package jdby.testing;
 
+import jdby.core.UncheckedSQLException;
 import jdby.core.testing.SqlTestingHook;
 import jdby.internal.RollbackGuard;
 import jdby.internal.Utils;
@@ -27,6 +28,20 @@ public final class SqlTesting {
         this.connection = connection;
     }
 
+    private static Exception getCause(Exception root) {
+        Exception error = root;
+        while (true) {
+            if (error instanceof InvocationTargetException || error instanceof UncheckedSQLException) {
+                Throwable cause = error.getCause();
+                if (cause instanceof Exception ex) {
+                    error = ex;
+                    continue;
+                }
+            }
+            return error;
+        }
+    }
+
     private void runAllMethods(Class<?> cls, Object o) throws Exception {
         ConnectionFactory testConnectionFactory = ConnectionFactory.fromConnection(connection);
         for (Method method : cls.getDeclaredMethods()) {
@@ -51,12 +66,7 @@ public final class SqlTesting {
             try (RollbackGuard guard = RollbackGuard.create(testConnectionFactory)) {
                 method.invoke(o, args);
             } catch (InvocationTargetException itex) {
-                Exception error;
-                if (itex.getCause() instanceof Exception ex) {
-                    error = ex;
-                } else {
-                    error = itex;
-                }
+                Exception error = getCause(itex);
                 options.exception.testError(error);
             } finally {
                 SqlTestingHook.lastSql = null;
