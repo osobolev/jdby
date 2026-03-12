@@ -103,17 +103,29 @@ public final class SqlTesting {
     }
 
     /**
-     * @param file properties file with keys {@code jdbc.url}, {@code jdbc.username}, {@code jdbc.password}
+     * @param props properties with keys {@code jdbc.url}, {@code jdbc.username}, {@code jdbc.password}
      */
-    public static Connection fromFile(Path file) throws IOException, SQLException {
-        Properties props = new Properties();
-        try (BufferedReader rdr = Files.newBufferedReader(file)) {
-            props.load(rdr);
-        }
+    public static Connection fromProperties(Properties props) throws SQLException {
         String url = props.getProperty("jdbc.url");
         String username = props.getProperty("jdbc.username");
         String password = props.getProperty("jdbc.password");
         return DriverManager.getConnection(url, username, password);
+    }
+
+    public static Properties loadProperties(Path file) throws IOException {
+        Properties props = new Properties();
+        try (BufferedReader rdr = Files.newBufferedReader(file)) {
+            props.load(rdr);
+        }
+        return props;
+    }
+
+    /**
+     * @param file properties file with keys {@code jdbc.url}, {@code jdbc.username}, {@code jdbc.password}
+     */
+    public static Connection fromFile(Path file) throws IOException, SQLException {
+        Properties props = loadProperties(file);
+        return fromProperties(props);
     }
 
     /**
