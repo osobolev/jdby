@@ -53,7 +53,13 @@ public final class TestingOptions {
 
         void testError(Exception error) throws Exception;
     }
-    public TestErrorHandler exception = error -> { throw error; };
+    public TestErrorHandler exception = error -> {
+        if (error instanceof SqlDetailsException sdex) {
+            throw sdex.prettyExceptionForTest();
+        } else {
+            throw error;
+        }
+    };
 
     public void info(String message) {
         info.accept(message);
