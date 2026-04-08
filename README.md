@@ -49,13 +49,13 @@ Maven:
 <dependency>
     <groupId>io.github.osobolev.jdby</groupId>
     <artifactId>jdby-core</artifactId>
-    <version>1.0</version>
+    <version>1.3</version>
 </dependency>
 ```
 
 Gradle:
 ```kotlin
-implementation("io.github.osobolev.jdby:jdby-core:1.0")
+implementation("io.github.osobolev.jdby:jdby-core:1.3")
 
 ```
 
