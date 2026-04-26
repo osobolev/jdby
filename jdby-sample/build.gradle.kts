@@ -43,17 +43,9 @@ tasks.named<Test>("test").configure {
 }
 
 tasks.withType(com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask::class).configureEach {
-    resolutionStrategy {
-        componentSelection {
-            all(Action<com.github.benmanes.gradle.versions.updates.resolutionstrategy.ComponentSelectionWithCurrent> {
-                if (candidate.version.contains("-a")) {
-                    reject("Alpha version")
-                } else if (candidate.version.contains("-b")) {
-                    reject("Beta version")
-                } else if (candidate.version.contains("-M")) {
-                    reject("Milestone version")
-                }
-            })
-        }
+    rejectVersionIf {
+        candidate.version.contains("-a") || 
+        candidate.version.contains("-b") ||
+        candidate.version.contains("-M")
     }
 }
