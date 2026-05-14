@@ -4,6 +4,7 @@ import jdby.core.Batch;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -27,6 +28,8 @@ public class MockParamFactory {
             return 1.0f;
         } else if (type == BigDecimal.class) {
             return BigDecimal.ONE;
+        } else if (type == BigInteger.class) {
+            return BigInteger.ONE;
         } else if (type == String.class) {
             return "1";
         } else if (type == LocalDate.class) {
