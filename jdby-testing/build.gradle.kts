@@ -1,7 +1,7 @@
 description = "Testing harness for JDBY DAOs"
 
 plugins {
-    `lib`
+    id("lib")
 }
 
 dependencies {
