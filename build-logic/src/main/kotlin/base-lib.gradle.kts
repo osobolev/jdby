@@ -9,7 +9,7 @@ repositories {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 
@@ -39,7 +39,7 @@ dependencies {
 tasks {
     withType(JavaCompile::class).configureEach {
         options.encoding = "UTF-8"
-        options.release.set(17)
+        options.release = 17
         options.compilerArgs.add("-Xlint:-module")
     }
     javadoc {
